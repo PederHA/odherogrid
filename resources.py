@@ -5,11 +5,27 @@ DOTA_GRID = {
             "config_name": "Opendota Hero Winrate",
             "categories": [
                 {
-                    "category_name": "Heroes Sorted By Winrate",
+                    "category_name": "Strength",
                     "x_position": 0.000000,
                     "y_position": 0.000000,
-                    "width": 900.0,
-                    "height": 500.0,
+                    "width": 1180.0,
+                    "height": 180.0,
+                    "hero_ids": [],
+                },
+                {
+                    "category_name": "Agility",
+                    "x_position": 0.000000,
+                    "y_position": 200.000000,
+                    "width": 1180.0,
+                    "height": 180.0,
+                    "hero_ids": [],
+                },
+                {
+                    "category_name": "Intelligence",
+                    "x_position": 0.000000,
+                    "y_position": 400.000000,
+                    "width": 1180.0,
+                    "height": 180.0,
                     "hero_ids": [],
                 }
             ],

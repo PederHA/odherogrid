@@ -10,6 +10,7 @@ import click
 from config import Config
 from resources import DOTA_GRID
 
+
 class Brackets(Enum):
     HERALD = 1
     GUARDIAN = 2
@@ -25,22 +26,28 @@ DEFAULT_BRACKET = Brackets.DIVINE.value
 
 
 def get_hero_stats() -> list:
+    """Retrieves hero win/loss statistics from OpenDotaAPI."""
     r = requests.get("https://api.opendota.com/api/heroStats")
     heroes = r.json()
     return heroes
 
 
 def sort_heroes_by_winrate(heroes: list, bracket: str) -> list:
+    """Sorts list of heroes by winrate in a specific skill bracket."""
     heroes.sort(key=lambda h: h[f"{bracket}_pick"] / h[f"{bracket}_win"])
     return heroes
-
-def categorize_heroes_by_stat(heroes: list) -> dict:
-    heroes = {}
     
 
 def format_hero_grid(heroes: List[int]) -> dict:
     d = DOTA_GRID.copy()
-    d["configs"][0]["categories"][0]["hero_ids"].extend(heroes)
+    indexes = {
+        "str": 0,
+        "agi": 1,
+        "int": 2
+    }
+    for hero in heroes:
+        idx = indexes.get(hero["primary_attr"])
+        d["configs"][0]["categories"][idx]["hero_ids"].append(hero["id"])
     return d
 
 
@@ -48,7 +55,7 @@ def get_default_cfg_path() -> Path:
     d = f"Steam/userdata/{Config.USER_ID}/570/remote/cfg" # choose random directory in userdata if no configured user?
     
     if sys.platform == "win32":
-        p = Path(f"C:/Program Files(x86)") / d
+        p = Path(f"C:/Program Files (x86)") / d
     elif sys.platform == "darwin":
         p = Path.home() / "Library/Application Support" / d
     elif sys.platform == "linux":
@@ -59,7 +66,8 @@ def get_default_cfg_path() -> Path:
     return p
 
 
-def update_hero_grid(path: Path, data: dict) -> None:
+def update_hero_grid(data: dict, path: Path) -> None:
+    """Updates hero grid config file in Steam userdata directory."""
     with open(path/"hero_grid_config.json", "w") as f:
         json_data = json.dumps(data)
         f.write(json_data)
@@ -80,9 +88,17 @@ def main(bracket: str, path: str) -> None:
     if not cfg_path.exists():
         raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
     
-    heroes = sort_heroes_by_winrate(get_hero_stats(), bracket=bracket)
+    # Get hero W/L stats from API
+    data = get_hero_stats()
 
-    update_hero_grid(cfg_path, data)
+    # Sort heroes by winrate in a skill bracket
+    heroes = sort_heroes_by_winrate(data, bracket=bracket)
+    
+    # Prepare hero grid config mapping
+    heroes = format_hero_grid(heroes)
+    
+    # Write changes to disk
+    update_hero_grid(heroes, cfg_path)
     
 if __name__ == "__main__":   
     main()
