@@ -33,7 +33,7 @@ def get_hero_stats() -> list:
 
 def sort_heroes_by_winrate(heroes: list, bracket: str) -> list:
     """Sorts list of heroes by winrate in a specific skill bracket."""
-    heroes.sort(key=lambda h: h[f"{bracket}_pick"] / h[f"{bracket}_win"])
+    heroes.sort(key=lambda h: h[f"{bracket}_win"] / h[f"{bracket}_pick"], reverse=True)
     return heroes
     
 
@@ -61,6 +61,7 @@ def get_default_cfg_path() -> Path:
         p = Path.home() / d
     else:
         raise NotImplementedError("Hero grid directory auto detection is not supported for your OS!")  
+    
     return p
 
 
