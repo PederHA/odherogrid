@@ -51,7 +51,7 @@ def add_heroes_to_grid(heroes: list) -> dict:
     return c
 
 
-def get_default_cfg_path() -> Path:    
+def get_cfg_path() -> Path:  
     if sys.platform == "win32":
         p = Path(f"C:/Program Files (x86)")
     elif sys.platform == "darwin":
@@ -61,7 +61,7 @@ def get_default_cfg_path() -> Path:
     else:
         raise NotImplementedError("Hero grid directory auto detection is not supported for your OS!")  
     
-    p = p / "Steam/userdata/"
+    p = p / "Steam/userdata"
 
     # Choose random subdirectory if no User ID is specified.
     if not Config.USER_ID:
@@ -105,7 +105,7 @@ def main(bracket: str, path: str) -> None:
     
     # Find Steam userdata directory
     if not path:
-        cfg_path = get_default_cfg_path()
+        cfg_path = get_cfg_path()
     else:
         cfg_path = Path(path)
     if not cfg_path.exists():
