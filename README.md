@@ -1,11 +1,32 @@
 # ODHeroGrid
----
 Creates a custom Dota 2 Hero Grid config that sorts heroes by winrate in either public or professional games.
+
+ODHeroGrid features OS-agnostic auto-detection of the Dota 2 userdata CFG directory if
+Steam User ID is configured in `config.py`, but the auto detected path can be overriden at any time by using the `--path` argument.
 
 ### Usage
 ```bash
-python3.7 odhg.py [--bracket] <1-7 (herald-divine/immortal) OR pro>
-                  [--path] <absolute path of Dota 2 userdata cfg directory>
+python3.7 odhg.py [--bracket] <1-7 (herald-divine/immortal) OR pro> (default: 7)
+                  [--path] <absolute path of Dota 2 userdata cfg directory> (default: auto detect)
 ```
-ODHeroGrid features OS-agnostic auto detection of the Dota 2 userdata directory if
-Steam User ID is configured in `config.py`.
+
+### Examples
+Use program defaults. (Auto-detect CFG directory and use divine bracket hero stats)
+```bash
+python3.7 odhg.py
+```
+
+Use herald bracket hero stats
+```bash
+python3.7 odhg.py --bracket 1
+```
+
+Use hero stats from official pro games only
+```bash
+python3.7 odhg.py --bracket pro
+```
+
+Specify a specific Steam user CFG directory
+```bash
+python3.7 odhg.py --path C:\Program Files (x86)\Steam\userdata\420666\570\remote\cfg
+```
