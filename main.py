@@ -1,5 +1,6 @@
 import sys
 import json
+import random
 from enum import Enum
 from pathlib import Path
 
@@ -51,7 +52,7 @@ def add_heroes_to_grid(heroes: list) -> dict:
 
 
 def get_default_cfg_path() -> Path:
-    d = f"Steam/userdata/{Config.USER_ID}/570/remote/cfg" # choose random directory in userdata if no configured user?
+    d = "Steam/userdata/" # choose random directory in userdata if no configured user?
     
     if sys.platform == "win32":
         p = Path(f"C:/Program Files (x86)") / d
@@ -62,6 +63,11 @@ def get_default_cfg_path() -> Path:
     else:
         raise NotImplementedError("Hero grid directory auto detection is not supported for your OS!")  
     
+    if not Config.USER_ID:
+        p = random.choice(list(p.iterdir())) / "570/remote/cfg"
+    else:
+        p = p / str(Config.USER_ID )/ "570/remote/cfg"
+
     return p
 
 
