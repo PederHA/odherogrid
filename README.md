@@ -4,7 +4,7 @@
 Small script that generates a custom Dota 2 Hero Grid layout of heroes sorted by winrate in public or professional games, using stats from OpenDota.
 
 ODHeroGrid features OS-agnostic auto-detection of the Dota 2 userdata CFG directory if
-Steam User ID is configured in `config.py`, but the auto detected path can be overriden at any time by using the `--path` argument.
+Steam User ID is configured in `config.py`. The auto-detected path can be overriden at any time using the `--path` argument.
 
 ### Usage
 ```bash
