@@ -28,8 +28,7 @@ DEFAULT_BRACKET = Brackets.DIVINE.value
 def get_hero_stats() -> list:
     """Retrieves hero win/loss statistics from OpenDotaAPI."""
     r = requests.get("https://api.opendota.com/api/heroStats")
-    heroes = r.json()
-    return heroes
+    return r.json()
 
 
 def sort_heroes_by_winrate(heroes: list, bracket: str) -> list:
@@ -38,7 +37,7 @@ def sort_heroes_by_winrate(heroes: list, bracket: str) -> list:
     return heroes
     
 
-def add_heroes_to_grid(heroes: list, config_name: str) -> dict:
+def create_hero_grid(heroes: list, config_name: str) -> dict:
     c = CONFIG.copy()
     c["config_name"] = config_name 
     indexes = {
@@ -132,7 +131,7 @@ def main(bracket: str, path: str) -> None:
     heroes = sort_heroes_by_winrate(data, bracket)
     
     # Prepare hero grid config mapping
-    heroes = add_heroes_to_grid(heroes, config_name)
+    heroes = create_hero_grid(heroes, config_name)
     
     # Write changes to disk
     update_hero_grid(heroes, config_name, cfg_path)
