@@ -51,24 +51,25 @@ def add_heroes_to_grid(heroes: list) -> dict:
     return c
 
 
-def get_default_cfg_path() -> Path:
-    d = "Steam/userdata/" # choose random directory in userdata if no configured user?
-    
+def get_default_cfg_path() -> Path:    
     if sys.platform == "win32":
-        p = Path(f"C:/Program Files (x86)") / d
+        p = Path(f"C:/Program Files (x86)")
     elif sys.platform == "darwin":
-        p = Path.home() / "Library/Application Support" / d
+        p = Path.home() / "Library/Application Support"
     elif sys.platform == "linux":
-        p = Path.home() / d
+        p = Path.home()
     else:
         raise NotImplementedError("Hero grid directory auto detection is not supported for your OS!")  
     
-    if not Config.USER_ID:
-        p = random.choice(list(p.iterdir())) / "570/remote/cfg"
-    else:
-        p = p / str(Config.USER_ID )/ "570/remote/cfg"
+    p = p / "Steam/userdata/"
 
-    return p
+    # Choose random subdirectory if no User ID is specified.
+    if not Config.USER_ID:
+        p = random.choice([d for d in p.iterdir() if d.is_dir()])
+    else:
+        p = p / str(Config.USER_ID)
+
+    return p / "570/remote/cfg"
 
 
 def update_hero_grid(data: dict, path: Path) -> None:
