@@ -38,8 +38,9 @@ def sort_heroes_by_winrate(heroes: list, bracket: str) -> list:
     return heroes
     
 
-def add_heroes_to_grid(heroes: list) -> dict:
+def add_heroes_to_grid(heroes: list, config_name: str) -> dict:
     c = CONFIG.copy()
+    c["config_name"] = config_name 
     indexes = {
         "str": 0,
         "agi": 1,
@@ -72,15 +73,16 @@ def get_cfg_path() -> Path:
     return p / "570/remote/cfg"
 
 
-def update_hero_grid(data: dict, path: Path) -> None:
+def update_hero_grid(data: dict, config_name: str, path: Path) -> None:
     """Updates hero grid config file in Steam userdata directory."""
     p = path/"hero_grid_config.json"
     
     # Append to existing config if a config exists
     if p.exists():
         configs = json.load(p.open())
-        for idx, config in enumerate(configs["configs"]):        
-            if config["config_name"] == Config.CONFIG_NAME:
+        for idx, config in enumerate(configs["configs"]):
+            # Update existing hero grid if one exists
+            if config["config_name"] == config_name:
                 configs["configs"][idx] = data
                 break
         else:
@@ -96,13 +98,23 @@ def update_hero_grid(data: dict, path: Path) -> None:
 
 
 @click.command()
-@click.option("--bracket", "-b", default=DEFAULT_BRACKET)
+@click.option("--bracket", "-b", default=str(DEFAULT_BRACKET), type=str)
 @click.option("--path", "-p", default=None)
 def main(bracket: str, path: str) -> None:
-    # Use default skill bracket if user bracket argument is invalid
-    if not any(str(e.value) == bracket for e in Brackets):
-        bracket = DEFAULT_BRACKET
-    
+    # Convert bracket name to its int representation. E.g. Herald -> 1, Guardian -> 2, etc.
+    if not bracket.isdigit():
+        for b in Brackets:
+            if b.name.lower() == bracket.lower():
+                bracket = b.value
+                break
+
+    try:
+        bracket = Brackets(int(bracket))
+    except ValueError:
+        raise ValueError(f"Bracket '{bracket}' could not be identified.")   
+    else:
+        bracket = bracket.value
+
     # Find Steam userdata directory
     if not path:
         cfg_path = get_cfg_path()
@@ -111,17 +123,19 @@ def main(bracket: str, path: str) -> None:
     if not cfg_path.exists():
         raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
     
+    config_name = f"{Config.CONFIG_NAME} ({Brackets(bracket).name.capitalize()})" 
+
     # Get hero W/L stats from API
     data = get_hero_stats()
 
     # Sort heroes by winrate in a skill bracket
-    heroes = sort_heroes_by_winrate(data, bracket=bracket)
+    heroes = sort_heroes_by_winrate(data, bracket)
     
     # Prepare hero grid config mapping
-    heroes = add_heroes_to_grid(heroes)
+    heroes = add_heroes_to_grid(heroes, config_name)
     
     # Write changes to disk
-    update_hero_grid(heroes, cfg_path)
+    update_hero_grid(heroes, config_name, cfg_path)
     
 if __name__ == "__main__":   
     main()
