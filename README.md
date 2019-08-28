@@ -1,5 +1,5 @@
 # ODHeroGrid
-Creates a custom Dota 2 Hero Grid config that sorts heroes by winrate in either public or professional games.
+Small script that generates a custom Dota 2 Hero Grid config sorted by winrate in public or professional games, using stats from OpenDota.
 
 ODHeroGrid features OS-agnostic auto-detection of the Dota 2 userdata CFG directory if
 Steam User ID is configured in `config.py`, but the auto detected path can be overriden at any time by using the `--path` argument.
@@ -30,3 +30,6 @@ Specify a specific Steam user CFG directory
 ```bash
 python3.7 odhg.py --path C:\Program Files (x86)\Steam\userdata\420666\570\remote\cfg
 ```
+
+![Divine Winrates](screenshot_divine.png)
+_Divine winrate hero grid generated on 28/08/2019_
