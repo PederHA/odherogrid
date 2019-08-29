@@ -60,7 +60,7 @@ def create_hero_grid(heroes: list) -> dict:
 
 def get_cfg_path() -> Path:  
     if sys.platform == "win32":
-        p = Path(f"C:/Program Files (x86)")
+        p = Path("C:/Program Files (x86)")
     elif sys.platform == "darwin":
         p = Path.home() / "Library/Application Support"
     elif sys.platform == "linux":
