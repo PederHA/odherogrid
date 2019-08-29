@@ -79,7 +79,7 @@ def get_cfg_path() -> Path:
     return p / "570/remote/cfg"
 
 
-def update_hero_grid(data: dict, config_name: str, path: Path) -> None:
+def update_config(grid: dict, config_name: str, path: Path) -> None:
     """Updates hero grid config file in Steam userdata directory."""
     p = path/"hero_grid_config.json"
     
@@ -89,14 +89,14 @@ def update_hero_grid(data: dict, config_name: str, path: Path) -> None:
         for idx, config in enumerate(configs["configs"]):
             # Update existing hero grid if one exists
             if config["config_name"] == config_name:
-                configs["configs"][idx] = data
+                configs["configs"][idx] = grid
                 break
         else:
-            configs["configs"].append(data)
+            configs["configs"].append(grid)
         c = configs
     else:
-        c = CONFIG_BASE.copy()
-        c["configs"].append(data)
+        c = copy.deepcopy(CONFIG_BASE)
+        c["configs"].append(grid)
     
     with open(path/"hero_grid_config.json", "w") as f:
         json_data = json.dumps(c, indent="\t")
@@ -144,7 +144,7 @@ def main(bracket: str, path: str) -> None:
         grid["config_name"] = config_name
         
         # Save generated hero grid
-        update_hero_grid(grid, config_name, cfg_path)
+        update_config(grid, config_name, cfg_path)
     
 if __name__ == "__main__":   
     main()
