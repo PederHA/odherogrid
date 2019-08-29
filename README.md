@@ -8,24 +8,34 @@ Steam User ID is configured in `config.py`. The auto-detected path can be overri
 
 ### Usage
 ```bash
-python3.7 odhg.py [--bracket] <1-7 (herald-divine/immortal) OR pro> (default: 7)
-                  [--path] <absolute path of Dota 2 userdata cfg directory> (default: auto detect)
+python3.7 odhg.py [-b, --bracket] <1-8> (Herald-Pro) (default: 7)
+                  [-p, --path] <absolute path of Dota 2 userdata cfg directory> (default: auto-detect)
 ```
 
 ### Examples
-Use program defaults. (Auto-detect CFG directory and use divine bracket hero stats)
+Use program defaults. (Auto-detect CFG directory and use Divine bracket hero stats)
 ```bash
 python3.7 odhg.py
 ```
 
-Use herald bracket hero stats
+Create grid from Herald hero winrates
 ```bash
 python3.7 odhg.py --bracket 1
 ```
 
-Use hero stats from official pro games only
+Create grid from Pro hero winrates
 ```bash
-python3.7 odhg.py --bracket pro
+python3.7 odhg.py --bracket 8
+```
+
+Create grids from Herald, Divine & Pro hero winrates
+```bash
+python3.7 odhg.py --bracket 178
+```
+
+Create grids from hero winrates in all brackets.
+```bash
+python3.7 odhg.py --bracket 9
 ```
 
 Specify a specific Steam user CFG directory
