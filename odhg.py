@@ -12,12 +12,6 @@ from config import Config
 from resources import DOTA_GRID, CONFIG_BASE, CONFIG
 
 
-CATEGORY_IDX = {
-    "str": 0,
-    "agi": 1,
-    "int": 2
-}
-
 class Brackets(Enum):
     HERALD = 1
     GUARDIAN = 2
@@ -51,6 +45,11 @@ def sort_heroes_by_winrate(heroes: list, bracket: str) -> list:
     
 
 def create_hero_grid(heroes: list) -> dict:
+    CATEGORY_IDX = {
+        "str": 0,
+        "agi": 1,
+        "int": 2
+    }
     c = copy.deepcopy(CONFIG)
     for hero in heroes:
         idx = CATEGORY_IDX.get(hero["primary_attr"])
