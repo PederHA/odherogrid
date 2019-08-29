@@ -11,6 +11,12 @@ from config import Config
 from resources import DOTA_GRID, CONFIG_BASE, CONFIG
 
 
+CATEGORY_IDX = {
+    "str": 0,
+    "agi": 1,
+    "int": 2
+}
+
 class Brackets(Enum):
     HERALD = 1
     GUARDIAN = 2
@@ -42,16 +48,10 @@ def sort_heroes_by_winrate(heroes: list, bracket: str) -> list:
     return heroes
     
 
-def create_hero_grid(heroes: list, config_name: str) -> dict:
+def create_hero_grid(heroes: list) -> dict:
     c = CONFIG.copy()
-    c["config_name"] = config_name 
-    indexes = {
-        "str": 0,
-        "agi": 1,
-        "int": 2
-    }
     for hero in heroes:
-        idx = indexes.get(hero["primary_attr"])
+        idx = CATEGORY_IDX.get(hero["primary_attr"])
         c["categories"][idx]["hero_ids"].append(hero["id"])
     return c
 
@@ -102,22 +102,22 @@ def update_hero_grid(data: dict, config_name: str, path: Path) -> None:
 
 
 @click.command()
-@click.option("--bracket", "-b", default=str(DEFAULT_BRACKET), type=str)
+@click.option("--bracket", "-b")
 @click.option("--path", "-p", default=None)
 def main(bracket: str, path: str) -> None:
-    # Convert bracket name to its int representation. E.g. Herald -> 1, Guardian -> 2, etc.
-    if not bracket.isdigit():
-        for b in Brackets:
-            if b.name.lower() == bracket.lower():
-                bracket = b.value
-                break
-
-    try:
-        bracket = Brackets(int(bracket))
-    except ValueError:
-        raise ValueError(f"Bracket '{bracket}' could not be identified.")   
-    else:
-        bracket = bracket.value
+    bracket = [int(c) for c in bracket if c.isdigit()]
+    
+    if not bracket:
+        bracket = [DEFAULT_BRACKET]
+    
+    brackets = []
+    for b in bracket:
+        try:
+            b = Brackets(b)
+        except ValueError:
+            raise ValueError(f"Bracket '{b}' could not be identified.")   
+        else:
+            brackets.append(b.value)
 
     # Find Steam userdata directory
     if not path:
@@ -126,20 +126,22 @@ def main(bracket: str, path: str) -> None:
         cfg_path = Path(path)
     if not cfg_path.exists():
         raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
-    
-    config_name = f"{Config.CONFIG_NAME} ({Brackets(bracket).name.capitalize()})" 
 
     # Get hero W/L stats from API
     data = get_hero_stats()
-
-    # Sort heroes by winrate in a skill bracket
-    heroes = sort_heroes_by_winrate(data, bracket)
     
-    # Prepare hero grid config mapping
-    heroes = create_hero_grid(heroes, config_name)
-    
-    # Write changes to disk
-    update_hero_grid(heroes, config_name, cfg_path)
+    for bracket in brackets:
+        config_name = f"{Config.CONFIG_NAME} ({Brackets(b).name.capitalize()})"
+        
+        # Sort heroes by winrate in the specified skill bracket
+        heroes = sort_heroes_by_winrate(data, bracket)
+        
+        # Generate hero grid
+        grid = create_hero_grid(heroes)
+        grid["config_name"] = config_name
+        
+        # Save generated hero grid
+        update_hero_grid(grid, config_name, cfg_path)
     
 if __name__ == "__main__":   
     main()
