@@ -10,6 +10,7 @@ Steam User ID is configured in `config.py`. The auto-detected path can be overri
 ```bash
 python3.7 odhg.py [-b, --bracket] <1-8> (Herald-Pro) (default: 7)
                   [-p, --path] <absolute path of Dota 2 userdata cfg directory> (default: auto-detect)
+                  [-s, --sort] <asc/desc> (default: desc)
 ```
 
 ### Examples

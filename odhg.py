@@ -38,9 +38,9 @@ def get_hero_stats() -> list:
     return heroes
 
 
-def sort_heroes_by_winrate(heroes: list, bracket: str) -> list:
+def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) -> list:
     """Sorts list of heroes by winrate in a specific skill bracket."""
-    heroes.sort(key=lambda h: h[f"{bracket}_win"] / h[f"{bracket}_pick"], reverse=True)
+    heroes.sort(key=lambda h: h[f"{bracket}_win"] / h[f"{bracket}_pick"], reverse=descending)
     return heroes
     
 
@@ -105,15 +105,16 @@ def update_config(grid: dict, config_name: str, path: Path) -> None:
 @click.command()
 @click.option("--bracket", "-b")
 @click.option("--path", "-p", default=None)
-def main(bracket: str, path: str) -> None:
+@click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
+def main(bracket: str, path: str, sort: str) -> None:
+    # Parse bracket argument(s)
     if not bracket:
         bracket = [DEFAULT_BRACKET] # '' -> [7]
     elif bracket == str(Brackets.ALL.value):
         bracket = [b.value for b in Brackets if b.value != b.ALL.value] # '9' -> [1, 2, 3, .., 8]
     else:
         bracket = [int(c) for c in bracket if c.isdigit()] # '178' -> [1, 7, 8]
-    
-    # Parse bracket argument(s)
+
     for b in bracket:
         try:
             Brackets(b)
@@ -129,6 +130,8 @@ def main(bracket: str, path: str) -> None:
     if not cfg_path.exists():
         raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
 
+    descending = sort == "desc"
+
     # Get hero W/L stats from API
     data = get_hero_stats()
     
@@ -136,7 +139,7 @@ def main(bracket: str, path: str) -> None:
         config_name = f"{Config.CONFIG_NAME} ({Brackets(bracket).name.capitalize()})"
         
         # Sort heroes by winrate in the specified skill bracket
-        heroes = sort_heroes_by_winrate(data, bracket)
+        heroes = sort_heroes_by_winrate(data, bracket, descending)
         
         # Generate hero grid
         grid = create_hero_grid(heroes)
