@@ -1,6 +1,7 @@
 import sys
 import json
 import random
+import copy
 from enum import Enum
 from pathlib import Path
 
@@ -26,6 +27,7 @@ class Brackets(Enum):
     ANCIENT = 6
     DIVINE = 7
     PRO = 8
+    ALL = 9
 
 
 DEFAULT_BRACKET = Brackets.DIVINE.value
@@ -49,7 +51,7 @@ def sort_heroes_by_winrate(heroes: list, bracket: str) -> list:
     
 
 def create_hero_grid(heroes: list) -> dict:
-    c = CONFIG.copy()
+    c = copy.deepcopy(CONFIG)
     for hero in heroes:
         idx = CATEGORY_IDX.get(hero["primary_attr"])
         c["categories"][idx]["hero_ids"].append(hero["id"])
@@ -105,19 +107,20 @@ def update_hero_grid(data: dict, config_name: str, path: Path) -> None:
 @click.option("--bracket", "-b")
 @click.option("--path", "-p", default=None)
 def main(bracket: str, path: str) -> None:
-    bracket = [int(c) for c in bracket if c.isdigit()]
-    
     if not bracket:
-        bracket = [DEFAULT_BRACKET]
+        bracket = [DEFAULT_BRACKET] # '' -> [7]
+    elif bracket == str(Brackets.ALL.value):
+        bracket = [b.value for b in Brackets if b.value != b.ALL.value] # '9' -> [1, 2, 3, .., 8]
+    else:
+        bracket = [int(c) for c in bracket if c.isdigit()] # '178' -> [1, 7, 8]
     
-    brackets = []
+    # Parse bracket argument(s)
     for b in bracket:
         try:
-            b = Brackets(b)
+            Brackets(b)
         except ValueError:
             raise ValueError(f"Bracket '{b}' could not be identified.")   
-        else:
-            brackets.append(b.value)
+    brackets = bracket
 
     # Find Steam userdata directory
     if not path:
@@ -131,7 +134,7 @@ def main(bracket: str, path: str) -> None:
     data = get_hero_stats()
     
     for bracket in brackets:
-        config_name = f"{Config.CONFIG_NAME} ({Brackets(b).name.capitalize()})"
+        config_name = f"{Config.CONFIG_NAME} ({Brackets(bracket).name.capitalize()})"
         
         # Sort heroes by winrate in the specified skill bracket
         heroes = sort_heroes_by_winrate(data, bracket)
