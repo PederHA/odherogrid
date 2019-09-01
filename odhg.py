@@ -1,15 +1,16 @@
-import sys
+import copy
 import json
 import random
-import copy
+import sys
 from enum import Enum
 from pathlib import Path
+from typing import Optional, List
 
-import requests
 import click
+import requests
 
 from config import Config
-from resources import DOTA_GRID, CONFIG_BASE, CONFIG
+from resources import CONFIG, CONFIG_BASE, DOTA_GRID
 
 
 class Brackets(Enum):
@@ -57,7 +58,7 @@ def create_hero_grid(heroes: list) -> dict:
     return c
 
 
-def get_cfg_path() -> Path:  
+def _get_cfg_path() -> Path:  
     if sys.platform == "win32":
         p = Path("C:/Program Files (x86)")
     elif sys.platform == "darwin":
@@ -76,6 +77,33 @@ def get_cfg_path() -> Path:
         p = p / str(Config.USER_ID)
 
     return p / "570/remote/cfg"
+
+
+def get_cfg_path(path: Optional[str]) -> Path:
+    if not path:
+        cfg_path = _get_cfg_path()
+    else:
+        cfg_path = Path(path)
+    if not cfg_path.exists():
+        raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
+    return cfg_path
+
+def get_bracket(bracket: Optional[str]) -> List[int]:
+    # Parse bracket argument(s)
+    if not bracket:
+        brackets = [DEFAULT_BRACKET] # '' -> [7]
+    elif bracket == str(Brackets.ALL.value):
+        brackets = [b.value for b in Brackets if b.value != b.ALL.value] # '9' -> [1, 2, 3, .., 8]
+    else:
+        brackets = [int(c) for c in bracket if c.isdigit()] # '178' -> [1, 7, 8]
+
+    for b in brackets:
+        try:
+            Brackets(b)
+        except ValueError:
+            raise ValueError(f"Bracket '{b}' could not be identified.")
+
+    return brackets
 
 
 def update_config(grid: dict, config_name: str, path: Path) -> None:
@@ -107,30 +135,10 @@ def update_config(grid: dict, config_name: str, path: Path) -> None:
 @click.option("--path", "-p", default=None)
 @click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
 def main(bracket: str, path: str, sort: str) -> None:
-    # Parse bracket argument(s)
-    if not bracket:
-        bracket = [DEFAULT_BRACKET] # '' -> [7]
-    elif bracket == str(Brackets.ALL.value):
-        bracket = [b.value for b in Brackets if b.value != b.ALL.value] # '9' -> [1, 2, 3, .., 8]
-    else:
-        bracket = [int(c) for c in bracket if c.isdigit()] # '178' -> [1, 7, 8]
-
-    for b in bracket:
-        try:
-            Brackets(b)
-        except ValueError:
-            raise ValueError(f"Bracket '{b}' could not be identified.")   
-    brackets = bracket
-
-    # Find Steam userdata directory
-    if not path:
-        cfg_path = get_cfg_path()
-    else:
-        cfg_path = Path(path)
-    if not cfg_path.exists():
-        raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
-
-    descending = sort == "desc"
+    # Parse arguments
+    brackets = get_bracket(bracket)
+    cfg_path = get_cfg_path(path) # Find Steam userdata directory
+    sort_desc = sort == "desc" # Ascending/descending
 
     # Get hero W/L stats from API
     data = get_hero_stats()
@@ -139,7 +147,7 @@ def main(bracket: str, path: str, sort: str) -> None:
         config_name = f"{Config.CONFIG_NAME} ({Brackets(bracket).name.capitalize()})"
         
         # Sort heroes by winrate in the specified skill bracket
-        heroes = sort_heroes_by_winrate(data, bracket, descending)
+        heroes = sort_heroes_by_winrate(data, bracket, sort_desc)
         
         # Generate hero grid
         grid = create_hero_grid(heroes)
