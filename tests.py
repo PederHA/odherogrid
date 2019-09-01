@@ -1,7 +1,8 @@
 import pytest
 
-from odhg import Brackets, get_hero_stats, sort_heroes_by_winrate
+from odhg import Brackets, get_hero_stats, sort_heroes_by_winrate, get_brackets, get_cfg_path
 
+PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
 stats = None
 
 def _get_stats():
@@ -37,3 +38,22 @@ def test_opendota_api_type():
 def test_opendota_api_contents():
     heroes = _get_stats()
     assert all(isinstance(hero, dict) for hero in heroes)
+
+
+def test_get_brackets():
+    brackets = [b for b in Brackets if b != Brackets.ALL]
+    for b in brackets:
+        assert get_brackets(str(b.value)) == [b.value]
+
+
+def test_get_cfg_path_nopath():
+    assert get_cfg_path(None).exists()
+
+
+def test_get_cfg_path_withpath():
+    assert get_cfg_path(PATH).exists()
+
+
+def test_get_cfg_path_invalid_path():
+    with pytest.raises(ValueError):
+        assert get_cfg_path("notapath")
