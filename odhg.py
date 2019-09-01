@@ -88,7 +88,8 @@ def get_cfg_path(path: Optional[str]) -> Path:
         raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
     return cfg_path
 
-def get_bracket(bracket: Optional[str]) -> List[int]:
+
+def get_brackets(bracket: Optional[str]) -> List[int]:
     # Parse bracket argument(s)
     if not bracket:
         brackets = [DEFAULT_BRACKET] # '' -> [7]
@@ -136,7 +137,7 @@ def update_config(grid: dict, config_name: str, path: Path) -> None:
 @click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
 def main(bracket: str, path: str, sort: str) -> None:
     # Parse arguments
-    brackets = get_bracket(bracket)
+    brackets = get_brackets(bracket)
     cfg_path = get_cfg_path(path) # Find Steam userdata directory
     sort_desc = sort == "desc" # Ascending/descending
 
