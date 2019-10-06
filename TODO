@@ -1,0 +1,16 @@
+Tests:
+Write Tests
+    Test winrate sorting
+    Test API
+
+Sorting:
+    Bracket sorting order -> desc/asc
+    Fix sorting order if a grid is deleted, then re-added.
+    Add Mega-grid. Single category, main stat-agnostic.
+    Add sort-by feature:
+        * Main stat (default)
+        * Roles
+        * Melee/Ranged
+        
+Config:
+    YAML
