@@ -9,8 +9,10 @@ from typing import Optional, List
 import click
 import requests
 
+from cfg import get_cfg_path, update_config
 from config import Config
-from resources import CONFIG, CONFIG_BASE, DOTA_GRID
+from postprocess import create_hero_grid
+from resources import CONFIG, CONFIG_BASE, CATEGORY
 
 
 class Brackets(Enum):
@@ -24,6 +26,13 @@ class Brackets(Enum):
     PRO = 8
     ALL = 9
 
+
+class Grouping(Enum):
+    ALL = 0
+    MAINSTAT = 1
+    ATTACK = 2
+    ROLE = 3
+    
 
 DEFAULT_BRACKET = Brackets.DIVINE.value
 
@@ -43,50 +52,6 @@ def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) ->
     """Sorts list of heroes by winrate in a specific skill bracket."""
     heroes.sort(key=lambda h: h[f"{bracket}_win"] / h[f"{bracket}_pick"], reverse=descending)
     return heroes
-    
-
-def create_hero_grid(heroes: list) -> dict:
-    CATEGORY_IDX = {
-        "str": 0,
-        "agi": 1,
-        "int": 2
-    }
-    c = copy.deepcopy(CONFIG)
-    for hero in heroes:
-        idx = CATEGORY_IDX.get(hero["primary_attr"])
-        c["categories"][idx]["hero_ids"].append(hero["id"])
-    return c
-
-
-def _get_cfg_path() -> Path:  
-    if sys.platform == "win32":
-        p = Path("C:/Program Files (x86)")
-    elif sys.platform == "darwin":
-        p = Path.home() / "Library/Application Support"
-    elif sys.platform == "linux":
-        p = Path.home()
-    else:
-        raise NotImplementedError("Hero grid directory auto detection is not supported for your OS!")  
-    
-    p = p / "Steam/userdata"
-
-    # Choose random subdirectory if no User ID is specified.
-    if not Config.USER_ID:
-        p = random.choice([d for d in p.iterdir() if d.is_dir()])
-    else:
-        p = p / str(Config.USER_ID)
-
-    return p / "570/remote/cfg"
-
-
-def get_cfg_path(path: Optional[str]) -> Path:
-    if not path:
-        cfg_path = _get_cfg_path()
-    else:
-        cfg_path = Path(path)
-    if not cfg_path.exists():
-        raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
-    return cfg_path
 
 
 def get_brackets(bracket: Optional[str]) -> List[int]:
@@ -107,30 +72,6 @@ def get_brackets(bracket: Optional[str]) -> List[int]:
     return brackets
 
 
-def update_config(grid: dict, config_name: str, path: Path) -> None:
-    """Updates hero grid config file in Steam userdata directory."""
-    p = path/"hero_grid_config.json"
-    
-    # Append to existing config if a config exists
-    if p.exists():
-        configs = json.load(p.open())
-        for idx, config in enumerate(configs["configs"]):
-            # Update existing hero grid if one exists
-            if config["config_name"] == config_name:
-                configs["configs"][idx] = grid
-                break
-        else:
-            configs["configs"].append(grid)
-        c = configs
-    else:
-        c = copy.deepcopy(CONFIG_BASE)
-        c["configs"].append(grid)
-    
-    with open(path/"hero_grid_config.json", "w") as f:
-        json_data = json.dumps(c, indent="\t")
-        f.write(json_data)
-
-
 @click.command()
 @click.option("--bracket", "-b")
 @click.option("--path", "-p", default=None)
@@ -144,6 +85,7 @@ def main(bracket: str, path: str, sort: str) -> None:
     # Get hero W/L stats from API
     data = get_hero_stats()
     
+    # Create grid for each specified bracket
     for bracket in brackets:
         config_name = f"{Config.CONFIG_NAME} ({Brackets(bracket).name.capitalize()})"
         
