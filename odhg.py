@@ -37,7 +37,7 @@ def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) ->
     return heroes
 
 
-def get_brackets(bracket: Optional[str]) -> List[int]:
+def parse_brackets(bracket: Optional[str]) -> List[int]:
     # Parse bracket argument(s)
     if not bracket:
         brackets = [DEFAULT_BRACKET] # '' -> [7]
@@ -55,7 +55,7 @@ def get_brackets(bracket: Optional[str]) -> List[int]:
     return brackets
 
 
-def get_grouping(grouping: Optional[str]) -> int:
+def parse_grouping(grouping: Optional[str]) -> int:
     if not grouping:
         return DEFAULT_GROUPING
     
@@ -70,13 +70,15 @@ def get_grouping(grouping: Optional[str]) -> int:
 
 @click.command()
 @click.option("--bracket", "-b")
+@click.option("--grouping", "-g", default=DEFAULT_GROUPING)
 @click.option("--path", "-p", default=None)
 @click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
-def main(bracket: str, path: str, sort: str) -> None:
+def main(bracket: str, grouping: int, path: str, sort: str) -> None:
     # Parse arguments
-    brackets = get_brackets(bracket)
-    cfg_path = get_cfg_path(path) # Find Steam userdata directory
-    sort_desc = sort == "desc" # Ascending/descending
+    brackets = parse_brackets(bracket)  # Which brackets to get stats for
+    grouping = parse_grouping(grouping) # Group heroes
+    cfg_path = get_cfg_path(path)       # Find Steam userdata directory
+    sort_desc = sort == "desc"          # Ascending/descending sorting
 
     # Get hero W/L stats from API
     data = get_hero_stats()
@@ -89,7 +91,7 @@ def main(bracket: str, path: str, sort: str) -> None:
         heroes = sort_heroes_by_winrate(data, bracket, sort_desc)
         
         # Generate hero grid
-        grid = create_hero_grid(heroes)
+        grid = create_hero_grid(heroes, grouping)
         grid["config_name"] = config_name
         
         # Save generated hero grid
