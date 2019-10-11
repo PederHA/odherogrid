@@ -1,15 +1,23 @@
-def create_hero_grid(heroes: list, grouping: str) -> dict:
-    GROUPING = {
-        "mainstat": group_by_main_stat,
-        "all": group_by_all,
-        "attack": group_by_melee_ranged,
-        "role": group_by_support_carry
+import copy
+
+from enums import Grouping
+from resources import CONFIG, CATEGORY
+
+
+def create_hero_grid(heroes: list, grouping: int) -> dict:
+    grouping_funcs = {
+        Grouping.MAINSTAT.value: group_by_main_stat,
+        Grouping.ALL.value: group_by_all,
+        Grouping.ATTACK.value: group_by_melee_ranged,
+        Grouping.ROLE.value: group_by_support_carry
     }
     
-    func = GROUPING.get(grouping)
-    if not func:
+    grp_func = grouping_funcs.get(grouping)
+    
+    if not grp_func:
         raise ValueError(f"No such grouping: '{grouping}'")
-    func(heroes)
+    
+    config = grp_func(heroes)
 
 
 def group_by_main_stat(heroes: list) -> dict:

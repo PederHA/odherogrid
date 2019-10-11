@@ -11,30 +11,13 @@ import requests
 
 from cfg import get_cfg_path, update_config
 from config import Config
+from enums import Brackets, Grouping
 from postprocess import create_hero_grid
 from resources import CONFIG, CONFIG_BASE, CATEGORY
 
 
-class Brackets(Enum):
-    HERALD = 1
-    GUARDIAN = 2
-    CRUSADER = 3
-    ARCHON = 4
-    LEGEND = 5
-    ANCIENT = 6
-    DIVINE = 7
-    PRO = 8
-    ALL = 9
-
-
-class Grouping(Enum):
-    ALL = 0
-    MAINSTAT = 1
-    ATTACK = 2
-    ROLE = 3
-    
-
 DEFAULT_BRACKET = Brackets.DIVINE.value
+DEFAULT_GROUPING = Grouping.MAINSTAT.value
 
 
 def get_hero_stats() -> list:
@@ -70,6 +53,19 @@ def get_brackets(bracket: Optional[str]) -> List[int]:
             raise ValueError(f"Bracket '{b}' could not be identified.")
 
     return brackets
+
+
+def get_grouping(grouping: Optional[str]) -> int:
+    if not grouping:
+        return DEFAULT_GROUPING
+    
+    try:
+        grouping = int(grouping)
+        Grouping(grouping)
+    except ValueError: # catches ValueError from int() and Grouping()
+        raise ValueError(f"Grouping '{grouping}' could not be identified.")
+    else:
+        return grouping
 
 
 @click.command()
