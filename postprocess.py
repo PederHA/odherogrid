@@ -9,7 +9,7 @@ def create_hero_grid(heroes: list, grouping: int) -> dict:
         Grouping.MAINSTAT.value: group_by_main_stat,
         Grouping.ALL.value: group_by_all,
         Grouping.ATTACK.value: group_by_melee_ranged,
-        Grouping.ROLE.value: group_by_support_carry
+        Grouping.ROLE.value: group_by_role
     }
     
     grp_func = grouping_funcs.get(grouping)
@@ -18,6 +18,8 @@ def create_hero_grid(heroes: list, grouping: int) -> dict:
         raise ValueError(f"No such grouping: '{grouping}'")
     
     config = grp_func(heroes)
+
+    return config
 
 
 def group_by_main_stat(heroes: list) -> dict:
@@ -60,16 +62,22 @@ def group_by_melee_ranged(heroes: list) -> dict:
     return config
 
 
-def group_by_support_carry(heroes: list) -> dict: # NOTE: Add nuker?
-    """Get hero grid, grouped by support/carry."""
+def group_by_role(heroes: list) -> dict:
+    """Get hero grid, grouped by carry/support/flex."""
     support = _get_new_category("Support")
     carry = _get_new_category("Carry")
+    flex = _get_new_category("Flexible")
 
     config = _get_new_config()
-    config["categories"] = [support, carry] # Override predefined categories
+    config["categories"] = [carry, support, flex] # Override predefined categories
 
     for hero in heroes:
-        idx = 1 if "Carry" in hero["roles"] else 0
+        if "Carry" in hero["roles"]:
+            idx = 0 
+        elif "Support" in hero["roles"]:
+            idx = 1
+        else:
+            idx = 2
         config["categories"][idx]["hero_ids"].append(hero["id"])
     return config
 
