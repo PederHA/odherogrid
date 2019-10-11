@@ -1,16 +1,9 @@
 Tests:
-Write Tests
-    Test winrate sorting
-    Test API
+    Write enum tests
 
 Sorting:
     Bracket sorting order -> desc/asc
-    Fix sorting order if a grid is deleted, then re-added.
-    Add Mega-grid. Single category, main stat-agnostic.
-    Add sort-by feature:
-        * Main stat (default)
-        * Roles
-        * Melee/Ranged
+    Fix sorting order if a grid is deleted, then re-added. (?)
         
 Config:
     YAML
