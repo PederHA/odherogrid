@@ -1,3 +1,14 @@
+import copy
+import json
+import random
+import sys
+from pathlib import Path
+from typing import Optional
+
+from config import Config
+from resources import CONFIG_BASE
+
+
 def _get_default_cfg_path() -> Path:  
     if sys.platform == "win32":
         p = Path("C:/Program Files (x86)")
@@ -49,9 +60,10 @@ def update_config(grid: dict, config_name: str, path: Path) -> None:
     else:
         conf = copy.deepcopy(CONFIG_BASE)
         conf["configs"].append(grid)
-    _save_config(conf)
+    _save_config(path, conf)
 
-def _save_config(config: dict) -> None:
+
+def _save_config(path: Path, config: dict) -> None:
     with open(path/"hero_grid_config.json", "w") as f:
         json_data = json.dumps(config, indent="\t")
         f.write(json_data)
