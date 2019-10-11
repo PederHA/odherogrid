@@ -20,7 +20,7 @@ DEFAULT_BRACKET = Brackets.DIVINE.value
 DEFAULT_GROUPING = Grouping.MAINSTAT.value
 
 
-def get_hero_stats() -> list:
+def fetch_hero_stats() -> list:
     """Retrieves hero win/loss statistics from OpenDotaAPI."""
     r = requests.get("https://api.opendota.com/api/heroStats")
     heroes = r.json()
@@ -80,8 +80,8 @@ def main(bracket: str, grouping: int, path: str, sort: str) -> None:
     cfg_path = get_cfg_path(path)       # Find Steam userdata directory
     sort_desc = sort == "desc"          # Ascending/descending sorting
 
-    # Get hero W/L stats from API
-    data = get_hero_stats()
+    # Fetch hero W/L stats from API
+    data = fetch_hero_stats()
     
     # Create grid for each specified bracket
     for bracket in brackets:
