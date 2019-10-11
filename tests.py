@@ -135,5 +135,5 @@ def test_group_by_all():
     assert len(conf["categories"]) == 1
 
     # Test that all heroes are in the same category
-    assert len(conf["categories"][0]["hero_ids"]) == 117
+    assert len(conf["categories"][0]["hero_ids"]) == N_HEROES
 
