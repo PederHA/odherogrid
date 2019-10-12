@@ -30,7 +30,7 @@ def _get_default_cfg_path() -> Path:
     return p / "570/remote/cfg"
 
 
-def get_cfg_path(path: Optional[str]) -> Path:
+def get_cfg_path(path: Optional[str]=None) -> Path:
     if not path:
         cfg_path = _get_default_cfg_path()
     else:
