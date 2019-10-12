@@ -26,6 +26,7 @@ def _get_hero_wl(hero: dict, bracket: Brackets) -> float:
 
 
 def test_sort_heroes_by_winrate():
+    """Tests `odhg.sort_heroes_by_winrate()`"""
     heroes = _get_stats()
     for bracket in [b for b in Brackets if b != Brackets.ALL]:
         heroes = sort_heroes_by_winrate(heroes, bracket=bracket.value)
@@ -40,16 +41,19 @@ def test_sort_heroes_by_winrate():
 
 
 def test_opendota_api_type():
+    """Tests type of data returned by `odhg.fetch_hero_stats()`"""
     heroes = _get_stats()
     assert isinstance(heroes, list)
 
 
 def test_opendota_api_contents():
+    """Tests type of each element in list returned by `odhg.fetch_hero_stats()`"""
     heroes = _get_stats()
     assert all(isinstance(hero, dict) for hero in heroes)
 
 
 def test_parse_brackets():
+    """Tests every Bracket value against `odhg.parse_brackets()`"""
     brackets = [b for b in Brackets if b != Brackets.ALL]
     for b in brackets:
         assert parse_brackets(str(b.value)) == [b.value]
@@ -57,14 +61,17 @@ def test_parse_brackets():
 
 # cfg.py
 def test_get_cfg_path_nopath():
-    assert get_cfg_path(None).exists()
+    """Tests `odhg.get_cfg_path()` with no argument."""
+    assert get_cfg_path().exists()
 
 
 def test_get_cfg_path_withpath():
+    """Tests `odhg.get_cfg_path()` with valid argument."""
     assert get_cfg_path(PATH).exists()
 
 
 def test_get_cfg_path_invalid_path():
+    """Tests `odhg.get_cfg_path()` with invalid argument."""
     with pytest.raises(ValueError):
         assert get_cfg_path("notapath")
 
@@ -75,6 +82,7 @@ def test_brackets():
 
 # postprocess.py
 def test_group_by_main_stat():
+    """Tests `postprocess.group_by_main_stat()`"""
     categories = {
         "Strength": "str",
         "Agility": "agi",
@@ -95,6 +103,7 @@ def test_group_by_main_stat():
 
 
 def test_group_by_melee_ranged():
+    """Tests `postprocess.group_by_melee_ranged()`"""
     stats = _get_stats(sort=True)
     conf = group_by_melee_ranged(stats)
     
@@ -110,6 +119,7 @@ def test_group_by_melee_ranged():
 
 
 def test_group_by_role():
+    """Tests `postprocess.group_by_role()`"""
     stats = _get_stats(sort=True)
     conf = group_by_role(stats)
     
@@ -128,6 +138,7 @@ def test_group_by_role():
 
 
 def test_group_by_all():
+    """Tests `postprocess.group_by_all()`"""
     stats = _get_stats(sort=True)
     conf = group_by_all(stats)
 
