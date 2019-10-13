@@ -12,7 +12,7 @@ import requests
 from cfg import get_cfg_path, update_config
 from config import Config
 from enums import Brackets, Grouping
-from postprocess import create_hero_grid
+from categorize import create_hero_grid
 from resources import CONFIG, CONFIG_BASE, CATEGORY
 
 

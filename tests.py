@@ -4,7 +4,7 @@ from cfg import get_cfg_path
 from enums import Brackets, Grouping
 from odhg import (DEFAULT_BRACKET, DEFAULT_GROUPING, fetch_hero_stats,
                   parse_brackets, parse_grouping, sort_heroes_by_winrate)
-from postprocess import group_by_all, group_by_main_stat, group_by_melee_ranged, group_by_role
+from categorize import group_by_all, group_by_main_stat, group_by_melee_ranged, group_by_role
 
 
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
@@ -80,9 +80,9 @@ def test_brackets():
     pass
 
 
-# postprocess.py
+# categorize.py
 def test_group_by_main_stat():
-    """Tests `postprocess.group_by_main_stat()`"""
+    """Tests `categorize.group_by_main_stat()`"""
     categories = {
         "Strength": "str",
         "Agility": "agi",
@@ -103,7 +103,7 @@ def test_group_by_main_stat():
 
 
 def test_group_by_melee_ranged():
-    """Tests `postprocess.group_by_melee_ranged()`"""
+    """Tests `categorize.group_by_melee_ranged()`"""
     stats = _get_stats(sort=True)
     conf = group_by_melee_ranged(stats)
     
@@ -119,7 +119,7 @@ def test_group_by_melee_ranged():
 
 
 def test_group_by_role():
-    """Tests `postprocess.group_by_role()`"""
+    """Tests `categorize.group_by_role()`"""
     stats = _get_stats(sort=True)
     conf = group_by_role(stats)
     
@@ -138,7 +138,7 @@ def test_group_by_role():
 
 
 def test_group_by_all():
-    """Tests `postprocess.group_by_all()`"""
+    """Tests `categorize.group_by_all()`"""
     stats = _get_stats(sort=True)
     conf = group_by_all(stats)
 
