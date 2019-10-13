@@ -4,20 +4,17 @@ import random
 import sys
 from enum import Enum
 from pathlib import Path
-from typing import Optional, List
+from typing import List, Optional
 
 import click
 import requests
 
+from categorize import create_hero_grid
 from cfg import get_cfg_path, update_config
 from config import Config
 from enums import Brackets, Grouping
-from categorize import create_hero_grid
-from resources import CONFIG, CONFIG_BASE, CATEGORY
-
-
-DEFAULT_BRACKET = Brackets.DIVINE.value
-DEFAULT_GROUPING = Grouping.MAINSTAT.value
+from parse import parse_arg_bracket, parse_arg_grouping
+from resources import CATEGORY, CONFIG, CONFIG_BASE
 
 
 def fetch_hero_stats() -> list:
@@ -37,48 +34,17 @@ def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) ->
     return heroes
 
 
-def parse_brackets(bracket: Optional[str]) -> List[int]:
-    # Parse bracket argument(s)
-    if not bracket:
-        brackets = [DEFAULT_BRACKET] # '' -> [7]
-    elif bracket == str(Brackets.ALL.value):
-        brackets = [b.value for b in Brackets if b.value != b.ALL.value] # '9' -> [1, 2, 3, .., 8]
-    else:
-        brackets = [int(c) for c in bracket if c.isdigit()] # '178' -> [1, 7, 8]
-
-    for b in brackets:
-        try:
-            Brackets(b)
-        except ValueError:
-            raise ValueError(f"Bracket '{b}' could not be identified.")
-
-    return brackets
-
-
-def parse_grouping(grouping: Optional[str]) -> int:
-    if not grouping:
-        return DEFAULT_GROUPING
-    
-    try:
-        grouping = int(grouping)
-        Grouping(grouping)
-    except ValueError: # catches ValueError from int() and Grouping()
-        raise ValueError(f"Grouping '{grouping}' could not be identified.")
-    else:
-        return grouping
-
-
 @click.command()
-@click.option("--bracket", "-b")
-@click.option("--grouping", "-g", default=DEFAULT_GROUPING)
+@click.option("--bracket", "-b", default=None)
+@click.option("--grouping", "-g", default=None)
 @click.option("--path", "-p", default=None)
 @click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
 def main(bracket: str, grouping: int, path: str, sort: str) -> None:
     # Parse arguments
-    brackets = parse_brackets(bracket)  # Which brackets to get stats for
-    grouping = parse_grouping(grouping) # Group heroes
-    cfg_path = get_cfg_path(path)       # Find Steam userdata directory
-    sort_desc = sort == "desc"          # Ascending/descending sorting
+    brackets = parse_arg_bracket(bracket)   # Which bracket(s) to get stats for
+    grouping = parse_arg_grouping(grouping) # How heroes are categorized in the grid
+    cfg_path = get_cfg_path(path)           # Get Steam userdata directory path
+    sort_desc = sort == "desc"              # Ascending/descending sorting
 
     # Fetch hero W/L stats from API
     data = fetch_hero_stats()

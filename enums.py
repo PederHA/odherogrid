@@ -13,7 +13,7 @@ class Brackets(Enum):
 
 
 class Grouping(Enum):
-    ALL = 0
+    NONE = 0
     MAINSTAT = 1
     ATTACK = 2
     ROLE = 3

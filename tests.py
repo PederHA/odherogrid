@@ -1,22 +1,24 @@
 import pytest
 
+from categorize import (group_by_all, group_by_main_stat,
+                        group_by_melee_ranged, group_by_role)
 from cfg import get_cfg_path
 from enums import Brackets, Grouping
-from odhg import (DEFAULT_BRACKET, DEFAULT_GROUPING, fetch_hero_stats,
-                  parse_brackets, parse_grouping, sort_heroes_by_winrate)
-from categorize import group_by_all, group_by_main_stat, group_by_melee_ranged, group_by_role
-
+from odhg import fetch_hero_stats, sort_heroes_by_winrate
+from parse import (DEFAULT_BRACKET, DEFAULT_GROUPING, parse_arg_bracket,
+                   parse_arg_grouping)
 
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
 stats = None
 N_HEROES = 117
+
 
 def _get_stats(sort: bool=False):
     global stats
     if stats is None:
         stats = fetch_hero_stats()
     if sort:
-        return sort_heroes_by_winrate(stats, bracket=DEFAULT_BRACKET)
+        return sort_heroes_by_winrate(stats, bracket=DEFAULT_BRACKET.value)
     return stats
 
 
@@ -52,12 +54,17 @@ def test_opendota_api_contents():
     assert all(isinstance(hero, dict) for hero in heroes)
 
 
-def test_parse_brackets():
+def test_parse_arg_brackets():
     """Tests every Bracket value against `odhg.parse_brackets()`"""
     brackets = [b for b in Brackets if b != Brackets.ALL]
     for b in brackets:
-        assert parse_brackets(str(b.value)) == [b.value]
+        assert parse_arg_bracket(str(b.value)) == [b.value]
 
+def test_parse_arg_grouping():
+    """Tests every Grouping value against `odhg.parse_brackets()`"""
+    for g in Grouping:
+        assert parse_arg_grouping(str(g.value)) == [g.value]
+        assert parse_arg_grouping(g.name.lower()) == [g.value]
 
 # cfg.py
 def test_get_cfg_path_nopath():
@@ -147,4 +154,3 @@ def test_group_by_all():
 
     # Test that all heroes are in the same category
     assert len(conf["categories"][0]["hero_ids"]) == N_HEROES
-
