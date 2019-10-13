@@ -1,6 +1,7 @@
 from enum import Enum
 
 class Brackets(Enum):
+    ALL = 0
     HERALD = 1
     GUARDIAN = 2
     CRUSADER = 3
@@ -9,7 +10,6 @@ class Brackets(Enum):
     ANCIENT = 6
     DIVINE = 7
     PRO = 8
-    ALL = 9
 
 
 class Grouping(Enum):
