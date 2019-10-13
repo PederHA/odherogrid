@@ -23,7 +23,7 @@ def create_hero_grid(heroes: list, grouping: int) -> dict:
 
 
 def group_by_main_stat(heroes: list) -> dict:
-    """Get hero grid, grouped by main stat."""
+    """Get hero grid, categorized by main stat."""
     CATEGORY_IDX = {
         "str": 0,
         "agi": 1,
@@ -37,7 +37,7 @@ def group_by_main_stat(heroes: list) -> dict:
 
 
 def group_by_all(heroes: list) -> dict:
-    """Get hero grid, all heroes grouped together."""
+    """Get hero grid, all heroes together in a single category."""
     category = _get_new_category("Heroes") # TODO: Rename? xd 
 
     config = _get_new_config()
@@ -49,7 +49,7 @@ def group_by_all(heroes: list) -> dict:
 
 
 def group_by_melee_ranged(heroes: list) -> dict:
-    """Get hero grid, grouped by main melee/ranged."""
+    """Get hero grid, categorized by main melee/ranged."""
     melee = _get_new_category("Melee")
     ranged = _get_new_category("Ranged")
 
@@ -63,7 +63,7 @@ def group_by_melee_ranged(heroes: list) -> dict:
 
 
 def group_by_role(heroes: list) -> dict:
-    """Get hero grid, grouped by carry/support/flex."""
+    """Get hero grid, categorized by carry/support/flex."""
     support = _get_new_category("Support")
     carry = _get_new_category("Carry")
     flex = _get_new_category("Flexible")
