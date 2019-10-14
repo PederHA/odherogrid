@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from config import Config
 from enums import Brackets, Grouping
 
 
@@ -23,13 +24,12 @@ _grouping = {
 }
 
 
-DEFAULT_BRACKET = Brackets.DIVINE
-DEFAULT_GROUPING = Grouping.MAINSTAT
-
-
 def parse_arg_bracket(bracket: Optional[str]) -> List[int]:
-    """Parses bracket (`-b` `--bracket`) argument."""
-    default = DEFAULT_BRACKET
+    """Parses bracket (`-b` `--bracket`) argument.
+    
+    Returns list of integers.
+    """
+    default = Config.DEFAULT_BRACKET
     r = []
     
     if not bracket:
@@ -51,8 +51,11 @@ def parse_arg_bracket(bracket: Optional[str]) -> List[int]:
 
 # Similar, but not identical, in structure to parse_brackets()
 def parse_arg_grouping(grouping: Optional[str]) -> List[int]:
-    """Parses grouping (`-g` `--group`) argument."""
-    default = DEFAULT_GROUPING
+    """Parses grouping (`-g` `--group`) argument.
+    
+    Returns list of integers.
+    """
+    default = Config.DEFAULT_GROUPING
     r = []
     
     if not grouping:

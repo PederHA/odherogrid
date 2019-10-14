@@ -3,10 +3,10 @@ import pytest
 from categorize import (group_by_all, group_by_main_stat,
                         group_by_melee_ranged, group_by_role)
 from cfg import get_cfg_path
+from config import Config
 from enums import Brackets, Grouping
 from odhg import fetch_hero_stats, sort_heroes_by_winrate
-from parse import (DEFAULT_BRACKET, DEFAULT_GROUPING, parse_arg_bracket,
-                   parse_arg_grouping)
+from parse import parse_arg_bracket, parse_arg_grouping
 
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
 stats = None
@@ -18,7 +18,7 @@ def _get_stats(sort: bool=False):
     if stats is None:
         stats = fetch_hero_stats()
     if sort:
-        return sort_heroes_by_winrate(stats, bracket=DEFAULT_BRACKET.value)
+        return sort_heroes_by_winrate(stats, bracket=Config.DEFAULT_BRACKET.value)
     return stats
 
 
