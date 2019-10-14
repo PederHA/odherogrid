@@ -82,9 +82,20 @@ def group_by_role(heroes: list) -> dict:
     return config
 
 
-def _get_new_category(name: str) -> dict:
+def _get_new_category(name: str, x_pos: float=0.0, y_pos: float=0.0, width: float=0.0, height: float=0.0) -> dict:
     category = copy.deepcopy(CATEGORY)
+    
     category["category_name"] = name
+    
+    if x_pos:
+        category["x_position"] = x_pos
+    if y_pos:
+        category["y_position"] = y_pos
+    if width:
+        category["width"] = width
+    if height:
+        category["height"] = height
+    
     return category
 
 
