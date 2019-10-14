@@ -35,7 +35,6 @@ DOTA_GRID = {
     ],
 }
 
-# unused
 CATEGORY = {
     "category_name": "name",
     "x_position": 0.000000,
