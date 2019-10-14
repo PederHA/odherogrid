@@ -7,7 +7,7 @@ from resources import CONFIG, CATEGORY
 def create_hero_grid(heroes: list, grouping: int) -> dict:
     grouping_funcs = {
         Grouping.MAINSTAT.value: group_by_main_stat,
-        Grouping.ALL.value: group_by_all,
+        Grouping.NONE.value: group_by_all,
         Grouping.ATTACK.value: group_by_melee_ranged,
         Grouping.ROLE.value: group_by_role
     }
