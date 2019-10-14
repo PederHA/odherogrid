@@ -50,24 +50,24 @@ def parse_arg_bracket(bracket: Optional[str]) -> List[int]:
     return r    
 
 # Similar, but not identical, in structure to parse_brackets()
-def parse_arg_grouping(grouping: Optional[str]) -> List[int]:
+def parse_arg_grouping(grouping: Optional[str]) -> int:
     """Parses grouping (`-g` `--group`) argument.
     
-    Returns list of integers.
+    Returns integer
     """
     default = Config.DEFAULT_GROUPING
     r = []
     
     if not grouping:
-        r.append(default.value)
+        r = default.value
     else:
         for k, v in _grouping.items():
             if grouping in k or grouping == str(v.value):
-                r.append(v.value)
+                r = v.value
                 break
-        
+                
     if not r:
         print(f"ERROR: Unable to identify grouping argument. Using default: {default.name}.")
-        r.append(default.value)
+        r = default.value
 
     return r 
