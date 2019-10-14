@@ -38,7 +38,7 @@ def group_by_main_stat(heroes: list) -> dict:
 
 def group_by_all(heroes: list) -> dict:
     """Get hero grid, all heroes together in a single category."""
-    category = _get_new_category("Heroes") # TODO: Rename? xd 
+    category = _get_new_category("Heroes", height=1180.0) # TODO: Rename? xd 
 
     config = _get_new_config()
     config["categories"] = [category] # Override predefined categories
@@ -50,8 +50,8 @@ def group_by_all(heroes: list) -> dict:
 
 def group_by_melee_ranged(heroes: list) -> dict:
     """Get hero grid, categorized by main melee/ranged."""
-    melee = _get_new_category("Melee")
-    ranged = _get_new_category("Ranged")
+    melee = _get_new_category("Melee", height=280.0)
+    ranged = _get_new_category("Ranged", y_pos=300.0, height=280.0)
 
     config = _get_new_config()
     config["categories"] = [melee, ranged] # Override predefined categories
@@ -64,9 +64,9 @@ def group_by_melee_ranged(heroes: list) -> dict:
 
 def group_by_role(heroes: list) -> dict:
     """Get hero grid, categorized by carry/support/flex."""
-    support = _get_new_category("Support")
     carry = _get_new_category("Carry")
-    flex = _get_new_category("Flexible")
+    support = _get_new_category("Support", y_pos=200.0)
+    flex = _get_new_category("Flexible", y_pos=400.0)
 
     config = _get_new_config()
     config["categories"] = [carry, support, flex] # Override predefined categories
