@@ -44,26 +44,28 @@ def update_config(grid: dict, config_name: str, path: Path) -> None:
     """Updates hero grid config file in Steam userdata directory."""
     p = path/"hero_grid_config.json"
     
-    # NOTE: This whole block is due a refactor
-    
-    # Append to existing config if a config exists
     if p.exists():
-        configs = json.load(p.open())
-        for idx, c in enumerate(configs["configs"]): # Enumerate to get index
-            # Update existing hero grid if one exists
-            if c["config_name"] == config_name:
-                configs["configs"][idx] = grid
-                break
-        else:
-            configs["configs"].append(grid)
-        conf = configs
+        config = _load_config(p) # Load contents of config file if it exists
     else:
-        conf = copy.deepcopy(CONFIG_BASE)
-        conf["configs"].append(grid)
-    _save_config(path, conf)
+        config = copy.deepcopy(CONFIG_BASE) # Otherwise make a new config
+    
+    # Update existing hero grid if one exists
+    for idx, c in enumerate(config["configs"]):
+        if c["config_name"] == config_name:
+            config["configs"][idx] = grid
+            break
+    else:
+        config["configs"].append(grid)
+
+    _save_config(p, config)
+
+
+def _load_config(path: Path) -> dict:
+    with open(path, "r") as f:
+        return json.load(f)
 
 
 def _save_config(path: Path, config: dict) -> None:
-    with open(path/"hero_grid_config.json", "w") as f:
+    with open(path, "w") as f:
         json_data = json.dumps(config, indent="\t")
         f.write(json_data)
