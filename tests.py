@@ -63,8 +63,8 @@ def test_parse_arg_brackets():
 def test_parse_arg_grouping():
     """Tests every Grouping value against `odhg.parse_brackets()`"""
     for g in Grouping:
-        assert parse_arg_grouping(str(g.value)) == [g.value]
-        assert parse_arg_grouping(g.name.lower()) == [g.value]
+        assert parse_arg_grouping(str(g.value)) == g.value
+        assert parse_arg_grouping(g.name.lower()) == g.value
 
 # cfg.py
 def test_get_cfg_path_nopath():
@@ -154,3 +154,5 @@ def test_group_by_all():
 
     # Test that all heroes are in the same category
     assert len(conf["categories"][0]["hero_ids"]) == N_HEROES
+
+test_parse_arg_grouping()

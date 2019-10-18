@@ -56,7 +56,7 @@ def parse_arg_grouping(grouping: Optional[str]) -> int:
     Returns integer
     """
     default = Config.DEFAULT_GROUPING
-    r = []
+    r = None
     
     if not grouping:
         r = default.value
@@ -66,7 +66,7 @@ def parse_arg_grouping(grouping: Optional[str]) -> int:
                 r = v.value
                 break
                 
-    if not r:
+    if r is None:
         print(f"ERROR: Unable to identify grouping argument. Using default: {default.name}.")
         r = default.value
 
