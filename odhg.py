@@ -11,7 +11,7 @@ import requests
 
 from categorize import create_hero_grid
 from cfg import get_cfg_path, update_config
-from config import Config
+from config import load_config, run_first_time_setup
 from enums import Brackets, Grouping
 from parse import parse_arg_bracket, parse_arg_grouping
 from resources import CATEGORY, CONFIG, CONFIG_BASE
@@ -34,34 +34,47 @@ def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) ->
     return heroes
 
 
+def get_config(**kwargs) -> None:
+    """fix name"""
+    config = load_config()
+    for option, value in kwargs.items():
+        if value is not None:
+            config[option] = value
+    return config
+
+
+def parse_config(config: dict) -> dict:
+    #config["brackets"] = parse_arg_bracket(config["bracket"])   # Which bracket(s) to get stats for
+    config["grouping"] = parse_arg_grouping(config["grouping"]) # How heroes are categorized in the grid
+    config["path"] = get_cfg_path(config["path"])           # Get Steam userdata directory path
+    return config
+
+
 @click.command()
-@click.option("--bracket", "-b", default=None)
+@click.option("--brackets", "-b", default=None)
 @click.option("--grouping", "-g", default=None)
 @click.option("--path", "-p", default=None)
 @click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
-def main(bracket: str, grouping: int, path: str, sort: str) -> None:
-    # Parse arguments
-    brackets = parse_arg_bracket(bracket)   # Which bracket(s) to get stats for
-    grouping = parse_arg_grouping(grouping) # How heroes are categorized in the grid
-    cfg_path = get_cfg_path(path)           # Get Steam userdata directory path
-    sort_desc = sort == "desc"              # Ascending/descending sorting
+@click.option("--setup", "-S", is_flag=True)
+def main(brackets: str, grouping: int, path: str, sort: str, setup: bool) -> None:
+    if setup:
+        run_first_time_setup()
+    
+    config = get_config(brackets=brackets, grouping=grouping, path=path)
+    config = parse_config(config)
 
     # Fetch hero W/L stats from API
     data = fetch_hero_stats()
     
     # Create grid for each specified bracket
-    for bracket in brackets:
-        config_name = f"{Config.CONFIG_NAME} ({Brackets(bracket).name.capitalize()})"
-        
-        # Sort heroes by winrate in the specified skill bracket
-        heroes = sort_heroes_by_winrate(data, bracket, sort_desc)
-        
-        # Generate hero grid
-        grid = create_hero_grid(heroes, grouping)
-        grid["config_name"] = config_name
+    for bracket in config["brackets"]:
+        config_name = f"{config['config_name']} ({Brackets(bracket).name.capitalize()})"
+        heroes = sort_heroes_by_winrate(data, bracket, config["sort"])    
+        grid = create_hero_grid(heroes, config["grouping"])
+        grid["config_name"] = config["config_name"]
         
         # Save generated hero grid
-        update_config(grid, config_name, cfg_path)
+        update_config(grid, config_name, config["path"])
     
 if __name__ == "__main__":   
     main()

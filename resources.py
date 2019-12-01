@@ -1,10 +1,10 @@
-from config import Config
+DEFAULT_NAME = "OpenDota Hero Winrates"
 
 DOTA_GRID = {
     "version": 3,
     "configs": [
         {
-            "config_name": Config.CONFIG_NAME,
+            "config_name": DEFAULT_NAME,
             "categories": [
                 {
                     "category_name": "Strength",
@@ -45,7 +45,7 @@ CATEGORY = {
 }
 
 CONFIG = {
-    "config_name": Config.CONFIG_NAME,
+    "config_name": DEFAULT_NAME,
     "categories": [
         {
             "category_name": "Strength",
@@ -75,7 +75,7 @@ CONFIG = {
 }
 
 CONFIG_TWO_CATEGORIES = {
-    "config_name": Config.CONFIG_NAME,
+    "config_name": DEFAULT_NAME,
     "categories": [
         {
             "category_name": "Melee",
@@ -98,7 +98,7 @@ CONFIG_TWO_CATEGORIES = {
 
 
 CONFIG_THREE_CATEGORIES = {
-    "config_name": Config.CONFIG_NAME,
+    "config_name": DEFAULT_NAME,
     "categories": [
         {
             "category_name": "Strength",

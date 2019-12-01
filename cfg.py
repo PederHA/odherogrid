@@ -4,12 +4,10 @@ import random
 import sys
 from pathlib import Path
 from typing import Optional
-
-from config import Config
 from resources import CONFIG_BASE
 
 
-def _get_default_cfg_path() -> Path:  
+def _get_steam_userdata_path() -> Path:  
     if sys.platform == "win32":
         p = Path("C:/Program Files (x86)")
     elif sys.platform == "darwin":
@@ -19,22 +17,11 @@ def _get_default_cfg_path() -> Path:
     else:
         raise NotImplementedError("Hero grid directory auto detection is not supported for your OS!")  
     
-    p = p / "Steam/userdata"
-
-    # Choose random subdirectory if no User ID is specified.
-    if not Config.USER_ID:
-        p = random.choice([d for d in p.iterdir() if d.is_dir()])
-    else:
-        p = p / str(Config.USER_ID)
-
-    return p / "570/remote/cfg"
+    return p / "Steam/userdata"
 
 
-def get_cfg_path(path: Optional[str]=None) -> Path:
-    if not path:
-        cfg_path = _get_default_cfg_path()
-    else:
-        cfg_path = Path(path)
+def get_cfg_path(path: str) -> Path:
+    cfg_path = Path(path)
     if not cfg_path.exists():
         raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
     return cfg_path

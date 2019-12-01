@@ -5,10 +5,12 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
+pylint = "*"
 
 [packages]
 click = "*"
 requests = "*"
+pyyaml = "*"
 
 [requires]
 python_version = "3.7"

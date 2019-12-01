@@ -1,7 +1,10 @@
 from typing import List, Optional
 
-from config import Config
 from enums import Brackets, Grouping
+
+
+DEFAULT_BRACKET = Brackets.DIVINE
+DEFAULT_GROUPING = Grouping.MAINSTAT
 
 
 _brackets = {
@@ -29,7 +32,7 @@ def parse_arg_bracket(bracket: Optional[str]) -> List[int]:
     
     Returns list of integers.
     """
-    default = Config.DEFAULT_BRACKET
+    default = DEFAULT_BRACKET
     r = []
     
     if not bracket:
@@ -55,14 +58,14 @@ def parse_arg_grouping(grouping: Optional[str]) -> int:
     
     Returns integer
     """
-    default = Config.DEFAULT_GROUPING
+    default = DEFAULT_GROUPING
     r = None
     
     if not grouping:
         r = default.value
     else:
         for k, v in _grouping.items():
-            if grouping in k or grouping == str(v.value):
+            if grouping in k or grouping == str(v.value) or grouping == v.value:
                 r = v.value
                 break
                 
