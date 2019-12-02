@@ -35,7 +35,7 @@ def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) ->
 
 
 def get_config(**kwargs) -> None:
-    """fix name"""
+    """FIXME: change name of this function"""
     config = load_config()
     for option, value in kwargs.items():
         if value is not None:
@@ -76,5 +76,8 @@ def main(brackets: str, grouping: int, path: str, sort: str, setup: bool) -> Non
         # Save generated hero grid
         update_config(grid, config_name, config["path"])
     
+
+# TODO: Config class?
+
 if __name__ == "__main__":   
     main()
