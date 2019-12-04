@@ -18,6 +18,8 @@ CONFIG_BASE = {
 }
 
 
+
+
 def _load_config() -> dict:
     """Loads configuration file and returns it as a dict."""
     with open(CONF, "r") as f:
@@ -49,39 +51,6 @@ def load_config() -> dict:
     return config
 
 
-def _check_config_integrity(config: dict) -> dict:
-    # Check for missing keys
-    missing_keys = []
-    for key, value in CONFIG_BASE.items():
-        if key not in config:
-            missing_keys.append((key, value))
-    
-    # Remove unknown keys
-    for key in config:
-        if key not in CONFIG_BASE:
-            config.pop(key) # remove unknown key
-
-    if missing_keys:
-        first = True
-        click.echo("'config.yml' is lacking the following keys: ", nl=False)
-        for (key, value) in missing_keys:
-            if not first:
-                click.echo(", ", nl=False)
-            else:
-                first = False
-            click.echo(key, nl=False)
-        click.echo(".")
-        click.echo("Adding missing keys.")
-        
-        # Replace missing keys
-        for (key, value) in missing_keys:
-            config[key] = value
-        
-        update_config(config)
-
-    return config
-
-
 def update_config(config: dict) -> None:
     """Updates config file."""
     _dump_config(Path(CONF), config)
@@ -92,6 +61,35 @@ def _dump_config(path: Path, config: dict) -> None:
     the config file."""
     with open(path, "w") as f:
         f.write(yaml.dump(config, default_flow_style=False))    
+
+
+def _check_config_integrity(config: dict) -> dict:
+    # Check for missing keys
+    missing_keys = [(k, v) for (k, v) in CONFIG_BASE.items() if k not in config]
+
+    # Remove unknown keys
+    for key in config:
+        if key not in CONFIG_BASE:
+            config.pop(key) # remove unknown key
+
+    if missing_keys:
+        missing = ", ".join([key for (key, value) in missing_keys])
+        click.echo(f"'config.yml' is lacking the following keys: {missing}")
+
+        # Replace missing keys in user's config
+        for (key, value) in missing_keys:
+            func = CONFIG_FUNCS.get(key)
+            if click.confirm(
+                f"Do you want add a value for the missing key '{key}'?"
+                ):
+                config = func(config)
+            else:
+                config[key] = value
+                click.echo("Adding missing key with default value.")
+        
+        update_config(config)
+
+    return config
 
 
 def remake_config() -> None:
@@ -115,7 +113,7 @@ def get_path_from_user() -> Path:
     """Gets a valid path from user input."""
     p = click.prompt("Path: ")
     while not Path(p).exists():
-        click.echo("Path does not exist.\n")
+        click.echo("Path does not exist.")
         p = click.prompt("Provide an existing path or type 'q' to quit.")
         if p.lower() == "q":
             raise SystemExit("Quitting.")
@@ -166,7 +164,7 @@ def setup_bracket(config: dict) -> dict:
     brackets = "\n".join(f"{b.value}. {b.name.capitalize()}" for idx, b in enumerate(Brackets))
     click.echo(brackets)  
     def_brackets = click.prompt(
-        f"Specify default skill bracket(s), separated by spaces ({brackets_start}-{brackets_end})",
+        f"\nSpecify default skill bracket(s), separated by spaces ({brackets_start}-{brackets_end})",
         type=str
         )
     
@@ -177,7 +175,7 @@ def setup_bracket(config: dict) -> dict:
             f"No valid brackets provided. Try again ({brackets_start}-{brackets_end})",
             type=str
             )
-        _parse_user_bracket_input(def_brackets)
+        valid = _parse_user_bracket_input(def_brackets)
     
 
     # TODO: Select multiple brackets
@@ -234,8 +232,9 @@ def setup_grouping(config: dict) -> dict:
 
 
 def setup_config_name(config: dict) -> dict:
+    """Setup for default name of hero grid."""
     click.echo(
-        f"Choose a default hero grid name. (current: {config['config_name']})"
+        f"\nChoose a default hero grid name. (current: {config['config_name']})"
         )
     name = click.prompt(
         f"New name (leave blank to keep current name)", 
@@ -248,13 +247,13 @@ def setup_config_name(config: dict) -> dict:
 
 
 def setup_winrate_sorting(config: dict) -> dict:
-    click.echo("Do you want to sort heroes by winrates descending or ascending?")
+    click.echo("\nDo you want to sort heroes by winrates descending or ascending?")
     click.echo("1. Descending [default]")
     click.echo("2. Ascending")
     
     choice = 0
     while choice not in [1, 2]:
-        choice = click.prompt("Choice (1-2)", type=int)
+        choice = click.prompt("Choice (1-2)", type=int, default=1, show_default=False)
     config["sort"] = (choice == 1)
 
     return config
@@ -282,3 +281,12 @@ def run_first_time_setup() -> dict:
     update_config(config)
 
     return config
+
+
+CONFIG_FUNCS = {
+    "path": setup_userdata_cfg_dir,
+    "brackets": setup_bracket,
+    "grouping": setup_grouping,
+    "config_name": setup_config_name,
+    "sort": setup_winrate_sorting
+}
