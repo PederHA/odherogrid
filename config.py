@@ -193,15 +193,16 @@ def _parse_user_bracket_input(inp: str) -> None:
             b = int(bracket)
             Brackets(b)
         except ValueError:
-            invalid.append(str(b)) # Add as string so we can join all invalid to a string
+            invalid.append(str(bracket)) # Add as string so we can join all invalid to a string
         else:
             valid.append(b)
-    invalid_brackets = ", ".join(invalid)
-    are_is = "is" if len(invalid) == 1 else "are"
-    s = "s" if len(invalid) == 1 else ""
-    click.echo(
-        f"The following bracket{s} {are_is} invalid and will be ignored: {invalid_brackets}"
-        )
+    if invalid:
+        invalid_brackets = ", ".join(invalid)
+        are_is = "is" if len(invalid) == 1 else "are"
+        s = "" if len(invalid) == 1 else "s"
+        click.echo(
+            f"The following bracket{s} {are_is} invalid and will be ignored: {invalid_brackets}"
+            )
     return valid
 
 
