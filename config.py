@@ -18,8 +18,6 @@ CONFIG_BASE = {
 }
 
 
-
-
 def _load_config() -> dict:
     """Loads configuration file and returns it as a dict."""
     with open(CONF, "r") as f:
@@ -52,14 +50,8 @@ def load_config() -> dict:
 
 
 def update_config(config: dict) -> None:
-    """Updates config file."""
-    _dump_config(Path(CONF), config)
-
-
-def _dump_config(path: Path, config: dict) -> None:
-    """Function to be used by any other functions that want to modify
-    the config file."""
-    with open(path, "w") as f:
+    """Saves config as a YAML file."""
+    with open(CONF, "w") as f:
         f.write(yaml.dump(config, default_flow_style=False))    
 
 
