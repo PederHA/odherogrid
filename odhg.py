@@ -23,10 +23,20 @@ def get_config_from_cli_arguments(**kwargs) -> dict:
     
     Returns config
     """
-    config = load_config()
+    # Load config.yml if not all CLI arguments are passed in
+    if all((v) for v in kwargs.values()):
+        config = {}
+    else:
+        config = load_config()
+    
+    # Fill config with CLI arguments
     for option, value in kwargs.items():
         if value is not None:
             config[option] = value
+    
+    # Parse config values
+    config = parse_config(config)
+    
     return config
 
 
@@ -73,7 +83,6 @@ def main(brackets: str, grouping: int, path: str, sort: str, setup: bool) -> Non
     config = get_config_from_cli_arguments(
         brackets=brackets, grouping=grouping, path=path
         )
-    config = parse_config(config)
 
     # Fetch hero W/L stats from API
     data = fetch_hero_stats()
