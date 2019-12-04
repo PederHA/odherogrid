@@ -1,9 +1,9 @@
 Tests:
-    Write enum tests
+    Rewrite all tests LOL
 
 Sorting:
-    Bracket sorting order -> desc/asc
     Fix sorting order if a grid is deleted, then re-added. (?)
-        
-Config:
-    YAML
+
+Arguments:
+    Brackets:
+        * Accept bracket by name (herald, guardian, divine, etc.)
