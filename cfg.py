@@ -21,7 +21,10 @@ def _get_steam_userdata_path() -> Path:
 
 
 def get_cfg_path(path: str) -> Path:
-    cfg_path = Path(path)
+    try:
+        cfg_path = Path(path)
+    except TypeError:
+        raise TypeError("User cfg directory cannot be a None value!")
     if not cfg_path.exists():
         raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
     return cfg_path
