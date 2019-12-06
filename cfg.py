@@ -18,7 +18,7 @@ def _get_steam_userdata_path() -> Path:
     elif sys.platform == "linux":
         p = Path.home()
     else:
-        raise NotImplementedError("Hero grid directory auto detection is not supported for your OS!")  
+        raise NotImplementedError("Userdata directory auto-detection is not supported for your OS!")  
     
     return p / "Steam/userdata"
 

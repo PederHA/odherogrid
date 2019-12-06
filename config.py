@@ -1,11 +1,11 @@
+import sys
 from pathlib import Path
 
 import click
 import yaml
 
-from enums import Brackets, Grouping
 from cfg import _get_steam_userdata_path
-
+from enums import Brackets, Grouping
 
 CONF = "config.yml"
 
@@ -112,38 +112,58 @@ def get_path_from_user() -> Path:
     return p
 
 
-def setup_userdata_cfg_dir(config: dict) -> dict:
-    """This is a little janky."""
-    # Get default directory for Steam userdata
-    p = _get_steam_userdata_path()
-    
-    directories = [d for d in p.iterdir()]
-    if not directories:
-        click.echo(f"No subdirectories were found in {p}")
-        if click.confirm("Would you like to specify the userdata directory manually?"):
-            click.echo("\nIt should look something like this: "
-            "'C:\\Program Files (x86)\\Steam\\userdata\\<ID>\\570\\remote\cfg'.")
-            cfg_path = get_path_from_user()
-        else:
-            raise SystemExit("Unable to locate Steam userdata directory.") # abort
-    
+def ask_steam_userdata_path() -> Path:
+    if click.confirm("Would you like to specify your userdata directory manually?"):
+        click.echo("\nIt should look something like this: ", nl=False)
+        
+        # Per-platform message
+        if sys.platform == "win32":
+            click.echo("'C:\\Program Files (x86)\\Steam\\userdata\\<ID>")
+        elif sys.platform == "darwin":
+            click.echo("~/Library/Application Support/Steam/userdata/<ID>")
+        elif sys.platform == "linux":
+            click.echo("~/Steam/userdata/<ID>")
+        
+        return get_path_from_user()
     else:
-        # Subdirectories
-        subdirs = {idx+1: d for idx, d in enumerate(directories)}
+        raise SystemExit("Unable to locate Steam userdata directory.") # abort
+
+
+def setup_userdata_cfg_dir(config: dict) -> dict:
+    """Configure user's Dota userdata cfg directory.
+    """
+    # Get default directory for Steam userdata
+    try:
+        p = _get_steam_userdata_path()
+    except NotImplementedError as e:
+        click.echo(e.args[0])
+        cfg_path = ask_steam_userdata_path()
+    else:
+        directories = [d for d in p.iterdir()]
         
-        # Let user select a directory
-        _choices = "\n".join(f"{idx}. {d.stem}" for idx, d in subdirs.items())
-        click.echo(_choices)
+        # Ask user for a path if no directories found in auto-detected path
+        if not directories:
+            click.echo(f"No subdirectories were found in {p}")
+            cfg_path = ask_steam_userdata_path()
         
-        choice = 0
-        while choice not in subdirs:
-            choice = click.prompt(f"Select directory (1-{len(directories)})", type=int)
-        
-        cfg_path = subdirs.get(choice)
-        
-    config["path"] = str((cfg_path / "570/remote/cfg"))
+        else:
+            # Subdirectories
+            subdirs = {idx+1: d for idx, d in enumerate(directories)}
+            
+            # Let user select a directory
+            _choices = "\n".join(f"{idx}. {d.stem}" for idx, d in subdirs.items())
+            click.echo(_choices)
+            
+            choice = 0
+            while choice not in subdirs:
+                choice = click.prompt(f"Select directory (1-{len(directories)})", type=int) 
+            cfg_path = subdirs.get(choice)
+    finally:    
+        config["path"] = str((cfg_path / "570/remote/cfg"))
     
     return config
+
+
 
 
 def setup_bracket(config: dict) -> dict:
