@@ -42,7 +42,7 @@ _grouping = {
     ("m", "stat", "mainstat", "stats") : Grouping.MAINSTAT,
     ("a", "melee", "range", "attack") : Grouping.ATTACK,
     ("r",) : Grouping.ROLE,
-    ("A", "N", "none", "all", "everything") : Grouping.NONE
+    ("n", "all", "everything") : Grouping.NONE
 }
 
 
