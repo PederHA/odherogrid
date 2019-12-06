@@ -4,22 +4,29 @@ from enums import Grouping
 from resources import CONFIG, CATEGORY
 
 
-def create_hero_grid(heroes: list, grouping: int) -> dict:
+def create_hero_grid(heroes: list, bracket: int, grouping: int, sorting: bool) -> dict:
     grouping_funcs = {
         Grouping.MAINSTAT.value: group_by_main_stat,
         Grouping.NONE.value: group_by_all,
         Grouping.ATTACK.value: group_by_melee_ranged,
         Grouping.ROLE.value: group_by_role
     }
+    # Sort heroes by winrate in the specified bracket
+    heroes = sort_heroes_by_winrate(heroes, bracket, sorting)       
     
     grp_func = grouping_funcs.get(grouping)
-    
     if not grp_func:
         raise ValueError(f"No such grouping: '{grouping}'")
     
     config = grp_func(heroes)
-
+    
     return config
+
+
+def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) -> list:
+    """Sorts list of heroes by winrate in a specific skill bracket."""
+    heroes.sort(key=lambda h: h[f"{bracket}_win"] / h[f"{bracket}_pick"], reverse=descending)
+    return heroes
 
 
 def group_by_main_stat(heroes: list) -> dict:

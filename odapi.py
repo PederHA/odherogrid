@@ -11,9 +11,3 @@ def fetch_hero_stats() -> list:
         for stat in ["win", "pick", "ban"]:
             hero[f"{Brackets.PRO.value}_{stat}"] = hero.pop(f"pro_{stat}")
     return heroes
-
-
-def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) -> list:
-    """Sorts list of heroes by winrate in a specific skill bracket."""
-    heroes.sort(key=lambda h: h[f"{bracket}_win"] / h[f"{bracket}_pick"], reverse=descending)
-    return heroes
