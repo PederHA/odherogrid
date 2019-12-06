@@ -70,11 +70,11 @@ def _check_config_integrity(config: dict) -> dict:
     # Remove unknown keys
     for key in config:
         if key not in CONFIG_BASE:
-            config.pop(key) # remove unknown key
+            config.pop(key)
 
     if missing_keys:
         missing = ", ".join([key for (key, value) in missing_keys])
-        click.echo(f"'config.yml' is lacking the following keys: {missing}")
+        click.echo(f"'config.yml' is missing the following keys: {missing}")
 
         # Replace missing keys in user's config
         for (key, value) in missing_keys:
