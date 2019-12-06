@@ -54,13 +54,12 @@ def parse_config(config: dict) -> dict:
 @click.option("--path", "-p", default=None)
 @click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
 @click.option("--setup", "-S", is_flag=True)
-def main(brackets: str, grouping: int, path: str, sort: str, setup: bool) -> None:
-    if setup:
-        run_first_time_setup()
+def main(**kwargs) -> None:
+    if kwargs.pop("setup", None):
+        config = run_first_time_setup()
+        kwargs = config
     
-    config = get_config_from_cli_arguments(
-        brackets=brackets, grouping=grouping, path=path
-        )
+    config = get_config_from_cli_arguments(**kwargs)
 
     # Fetch hero W/L stats from API
     data = fetch_hero_stats()
