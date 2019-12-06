@@ -40,7 +40,7 @@ _brackets = {
 
 _grouping = {
     ("m", "stat", "mainstat", "stats") : Grouping.MAINSTAT,
-    ("a", "melee", "range") : Grouping.ATTACK,
+    ("a", "melee", "range", "attack") : Grouping.ATTACK,
     ("r",) : Grouping.ROLE,
     ("A", "N", "none", "all", "everything") : Grouping.NONE
 }
