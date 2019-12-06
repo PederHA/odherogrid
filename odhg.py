@@ -28,7 +28,7 @@ def get_config_from_cli_arguments(**kwargs) -> dict:
 
 
 def parse_config(config: dict) -> dict:
-    config["brackets"] = parse_arg_brackets(config["brackets"])
+    config["brackets"] = parse_arg_brackets(config.pop("bracket"))
     config["grouping"] = parse_arg_grouping(config["grouping"])
     config["sort"] = (config["sort"] == "desc")
     
@@ -48,7 +48,7 @@ def parse_config(config: dict) -> dict:
 
 
 @click.command()
-@click.option("--brackets", "-b", default=None, multiple=True)
+@click.option("--bracket", "-b", default=None, multiple=True)
 @click.option("--grouping", "-g", default=None)
 @click.option("--path", "-p", default=None) # we forego click.Path here and do our own check
 @click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
