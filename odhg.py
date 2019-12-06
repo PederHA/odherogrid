@@ -7,22 +7,20 @@ from parseargs import parse_arg_brackets, parse_arg_grouping
 
 
 def get_config_from_cli_arguments(**kwargs) -> dict:
-    """Loads config from 'config.yml' and overrides entries 
-    corresponding to any CLI arguments. 
+    """Fills missing arguments using values from 'config.yml'.
     
     Returns config
     """
     # Load config.yml if not all CLI arguments are passed in
     if all(v for v in kwargs.values()):
-        config = {}
+        config = kwargs
     else:
         config = load_config()
-    
-    # Fill config with CLI arguments
-    for option, value in kwargs.items():
-        if value is not None:
-            config[option] = value
-    
+        # Fill config with CLI arguments
+        for option, argument in kwargs.items():
+            if argument is not None:
+                config[option] = argument
+
     # Parse config values
     config = parse_config(config)
     
@@ -52,7 +50,7 @@ def parse_config(config: dict) -> dict:
 @click.command()
 @click.option("--brackets", "-b", default=None, multiple=True)
 @click.option("--grouping", "-g", default=None)
-@click.option("--path", "-p", default=None)
+@click.option("--path", "-p", default=None) # we forego click.Path here and do our own check
 @click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
 @click.option("--setup", "-S", is_flag=True)
 def main(**kwargs) -> None:
