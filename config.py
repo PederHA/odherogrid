@@ -56,6 +56,14 @@ def update_config(config: dict) -> None:
 
 
 def _check_config_integrity(config: dict) -> dict:
+    CONFIG_FUNCS = {
+        "path": setup_userdata_cfg_dir,
+        "brackets": setup_bracket,
+        "grouping": setup_grouping,
+        "config_name": setup_config_name,
+        "sort": setup_winrate_sorting
+    }
+
     # Check for missing keys
     missing_keys = [(k, v) for (k, v) in CONFIG_BASE.items() if k not in config]
 
@@ -294,12 +302,3 @@ def run_first_time_setup() -> dict:
     update_config(config)
 
     return config
-
-
-CONFIG_FUNCS = {
-    "path": setup_userdata_cfg_dir,
-    "brackets": setup_bracket,
-    "grouping": setup_grouping,
-    "config_name": setup_config_name,
-    "sort": setup_winrate_sorting
-}
