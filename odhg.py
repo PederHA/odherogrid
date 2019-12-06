@@ -1,27 +1,19 @@
-import copy
-import json
-import random
-import sys
-from enum import Enum
-from pathlib import Path
-from typing import List, Optional
-
 import click
-import requests
 
-from categorize import create_hero_grid
-from cfg import get_cfg_path, update_config
+from cfg import make_herogrid, get_cfg_path
 from config import load_config, run_first_time_setup
+from odapi import fetch_hero_stats
 from parseargs import parse_arg_brackets, parse_arg_grouping
 
 
 def get_config_from_cli_arguments(**kwargs) -> dict:
-    """Loads config from 'config.yml' and overrides with CLI arguments.
+    """Loads config from 'config.yml' and overrides entries 
+    corresponding to any CLI arguments. 
     
     Returns config
     """
     # Load config.yml if not all CLI arguments are passed in
-    if all((v) for v in kwargs.values()):
+    if all(v for v in kwargs.values()):
         config = {}
     else:
         config = load_config()
@@ -38,37 +30,26 @@ def get_config_from_cli_arguments(**kwargs) -> dict:
 
 
 def parse_config(config: dict) -> dict:
-    #config["brackets"] = parse_arg_bracket(config["bracket"])
+    config["brackets"] = parse_arg_brackets(config["brackets"])
     config["grouping"] = parse_arg_grouping(config["grouping"])
+    
+    # We can fall back on preset bracket and grouping defaults
+    # But we can't fall back on a preset default Steam userdata directory path
     try:
-        config["path"] = get_cfg_path(config["path"])# Steam userdata directory
+        config["path"] = get_cfg_path(config["path"]) # Steam userdata directory
     except (TypeError, ValueError) as e:
         click.echo(e.args[0])
         click.echo(
-            "Either specify a path using the '--path' option "
-            "or run setup using the '--setup' flag")
+            "Either specify a valid path using the '--path' option, "
+            "or run setup using the '--setup' flag to permanently add "
+            "a valid path to your config."
+        )
         raise SystemExit
     return config
 
 
-def make_herogrid(data: dict, config: dict, bracket: int) -> None:
-    config_name = f"{config['config_name']} ({Brackets(bracket).name.capitalize()})"
-    grouping = config["grouping"]
-    sorting = config["sort"]
-    path = config["path"]
-
-    # Sort heroes by winrate in the specified bracket
-    heroes = sort_heroes_by_winrate(data, bracket, sorting)   
-
-    # Create a new hero grid 
-    grid = create_hero_grid(heroes, grouping)
-    grid["config_name"] = config_name
-    
-    update_config(grid, config_name, path)
-
-
 @click.command()
-@click.option("--brackets", "-b", default=None, type=int, multiple=True)
+@click.option("--brackets", "-b", default=None, multiple=True)
 @click.option("--grouping", "-g", default=None)
 @click.option("--path", "-p", default=None)
 @click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")

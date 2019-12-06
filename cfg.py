@@ -4,7 +4,10 @@ import random
 import sys
 from pathlib import Path
 from typing import Optional
+
+from enums import Brackets
 from resources import CONFIG_BASE
+from categorize import create_hero_grid
 
 
 def _get_steam_userdata_path() -> Path:  
@@ -30,12 +33,25 @@ def get_cfg_path(path: str) -> Path:
     return cfg_path
 
 
+def make_herogrid(data: dict, config: dict, bracket: int) -> None:
+    config_name = f"{config['config_name']} ({Brackets(bracket).name.capitalize()})"
+    grouping = config["grouping"]
+    sorting = config["sort"]
+    path = config["path"]
+
+    # Create a new hero grid 
+    grid = create_hero_grid(data, bracket, grouping, sorting)
+    grid["config_name"] = config_name
+    
+    update_config(grid, config_name, path)
+
+
 def update_config(grid: dict, config_name: str, path: Path) -> None:
     """Updates hero grid config file in Steam userdata directory."""
     p = path/"hero_grid_config.json"
     
     if p.exists():
-        config = _load_config(p) # Load contents of config file if it exists
+        config = load_herogrid_config(p) # Load contents of config file if it exists
     else:
         config = copy.deepcopy(CONFIG_BASE) # Otherwise make a new config
     
@@ -47,15 +63,15 @@ def update_config(grid: dict, config_name: str, path: Path) -> None:
     else:
         config["configs"].append(grid)
 
-    _save_config(p, config)
+    save_herogrid_config(p, config)
 
 
-def _load_config(path: Path) -> dict:
+def load_herogrid_config(path: Path) -> dict:
     with open(path, "r") as f:
         return json.load(f)
 
 
-def _save_config(path: Path, config: dict) -> None:
+def save_herogrid_config(path: Path, config: dict) -> None:
     with open(path, "w") as f:
         json_data = json.dumps(config, indent="\t")
         f.write(json_data)
