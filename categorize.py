@@ -25,6 +25,9 @@ def create_hero_grid(heroes: list, bracket: int, grouping: int, sorting: bool) -
 
 def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) -> list:
     """Sorts list of heroes by winrate in a specific skill bracket."""
+    for hero in heroes:
+        if hero["8_pick"] == 0:
+            hero["8_pick"] = 1
     heroes.sort(key=lambda h: h[f"{bracket}_win"] / h[f"{bracket}_pick"], reverse=descending)
     return heroes
 
