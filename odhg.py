@@ -32,6 +32,7 @@ def get_config_from_cli_arguments(**kwargs) -> dict:
 def parse_config(config: dict) -> dict:
     config["brackets"] = parse_arg_brackets(config["brackets"])
     config["grouping"] = parse_arg_grouping(config["grouping"])
+    config["sort"] = (config["sort"] == "desc")
     
     # We can fall back on preset bracket and grouping defaults
     # But we can't fall back on a preset default Steam userdata directory path
