@@ -12,10 +12,7 @@ import requests
 from categorize import create_hero_grid
 from cfg import get_cfg_path, update_config
 from config import load_config, run_first_time_setup
-from enums import Brackets, Grouping
-from odapi import fetch_hero_stats, sort_heroes_by_winrate
-from parse import parse_arg_bracket, parse_arg_grouping
-from resources import CATEGORY, CONFIG, CONFIG_BASE
+from parseargs import parse_arg_brackets, parse_arg_grouping
 
 
 def get_config_from_cli_arguments(**kwargs) -> dict:
