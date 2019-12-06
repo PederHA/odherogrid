@@ -62,13 +62,17 @@ def parse_arg_brackets(brackets: List[Union[str, int]]) -> List[int]:
             [find_argument_in_mapping(b, BRACKETS) for b in brackets]
         )
     )
-
+    
     # Fall back on default value if no valid brackets are provided
     if not valid_brackets:
         valid_brackets = [DEFAULT_BRACKET.value]
         click.echo("No valid bracket arguments provided. "
                   f"Using default bracket: {DEFAULT_BRACKET.name.capitalize()}")
-    
+    # Check is Brackets.ALL is given as an argument
+    elif Brackets.ALL.value in valid_brackets:
+        valid_brackets = [
+            b.value for b in Brackets if b.value != Brackets.ALL.value
+            ]
     return valid_brackets
 
 
