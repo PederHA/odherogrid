@@ -1,11 +1,13 @@
 import sys
 from pathlib import Path
+from typing import Optional, List
 
 import click
 import yaml
 
 from cfg import _get_steam_userdata_path
 from enums import Brackets, Grouping
+from parseargs import DEFAULT_BRACKET
 
 CONF = "config.yml"
 
@@ -172,8 +174,6 @@ def setup_userdata_cfg_dir(config: dict) -> dict:
     return config
 
 
-
-
 def setup_bracket(config: dict) -> dict:
     # Determine lowest and highest Bracket enum value
     _b_values = [b.value for b in Brackets]
@@ -181,48 +181,45 @@ def setup_bracket(config: dict) -> dict:
     brackets_end = max(_b_values)
     
     # Prompt user to select a default bracket
-    brackets = "\n".join(f"{b.value}. {b.name.capitalize()}" for idx, b in enumerate(Brackets))
-    click.echo(brackets)  
-    def_brackets = click.prompt(
-        f"\nSpecify default skill bracket(s), separated by spaces ({brackets_start}-{brackets_end})",
-        type=str
-        )
-    
-    # Parse user input
-    valid = _parse_user_bracket_input(def_brackets)
-    while not valid:
-        click.prompt(
-            f"No valid brackets provided. Try again ({brackets_start}-{brackets_end})",
-            type=str
-            )
-        valid = _parse_user_bracket_input(def_brackets)
-    
+    available_brackets = "\n".join(
+        f"{b.value}. {b.name.capitalize()}" 
+        if b != DEFAULT_BRACKET else 
+        f"{b.value}. {b.name.capitalize()} [default]" 
+        for idx, b in enumerate(Brackets)
+    )
+    click.echo(f"\n{available_brackets}")  
+
+    brackets = _get_brackets(f"Specify default skill bracket(s), separated by spaces ({brackets_start}-{brackets_end})")
+    while not brackets:
+        brackets = _get_brackets(f"No valid brackets provided. Try again ({brackets_start}-{brackets_end})")
 
     # TODO: Select multiple brackets
     
-    config["brackets"] = valid
+    config["brackets"] = list(set(brackets))
 
     return config
 
 
+def _get_brackets(msg: str) -> Optional[List[int]]:
+    b = click.prompt(
+        msg,
+        type=str,
+        default=str(DEFAULT_BRACKET.value),
+        show_default=False
+    )
+    return _parse_user_bracket_input(b) # Parse user input
+ 
+
 def _parse_user_bracket_input(inp: str) -> None:
     valid = []
-    invalid = []
     for bracket in inp.split(" "):
         try:
             b = int(bracket)
             Brackets(b)
         except ValueError:
-            invalid.append(str(bracket)) # Add as string so we can join all invalid to a string
+            pass
         else:
             valid.append(b)
-    if invalid:
-        invalid_brackets = ", ".join(invalid)
-        are_is = "is" if len(invalid) == 1 else "are"
-        s = "" if len(invalid) == 1 else "s"
-        click.echo(
-            f"The following bracket{s} {are_is} invalid and will be ignored: {invalid_brackets}"
-            )
     return valid
 
 
