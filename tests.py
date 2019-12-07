@@ -1,11 +1,12 @@
 import pytest
 
 from categorize import (group_by_all, group_by_main_stat,
-                        group_by_melee_ranged, group_by_role)
-from cfg import get_cfg_path
+                        group_by_melee_ranged, group_by_role, 
+                        sort_heroes_by_winrate)
+from cfg import _get_steam_userdata_path, get_cfg_path
 from enums import Brackets, Grouping
-from odhg import fetch_hero_stats, sort_heroes_by_winrate
-from parse import parse_arg_bracket, parse_arg_grouping, DEFAULT_BRACKET, DEFAULT_GROUPING
+from odapi import fetch_hero_stats
+from parseargs import parse_arg_brackets, parse_arg_grouping, DEFAULT_BRACKET, DEFAULT_GROUPING
 
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
 stats = None
@@ -57,7 +58,8 @@ def test_parse_arg_brackets():
     """Tests every Bracket value against `odhg.parse_brackets()`"""
     brackets = [b for b in Brackets if b != Brackets.ALL]
     for b in brackets:
-        assert parse_arg_bracket(str(b.value)) == [b.value]
+        assert parse_arg_brackets(str(b.value)) == [b.value]
+    assert parse_arg_brackets([1, "divine", 6])
 
 def test_parse_arg_grouping():
     """Tests every Grouping value against `odhg.parse_brackets()`"""
@@ -68,7 +70,7 @@ def test_parse_arg_grouping():
 # cfg.py
 def test_get_cfg_path_nopath():
     """Tests `odhg.get_cfg_path()` with no argument."""
-    assert get_cfg_path().exists()
+    assert _get_steam_userdata_path().exists()
 
 
 def test_get_cfg_path_withpath():
