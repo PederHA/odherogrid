@@ -59,7 +59,7 @@ def test_parse_arg_brackets():
     brackets = [b for b in Brackets if b != Brackets.ALL]
     for b in brackets:
         assert parse_arg_brackets(str(b.value)) == [b.value]
-    assert parse_arg_brackets([1, "divine", 6])
+    assert parse_arg_brackets([1, 6, "d", "pro"]) == [1, 6, 7, 8]
 
 def test_parse_arg_grouping():
     """Tests every Grouping value against `odhg.parse_brackets()`"""
