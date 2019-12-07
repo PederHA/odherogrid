@@ -28,7 +28,9 @@ def get_config_from_cli_arguments(**kwargs) -> dict:
 
 
 def parse_config(config: dict) -> dict:
-    config["brackets"] = parse_arg_brackets(config.pop("bracket"))
+    if "bracket" in config:
+        config["brackets"] = parse_arg_brackets(config.pop("bracket"))
+    config["brackets"] = parse_arg_brackets(config["brackets"])
     config["grouping"] = parse_arg_grouping(config["grouping"])
     config["sort"] = (config["sort"] == "desc")
     
