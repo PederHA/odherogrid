@@ -61,7 +61,7 @@ def parse_arg_brackets(brackets: List[Union[str, int]]) -> List[int]:
     if str(Brackets.ALL.value) in brackets or Brackets.ALL.value in brackets:
         valid_brackets = [
             b.value for b in Brackets if b.value != Brackets.ALL.value
-            ]
+        ]
     else:
         valid_brackets = list(
             filter(
