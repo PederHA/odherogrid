@@ -27,21 +27,8 @@ def _get_hero_wl(hero: dict, bracket: Brackets) -> float:
     return hero[f"{bracket.value}_win"] / hero[f"{bracket.value}_pick"]
 
 
-def test_sort_heroes_by_winrate():
-    """Tests `odhg.sort_heroes_by_winrate()`"""
-    heroes = _get_stats()
-    for bracket in [b for b in Brackets if b != Brackets.ALL]:
-        heroes = sort_heroes_by_winrate(heroes, bracket=bracket.value)
-        
-        for idx, hero in enumerate(heroes):
-            try:
-                next_hero = heroes[idx+1]
-            except IndexError:
-                break
-                    
-            assert _get_hero_wl(hero, bracket) >= _get_hero_wl(next_hero, bracket)
 
-
+# odapi.py
 def test_opendota_api_type():
     """Tests type of data returned by `odhg.fetch_hero_stats()`"""
     heroes = _get_stats()
@@ -89,6 +76,19 @@ def test_brackets():
 
 
 # categorize.py
+def test_sort_heroes_by_winrate():
+    """Tests `odhg.sort_heroes_by_winrate()`"""
+    heroes = _get_stats()
+    for bracket in [b for b in Brackets if b != Brackets.ALL]:
+        heroes = sort_heroes_by_winrate(heroes, bracket=bracket.value)   
+        for idx, hero in enumerate(heroes):
+            try:
+                next_hero = heroes[idx+1]
+            except IndexError:
+                break          
+            assert _get_hero_wl(hero, bracket) >= _get_hero_wl(next_hero, bracket)
+
+
 def test_group_by_main_stat():
     """Tests `categorize.group_by_main_stat()`"""
     categories = {
