@@ -22,7 +22,6 @@ def _get_stats(sort: bool=False):
     return stats
 
 
-# odhg.py
 def _get_hero_wl(hero: dict, bracket: Brackets) -> float:
     return hero[f"{bracket.value}_win"] / hero[f"{bracket.value}_pick"]
 
@@ -41,18 +40,23 @@ def test_opendota_api_contents():
     assert all(isinstance(hero, dict) for hero in heroes)
 
 
+# parseargs.py
 def test_parse_arg_brackets():
     """Tests every Bracket value against `odhg.parse_brackets()`"""
     brackets = [b for b in Brackets if b != Brackets.ALL]
     for b in brackets:
-        assert parse_arg_brackets(str(b.value)) == [b.value]
-    assert parse_arg_brackets([1, 6, "d", "pro"]) == [1, 6, 7, 8]
+        assert parse_arg_brackets([str(b.value)]) == [b.value]
+    assert parse_arg_brackets([1, 6, "d", "pro"]) == list(set([1, 6, 7, 8]))
+    assert parse_arg_brackets([0]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
+    assert parse_arg_brackets([7, "d", "divine"]) == [7]
+
 
 def test_parse_arg_grouping():
     """Tests every Grouping value against `odhg.parse_brackets()`"""
     for g in Grouping:
         assert parse_arg_grouping(str(g.value)) == g.value
         assert parse_arg_grouping(g.name.lower()) == g.value
+
 
 # cfg.py
 def test_get_cfg_path_nopath():
@@ -69,6 +73,7 @@ def test_get_cfg_path_invalid_path():
     """Tests `odhg.get_cfg_path()` with invalid argument."""
     with pytest.raises(ValueError):
         assert get_cfg_path("notapath")
+
 
 # enums.py
 def test_brackets():
@@ -155,5 +160,3 @@ def test_group_by_all():
 
     # Test that all heroes are in the same category
     assert len(conf["categories"][0]["hero_ids"]) == N_HEROES
-
-test_parse_arg_grouping()
