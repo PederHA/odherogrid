@@ -82,7 +82,7 @@ def parse_arg_grouping(grouping: str) -> int:
     Returns integer
     """
     grp = find_argument_in_mapping(grouping, GROUPING)
-    if not grp:
+    if grp is None:
         grp = DEFAULT_GROUPING.value
         click.echo("No valid grouping arguments provided. "
                   f"Using default bracket: {DEFAULT_GROUPING.name.capitalize()}")        
