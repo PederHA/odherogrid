@@ -10,8 +10,6 @@ import click
 from enums import Brackets, Grouping
 
 
-
-
 def make_mapping(mapping: Dict[Tuple[str], IntEnum]) -> Dict[Union[str, int], IntEnum]:
     """Make a new mapping with multiple keys for identical enums."""
     new = {}
@@ -56,7 +54,7 @@ def parse_arg_brackets(brackets: List[Union[str, int]]) -> List[int]:
     # FIXME: this is a mess now
     
     # Check is Brackets.ALL is given as an argument
-    if str(Brackets.ALL.value) in brackets or Brackets.ALL.value in brackets:
+    if any(x in brackets for x in [str(Brackets.ALL.value), Brackets.ALL.value]):
         valid_brackets = [
             b.value for b in Brackets if b.value != Brackets.ALL.value
         ]
