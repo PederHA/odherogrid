@@ -48,6 +48,7 @@ def test_parse_arg_brackets():
         assert parse_arg_brackets([str(b.value)]) == [b.value]
     assert parse_arg_brackets([1, 6, "d", "pro"]) == list(set([1, 6, 7, 8]))
     assert parse_arg_brackets([0]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
+    assert parse_arg_brackets([0, 1, 2, 3, 7]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
     assert parse_arg_brackets([7, "d", "divine"]) == [7]
 
 
