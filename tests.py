@@ -6,7 +6,7 @@ from categorize import (group_by_all, group_by_main_stat,
 from cfg import _get_steam_userdata_path, get_cfg_path
 from enums import Brackets, Grouping
 from odapi import fetch_hero_stats
-from parseargs import parse_arg_brackets, parse_arg_grouping, DEFAULT_BRACKET, DEFAULT_GROUPING
+from parseargs import parse_arg_brackets, parse_arg_grouping
 
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
 stats = None
@@ -18,7 +18,7 @@ def _get_stats(sort: bool=False):
     if stats is None:
         stats = fetch_hero_stats()
     if sort:
-        return sort_heroes_by_winrate(stats, bracket=DEFAULT_BRACKET.value)
+        return sort_heroes_by_winrate(stats, bracket=Brackets.DEFAULT.value)
     return stats
 
 
