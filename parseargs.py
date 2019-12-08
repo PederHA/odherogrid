@@ -2,22 +2,24 @@
 You can easily tell the difference, because this module is a piece of shit.
 """
 
-from enum import Enum
-from typing import List, Optional, Union
+from enum import IntEnum
+from typing import List, Optional, Union, Dict, Tuple
 
 import click
 
 from enums import Brackets, Grouping
 
 
-def make_mapping(mapping: dict) -> dict:
-    """Make a new mapping with multiple keys for the same values."""
+
+
+def make_mapping(mapping: Dict[Tuple[str], IntEnum]) -> Dict[Union[str, int], IntEnum]:
+    """Make a new mapping with multiple keys for identical enums."""
     new = {}
-    for keys, value in mapping.items():
-        new[value.value] = value.value
-        new[value.name.lower()] = value.value
+    for keys, enum in mapping.items():
+        new[enum.value] = enum.value
+        new[enum.name.lower()] = enum.value
         for key in keys:
-            new[key] = value.value
+            new[key] = enum.value
     return new
 
 
