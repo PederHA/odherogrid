@@ -21,10 +21,6 @@ def make_mapping(mapping: dict) -> dict:
     return new
 
 
-DEFAULT_BRACKET = Brackets.DIVINE
-DEFAULT_GROUPING = Grouping.MAINSTAT
-
-
 _brackets = {
     ("h",) : Brackets.HERALD,
     ("g",) : Brackets.GUARDIAN,
@@ -72,9 +68,9 @@ def parse_arg_brackets(brackets: List[Union[str, int]]) -> List[int]:
 
     # Fall back on default value if no valid brackets are provided
     if not valid_brackets:
-        valid_brackets = [DEFAULT_BRACKET.value]
+        valid_brackets = [Brackets.DEFAULT.value]
         click.echo("No valid bracket arguments provided. "
-                  f"Using default bracket: {DEFAULT_BRACKET.name.capitalize()}")
+                  f"Using default bracket: {Brackets.DEFAULT.name.capitalize()}")
 
 
     return list(set(valid_brackets))
@@ -87,9 +83,9 @@ def parse_arg_grouping(grouping: str) -> int:
     """
     grp = find_argument_in_mapping(grouping, GROUPING)
     if grp is None:
-        grp = DEFAULT_GROUPING.value
+        grp = Grouping.DEFAULT.value
         click.echo("No valid grouping arguments provided. "
-                  f"Using default bracket: {DEFAULT_GROUPING.name.capitalize()}")        
+                  f"Using default bracket: {Grouping.DEFAULT.name.capitalize()}")        
     return grp
 
 

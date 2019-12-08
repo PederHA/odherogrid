@@ -7,7 +7,6 @@ import yaml
 
 from cfg import _get_steam_userdata_path
 from enums import Brackets, Grouping
-from parseargs import DEFAULT_BRACKET
 
 CONF = "config.yml"
 
@@ -183,7 +182,7 @@ def setup_bracket(config: dict) -> dict:
     # Prompt user to select a default bracket
     available_brackets = "\n".join(
         f"{b.value}. {b.name.capitalize()}" 
-        if b != DEFAULT_BRACKET else 
+        if b != Brackets.DEFAULT else 
         f"{b.value}. {b.name.capitalize()} [default]" 
         for idx, b in enumerate(Brackets)
     )
@@ -204,7 +203,7 @@ def _get_brackets(msg: str) -> Optional[List[int]]:
     b = click.prompt(
         msg,
         type=str,
-        default=str(DEFAULT_BRACKET.value),
+        default=str(Brackets.DEFAULT.value),
         show_default=False
     )
     return _parse_user_bracket_input(b) # Parse user input
