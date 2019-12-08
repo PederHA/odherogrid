@@ -55,10 +55,12 @@ def parse_arg_brackets(brackets: List[Union[str, int]]) -> List[int]:
     
     # Check is Brackets.ALL is given as an argument
     if any(x in brackets for x in [str(Brackets.ALL.value), Brackets.ALL.value]):
+        # Create list with all brackets
         valid_brackets = [
             b.value for b in Brackets if b.value != Brackets.ALL.value
         ]
     else:
+        # Parse arguments & make list of valid bracket arguments
         valid_brackets = list(
             filter(
                 None.__ne__, 
