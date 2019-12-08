@@ -32,15 +32,17 @@ def _get_hero_wl(hero: dict, bracket: Brackets) -> float:
 
 
 # odapi.py
-def test_opendota_api_type():
+def test_opendota_api():
     """Tests type of data returned by `odhg.fetch_hero_stats()`"""
     heroes = _get_stats()
+    
+    # Ensure data returned by fetch_hero_stats() is a list
     assert isinstance(heroes, list)
 
-
-def test_opendota_api_contents():
-    """Tests type of each element in list returned by `odhg.fetch_hero_stats()`"""
-    heroes = _get_stats()
+    # Ensure all heroes are included
+    assert len(heroes) == N_HEROES
+    
+    # Verify that all elements in heroes list are dicts
     assert all(isinstance(hero, dict) for hero in heroes)
 
 
@@ -79,13 +81,11 @@ def test_get_cfg_path_nopath():
     assert _get_steam_userdata_path().exists()
 
 
-def test_get_cfg_path_withpath():
-    """Tests `odhg.get_cfg_path()` with valid argument."""
+def test_get_cfg_path():
+    # Test with existing path
     assert get_cfg_path(PATH).exists()
-
-
-def test_get_cfg_path_invalid_path():
-    """Tests `odhg.get_cfg_path()` with invalid argument."""
+    
+    # Test with nonexistant path
     with pytest.raises(ValueError):
         assert get_cfg_path("notapath")
 
@@ -175,6 +175,7 @@ def test_group_by_all():
 
     # Test that all heroes are in the same category
     assert len(conf["categories"][0]["hero_ids"]) == N_HEROES
+
 
 # config.py
 def test__load_config():
