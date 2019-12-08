@@ -49,6 +49,7 @@ def test_parse_arg_brackets():
     """Tests every Bracket value against `odhg.parse_brackets()`"""
     for b in [b for b in Brackets if b != Brackets.ALL]:
         assert parse_arg_brackets([str(b.value)]) == [b.value]
+        assert parse_arg_brackets([b.value]) == [b.value]
     
     # Mix of ints, chars and strings
     assert parse_arg_brackets([1, 6, "d", "pro"]) == list(set([1, 6, 7, 8]))
