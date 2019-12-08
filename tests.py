@@ -1,9 +1,12 @@
+from pathlib import Path
 import pytest
 
 from categorize import (group_by_all, group_by_main_stat,
-                        group_by_melee_ranged, group_by_role, 
+                        group_by_melee_ranged, group_by_role,
                         sort_heroes_by_winrate)
 from cfg import _get_steam_userdata_path, get_cfg_path
+from config import (CONFIG_BASE, _check_config_integrity, _load_config,
+                    _parse_user_bracket_input)
 from enums import Brackets, Grouping
 from odapi import fetch_hero_stats
 from parseargs import parse_arg_brackets, parse_arg_grouping
@@ -161,3 +164,25 @@ def test_group_by_all():
 
     # Test that all heroes are in the same category
     assert len(conf["categories"][0]["hero_ids"]) == N_HEROES
+
+# config.py
+def test__load_config():
+    """Tests `config._load_config()`"""
+    p = Path("config.yml")
+    if p.exists():
+            if p.stat().st_size > 0:
+                assert _load_config()
+            else:
+                with pytest.raises(ValueError):
+                    assert _load_config()
+    else:
+        with pytest.raises(FileNotFoundError):
+            assert _load_config()
+
+
+def test__check_config_integrity():
+    assert _check_config_integrity(CONFIG_BASE) == CONFIG_BASE
+
+
+def test__parse_user_bracket_input():
+    assert _parse_user_bracket_input("1 2 7") == [1, 2, 7]
