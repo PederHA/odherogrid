@@ -1,4 +1,6 @@
 from pathlib import Path
+from typing import List
+
 import pytest
 
 from categorize import (group_by_all, group_by_main_stat,
@@ -16,7 +18,7 @@ stats = None
 N_HEROES = 119
 
 
-def _get_stats(sort: bool=False):
+def _get_stats(sort: bool=False) -> List[dict]:
     global stats
     if stats is None:
         stats = fetch_hero_stats()
@@ -27,7 +29,6 @@ def _get_stats(sort: bool=False):
 
 def _get_hero_wl(hero: dict, bracket: Brackets) -> float:
     return hero[f"{bracket.value}_win"] / hero[f"{bracket.value}_pick"]
-
 
 
 # odapi.py
@@ -46,13 +47,22 @@ def test_opendota_api_contents():
 # parseargs.py
 def test_parse_arg_brackets():
     """Tests every Bracket value against `odhg.parse_brackets()`"""
-    brackets = [b for b in Brackets if b != Brackets.ALL]
-    for b in brackets:
+    for b in [b for b in Brackets if b != Brackets.ALL]:
         assert parse_arg_brackets([str(b.value)]) == [b.value]
+    
+    # Mix of ints, chars and strings
     assert parse_arg_brackets([1, 6, "d", "pro"]) == list(set([1, 6, 7, 8]))
+    
+    # 0 as arg
     assert parse_arg_brackets([0]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
+    assert parse_arg_brackets(["0"]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
     assert parse_arg_brackets([0, 1, 2, 3, 7]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
+    
+    # Identical arguments of different values
     assert parse_arg_brackets([7, "d", "divine"]) == [7]
+
+    # Duplicate arguments
+    assert parse_arg_brackets([7, 7, 7]) == [7]
 
 
 def test_parse_arg_grouping():
