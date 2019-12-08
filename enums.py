@@ -1,6 +1,7 @@
-from enum import Enum
+from enum import IntEnum
 
-class Brackets(Enum):
+
+class Brackets(IntEnum):
     ALL = 0
     HERALD = 1
     GUARDIAN = 2
@@ -12,7 +13,7 @@ class Brackets(Enum):
     PRO = 8
 
 
-class Grouping(Enum):
+class Grouping(IntEnum):
     NONE = 0
     MAINSTAT = 1
     ATTACK = 2
