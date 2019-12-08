@@ -12,8 +12,8 @@ CONF = "config.yml"
 
 CONFIG_BASE = {
     "path": None,
-    "brackets": [Brackets.DIVINE.value],
-    "grouping": Grouping.MAINSTAT.value,
+    "brackets": [Brackets.DEFAULT.value],
+    "grouping": Grouping.DEFAULT.value,
     "config_name": "OpenDota Hero Winrates",
     "sort": "desc"
 }
