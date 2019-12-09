@@ -55,12 +55,12 @@ python3.7 odhg.py -b 7 -g 1 -sort desc
 
 #### Create grid for Herald hero winrates:
 ```bash
-python3.7 odhg.py --bracket 1
+python3.7 odhg.py --brackets 1
 ```
 
 #### Bracket names can also be used:
 ```bash
-python3.7 odhg.py --bracket herald
+python3.7 odhg.py --brackets herald
 ```
 
 #### Shorter:

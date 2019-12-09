@@ -18,7 +18,7 @@ def get_config_from_cli_arguments(**kwargs) -> dict:
         config = load_config()
         # Fill config with CLI arguments
         for option, argument in kwargs.items():
-            if argument is not None:
+            if argument or argument == 0: # we need to accept 0
                 config[option] = argument
 
     # Parse config values
@@ -28,14 +28,12 @@ def get_config_from_cli_arguments(**kwargs) -> dict:
 
 
 def parse_config(config: dict) -> dict:
-    if "bracket" in config:
-        config["brackets"] = parse_arg_brackets(config.pop("bracket"))
     config["brackets"] = parse_arg_brackets(config["brackets"])
     config["grouping"] = parse_arg_grouping(config["grouping"])
     config["sort"] = (config["sort"] == "desc")
     
-    # We can fall back on preset bracket and grouping defaults
-    # But we can't fall back on a preset default Steam userdata directory path
+    # We can fall back on bracket and grouping defaults
+    # But we can't fall back on a default Steam userdata directory path
     try:
         config["path"] = get_cfg_path(config["path"]) # Steam userdata directory
     except (TypeError, ValueError) as e:
@@ -50,15 +48,15 @@ def parse_config(config: dict) -> dict:
 
 
 @click.command()
-@click.option("--bracket", "-b", default=None, multiple=True)
+@click.option("--brackets", "-b", default=None, multiple=True)
 @click.option("--grouping", "-g", default=None)
 @click.option("--path", "-p", default=None) # we forego click.Path here and do our own check
 @click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
 @click.option("--setup", "-S", is_flag=True)
 def main(**kwargs) -> None:
     if kwargs.pop("setup", None):
-        config = run_first_time_setup()
-        kwargs = config
+        kwargs = run_first_time_setup()
+        # Ask if user wants to generate grid?
     
     config = get_config_from_cli_arguments(**kwargs)
 
