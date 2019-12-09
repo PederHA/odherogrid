@@ -49,11 +49,16 @@ def make_herogrid(data: dict, config: dict, bracket: int) -> None:
 def update_config(grid: dict, config_name: str, path: Path) -> None:
     """Updates hero grid config file in Steam userdata directory."""
     p = path/"hero_grid_config.json"
-    
+
+    # Load contents of file if it exists
     if p.exists():
         config = load_herogrid_config(p) # Load contents of config file if it exists
     else:
-        config = copy.deepcopy(CONFIG_BASE) # Otherwise make a new config
+        config = None
+    
+    # check config contents     
+    if not config or not config.get("configs"):
+        config = copy.deepcopy(CONFIG_BASE) # make new config
     
     # Update existing hero grid if one exists
     for idx, c in enumerate(config["configs"]):
