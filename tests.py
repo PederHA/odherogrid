@@ -91,8 +91,12 @@ def test_get_cfg_path():
 
 
 # enums.py
-def test_brackets():
-    pass
+def test_brackets_default():
+    assert Brackets(Brackets.DEFAULT)
+
+
+def test_grouping_default():
+    assert Grouping(Grouping.DEFAULT)
 
 
 # categorize.py
