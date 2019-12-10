@@ -209,7 +209,7 @@ def _get_brackets(msg: str) -> Optional[List[int]]:
     return _parse_user_bracket_input(b) # Parse user input
  
 
-def _parse_user_bracket_input(inp: str) -> None:
+def _parse_user_bracket_input(inp: str) -> list:
     valid = []
     for bracket in inp.split(" "):
         try:
@@ -219,7 +219,7 @@ def _parse_user_bracket_input(inp: str) -> None:
             pass
         else:
             valid.append(b)
-    return valid
+    return list(set(valid))
 
 
 def setup_grouping(config: dict) -> dict:
