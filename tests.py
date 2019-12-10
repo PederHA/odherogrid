@@ -1,7 +1,9 @@
+import pytest
+
 from pathlib import Path
 from typing import List
 
-import pytest
+
 
 from categorize import (group_by_all, group_by_main_stat,
                         group_by_melee_ranged, group_by_role,
@@ -101,7 +103,7 @@ def test_grouping_default():
 
 # categorize.py
 def test_sort_heroes_by_winrate():
-    """Tests `odhg.sort_heroes_by_winrate()`"""
+    """Tests `categorize.sort_heroes_by_winrate()`"""
     heroes = _get_stats()
     for bracket in [b for b in Brackets if b != Brackets.ALL]:
         heroes = sort_heroes_by_winrate(heroes, bracket=bracket.value)   
@@ -202,3 +204,7 @@ def test__check_config_integrity():
 
 def test__parse_user_bracket_input():
     assert _parse_user_bracket_input("1 2 7") == [1, 2, 7]
+    assert _parse_user_bracket_input("1 q 7") == [1, 7]
+    assert _parse_user_bracket_input("1 2 divine") == [1, 2]
+    assert _parse_user_bracket_input("1 2 3 4 5 6 7 8") == [1, 2, 3, 4, 5, 6, 7, 8]
+    assert _parse_user_bracket_input("7 7 7") == [7]
