@@ -3,8 +3,6 @@ import pytest
 from pathlib import Path
 from typing import List
 
-
-
 from categorize import (group_by_all, group_by_main_stat,
                         group_by_melee_ranged, group_by_role,
                         sort_heroes_by_winrate)
@@ -13,6 +11,7 @@ from config import (CONFIG_BASE, _check_config_integrity, _load_config,
                     _parse_user_bracket_input)
 from enums import Brackets, Grouping
 from odapi import fetch_hero_stats
+from odhg import parse_config
 from parseargs import parse_arg_brackets, parse_arg_grouping
 
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
@@ -31,6 +30,19 @@ def _get_stats(sort: bool=False) -> List[dict]:
 
 def _get_hero_wl(hero: dict, bracket: Brackets) -> float:
     return hero[f"{bracket.value}_win"] / hero[f"{bracket.value}_pick"]
+
+
+# odhg.py
+def test_parse_config():
+    """
+    `odhg.parse_config()`
+
+    Not a very good test.
+    """
+    config = _load_config()
+    config = parse_config(config)
+    for v in config.values():
+        assert v is not None
 
 
 # odapi.py
