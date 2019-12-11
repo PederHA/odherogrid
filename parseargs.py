@@ -30,7 +30,7 @@ _brackets = {
     ("n",) : Brackets.ANCIENT,
     ("d", "immortal", "i") : Brackets.DIVINE,
     ("p", "official", "tournaments") : Brackets.PRO,
-    ("A",) : Brackets.ALL
+    ("A", "all") : Brackets.ALL
 }
 
 _grouping = {
