@@ -30,7 +30,6 @@ def get_config_from_cli_arguments(**kwargs) -> dict:
 def parse_config(config: dict) -> dict:
     config["brackets"] = parse_arg_brackets(config["brackets"])
     config["grouping"] = parse_arg_grouping(config["grouping"])
-    config["sort"] = (config["sort"] == "desc")
     
     # We can fall back on bracket and grouping defaults
     # But we can't fall back on a default Steam userdata directory path
@@ -51,7 +50,7 @@ def parse_config(config: dict) -> dict:
 @click.option("--brackets", "-b", default=None, multiple=True)
 @click.option("--grouping", "-g", default=None)
 @click.option("--path", "-p", default=None) # we forego click.Path here and do our own check
-@click.option("--sort", "-s", type=click.Choice(["asc", "desc"]), default="desc")
+@click.option("--sort", "-s", is_flag=True, default=True) # enable for ascending sorting
 @click.option("--setup", "-S", is_flag=True)
 def main(**kwargs) -> None:
     if kwargs.pop("setup", None):

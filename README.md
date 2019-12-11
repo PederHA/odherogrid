@@ -28,8 +28,11 @@ python3.7 odhg.py [-b, --brackets] bracket (default: 7)
                         <0, n, none>        Single category   
                         
                   [-p, --path] <path of Dota 2 userdata/cfg directory>
+                    Specify absolute path name of Dota 2 userdata/cfg directory.
+                    (It's usually better to run --setup to configure this path.)
                   
-                  [-s, --sort] <asc/desc> (default: desc)
+                  [-s, --sort]
+                    Sort heroes by winrate in ascending order. (Default: descending)
                   
                   [--setup] (flag)
                     Runs first-time setup in order to create an ODHG config.
