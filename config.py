@@ -283,7 +283,7 @@ def run_first_time_setup() -> dict:
             "'config.yml' already exists. Are you sure you want to overwrite it?"
             ):
             click.echo("Aborting setup.")
-            return
+            raise SystemExit
     
     click.echo("Creating new config...")  
     config = CONFIG_BASE
