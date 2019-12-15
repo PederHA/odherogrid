@@ -1,4 +1,5 @@
 import copy
+from typing import Union
 
 from enums import Grouping
 from resources import CONFIG, CATEGORY
@@ -94,8 +95,12 @@ def group_by_role(heroes: list) -> dict:
 
 def _get_new_category(name: str, x_pos: float=0.0, y_pos: float=0.0, width: float=0.0, height: float=0.0) -> dict:
     category = copy.deepcopy(CATEGORY)
-    
     category["category_name"] = name
+
+    x_pos = _absfloat(x_pos)
+    y_pos = _absfloat(y_pos)
+    width = _absfloat(width)
+    height = _absfloat(height)
     
     if x_pos:
         category["x_position"] = x_pos
@@ -107,6 +112,10 @@ def _get_new_category(name: str, x_pos: float=0.0, y_pos: float=0.0, width: floa
         category["height"] = height
     
     return category
+
+
+def _absfloat(n: Union[float, int]) -> float:
+    return float(abs(n))
 
 
 def _get_new_config() -> dict:
