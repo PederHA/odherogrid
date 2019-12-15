@@ -124,9 +124,15 @@ def test_grouping_default():
 
 
 # categorize.py
-def test_sort_heroes_by_winrate():
+def test_create_hero_grid(heroes):
+    """Tests all combinations of Brackets and Grouping."""
+    brackets = [b for b in Brackets if b != 0] # don't include ALL
+    for bracket, grouping in itertools.product(brackets, Grouping):
+        assert create_hero_grid(heroes, bracket, grouping, True)
+    
+
+def test_sort_heroes_by_winrate(heroes):
     """Tests `categorize.sort_heroes_by_winrate()`"""
-    heroes = _get_stats()
     for bracket in [b for b in Brackets if b != Brackets.ALL]:
         heroes = sort_heroes_by_winrate(heroes, bracket=bracket.value)   
         for idx, hero in enumerate(heroes):
