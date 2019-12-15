@@ -32,6 +32,16 @@ def _get_hero_wl(hero: dict, bracket: Brackets) -> float:
     return hero[f"{bracket.value}_win"] / hero[f"{bracket.value}_pick"]
 
 
+@pytest.fixture
+def heroes():
+    return _get_hero_stats()
+
+
+@pytest.fixture
+def heroes_sorted():
+    return _get_hero_stats(sort=True)
+
+
 # odhg.py
 def test_parse_config():
     """
