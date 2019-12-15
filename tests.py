@@ -1,11 +1,13 @@
-import pytest
-
 from pathlib import Path
 from typing import List
+import itertools
+import random
 
-from categorize import (group_by_all, group_by_main_stat,
+import pytest
+
+from categorize import (create_hero_grid, group_by_all, group_by_main_stat,
                         group_by_melee_ranged, group_by_role,
-                        sort_heroes_by_winrate)
+                        sort_heroes_by_winrate, _get_new_category)
 from cfg import _get_steam_userdata_path, get_cfg_path
 from config import (CONFIG_BASE, _check_config_integrity, _load_config,
                     _parse_user_bracket_input)
@@ -19,7 +21,7 @@ stats = None
 N_HEROES = 119
 
 
-def _get_stats(sort: bool=False) -> List[dict]:
+def _get_hero_stats(sort: bool=False) -> List[dict]:
     global stats
     if stats is None:
         stats = fetch_hero_stats()
@@ -56,9 +58,8 @@ def test_parse_config():
 
 
 # odapi.py
-def test_opendota_api():
+def test_opendota_api(heroes):
     """Tests type of data returned by `odhg.fetch_hero_stats()`"""
-    heroes = _get_stats()
     
     # Ensure data returned by fetch_hero_stats() is a list
     assert isinstance(heroes, list)
@@ -85,7 +86,7 @@ def test_parse_arg_brackets():
     assert parse_arg_brackets(["0"]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
     assert parse_arg_brackets([0, 1, 2, 3, 7]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
     
-    # Identical arguments of different values
+    # Different arguments evaluating to the same value
     assert parse_arg_brackets([7, "d", "divine"]) == [7]
 
     # Duplicate arguments
@@ -143,15 +144,14 @@ def test_sort_heroes_by_winrate(heroes):
             assert _get_hero_wl(hero, bracket) >= _get_hero_wl(next_hero, bracket)
 
 
-def test_group_by_main_stat():
+def test_group_by_main_stat(heroes_sorted):
     """Tests `categorize.group_by_main_stat()`"""
     categories = {
         "Strength": "str",
         "Agility": "agi",
         "Intelligence": "int"
     }
-    stats = _get_stats(sort=True)
-    conf = group_by_main_stat(stats)
+    conf = group_by_main_stat(heroes_sorted)
     
     # Test number of categories
     assert len(conf["categories"]) == 3
@@ -159,15 +159,14 @@ def test_group_by_main_stat():
     # Test that heroes are in appropriate categories
     for category in conf["categories"]:
         for hid in category["hero_ids"]:
-            for hero in stats:
+            for hero in heroes_sorted:
                 if hero["id"] == hid:
                     assert hero["primary_attr"] == categories.get(category["category_name"])
 
 
-def test_group_by_melee_ranged():
+def test_group_by_melee_ranged(heroes_sorted):
     """Tests `categorize.group_by_melee_ranged()`"""
-    stats = _get_stats(sort=True)
-    conf = group_by_melee_ranged(stats)
+    conf = group_by_melee_ranged(heroes_sorted)
     
     # Test number of categories
     assert len(conf["categories"]) == 2
@@ -180,10 +179,9 @@ def test_group_by_melee_ranged():
                     assert hero["attack_type"] == category["category_name"]
 
 
-def test_group_by_role():
+def test_group_by_role(heroes_sorted):
     """Tests `categorize.group_by_role()`"""
-    stats = _get_stats(sort=True)
-    conf = group_by_role(stats)
+    conf = group_by_role(heroes_sorted)
     
     # Test number of categories
     assert len(conf["categories"]) == 3
@@ -191,7 +189,7 @@ def test_group_by_role():
     # Test that heroes are in appropriate categories
     for category in conf["categories"]:
         for hid in category["hero_ids"]:
-            for hero in stats:
+            for hero in heroes_sorted:
                 if hero["id"] == hid:
                     if category["category_name"] == "Flexible":
                         assert "Carry" not in hero["roles"] and "Support" not in hero["roles"]
@@ -199,10 +197,9 @@ def test_group_by_role():
                         assert category["category_name"] in hero["roles"]
 
 
-def test_group_by_all():
+def test_group_by_all(heroes_sorted):
     """Tests `categorize.group_by_all()`"""
-    stats = _get_stats(sort=True)
-    conf = group_by_all(stats)
+    conf = group_by_all(heroes_sorted)
 
     # Test that there is only 1 category
     assert len(conf["categories"]) == 1
