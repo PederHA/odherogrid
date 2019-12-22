@@ -1,9 +1,0 @@
-Tests:
-    Rewrite all tests LOL
-
-Sorting:
-    Fix sorting order if a grid is deleted, then re-added. (?)
-
-Arguments:
-    Brackets:
-        * Accept bracket by name (herald, guardian, divine, etc.)
