@@ -19,9 +19,10 @@ CONFIG_BASE = {
 }
 
 
-def _load_config() -> dict:
+def _load_config(*, filename: str=None) -> dict:
     """Loads configuration file and returns it as a dict."""
-    with open(CONF, "r") as f:
+    path = filename or CONF
+    with open(path, "r") as f:
         config = yaml.load(f.read(), Loader=yaml.loader.FullLoader)
     if not config:
         raise ValueError
@@ -50,9 +51,10 @@ def load_config() -> dict:
     return config
 
 
-def update_config(config: dict) -> None:
+def update_config(config: dict, *, filename: str=None) -> None:
     """Saves config as a YAML file."""
-    with open(CONF, "w") as f:
+    path = filename or CONF
+    with open(path, "w") as f:
         f.write(yaml.dump(config, default_flow_style=False))    
 
 
