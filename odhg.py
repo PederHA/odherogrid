@@ -6,18 +6,18 @@ from odapi import fetch_hero_stats
 from parseargs import parse_arg_brackets, parse_arg_grouping
 
 
-def get_config_from_cli_arguments(**kwargs) -> dict:
+def get_config_from_cli_arguments(**options) -> dict:
     """Fills missing arguments using values from 'config.yml'.
     
     Returns config
     """
     # Load config.yml if not all CLI arguments are passed in
-    if all(v for v in kwargs.values()):
-        config = kwargs
+    if all(v for v in options.values()):
+        config = options
     else:
         config = load_config()
         # Fill config with CLI arguments
-        for option, argument in kwargs.items():
+        for option, argument in options.items():
             if argument or argument == 0: # we need to accept 0
                 config[option] = argument
 
@@ -50,14 +50,14 @@ def parse_config(config: dict) -> dict:
 @click.option("--brackets", "-b", default=None, multiple=True)
 @click.option("--grouping", "-g", default=None)
 @click.option("--path", "-p", default=None) # we forego click.Path here and do our own check
-@click.option("--sort", "-s", is_flag=True, default=True) # enable for ascending sorting
+@click.option("--sort", "-s", is_flag=True, default=True) # enable for ascending sorting # TODO: rename sort to one of [sort, sortasc, asc, ascending]
 @click.option("--setup", "-S", is_flag=True)
-def main(**kwargs) -> None:
-    if kwargs.pop("setup", None):
-        kwargs = run_first_time_setup()
+def main(**options) -> None:
+    if options.pop("setup", None):
+        options = run_first_time_setup()
         # Ask if user wants to generate grid?
     
-    config = get_config_from_cli_arguments(**kwargs)
+    config = get_config_from_cli_arguments(**options)
 
     # Fetch hero W/L stats from API
     data = fetch_hero_stats()
