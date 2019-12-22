@@ -1,15 +1,16 @@
-from pathlib import Path
-from typing import List
 import itertools
 import random
+from copy import deepcopy
+from pathlib import Path
+from typing import List
 
 import pytest
 
-from categorize import (create_hero_grid, group_by_all, group_by_main_stat,
-                        group_by_melee_ranged, group_by_role,
-                        sort_heroes_by_winrate, _get_new_category)
+from categorize import (_get_new_category, create_hero_grid, group_by_all,
+                        group_by_main_stat, group_by_melee_ranged,
+                        group_by_role, sort_heroes_by_winrate)
 from cfg import _get_steam_userdata_path, get_cfg_path
-from config import CONFIG_BASE, _check_config_integrity, _load_config
+from config import (CONFIG_BASE, _check_config_integrity, _load_config, update_config)
 from enums import Brackets, Grouping
 from odapi import fetch_hero_stats
 from odhg import parse_config
@@ -18,6 +19,7 @@ from parseargs import parse_arg_brackets, parse_arg_grouping
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
 stats = None
 N_HEROES = 119
+TEST_CONFIG_PATH = "testconf.yml"
 
 
 def _get_hero_stats(sort: bool=False) -> List[dict]:
@@ -41,6 +43,14 @@ def heroes():
 @pytest.fixture
 def heroes_sorted():
     return _get_hero_stats(sort=True)
+
+
+@pytest.fixture
+def testconf():
+    path = Path(TEST_CONFIG_PATH)
+    update_config(CONFIG_BASE, filename=path)
+    yield path
+    return path.unlink()
 
 
 # odhg.py
@@ -226,18 +236,15 @@ def test__get_new_category():
 
 
 # config.py
-def test__load_config():
-    """Tests `config._load_config()`"""
-    p = Path("config.yml")
-    if p.exists():
-            if p.stat().st_size > 0:
-                assert _load_config()
-            else:
-                with pytest.raises(ValueError):
-                    assert _load_config()
-    else:
-        with pytest.raises(FileNotFoundError):
-            assert _load_config()
+def test_update_config(testconf):
+    """Somewhat redundant, seeing as we use update_config in the fixture."""
+    assert update_config(CONFIG_BASE, filename=testconf) is None
+
+
+def test__load_config(testconf):
+    for key in _load_config(filename=testconf):
+        assert key in CONFIG_BASE
+
 
 
 def test__check_config_integrity():
