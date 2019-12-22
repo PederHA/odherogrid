@@ -38,10 +38,10 @@ def get_config_from_cli_arguments(**options) -> dict:
     
     Returns config
     """
-    # Load config.yml if not all CLI arguments are passed in
+    
     if all(v for v in options.values()):
         config = options
-    else:
+    else: # Load config.yml if not all CLI arguments are passed in
         config = load_config()
         # Fill config with CLI arguments
         for option, argument in options.items():
