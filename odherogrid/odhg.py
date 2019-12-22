@@ -1,9 +1,36 @@
+from pathlib import Path
+
 import click
 
 from .cfg import make_herogrid, get_cfg_path
 from .config import load_config, run_first_time_setup
 from .odapi import fetch_hero_stats
 from .parseargs import parse_arg_brackets, parse_arg_grouping
+
+
+def get_help_string() -> dict:
+    """Gets help string from README.md"""
+    p = Path(__file__)
+    with open(p.parent.parent / "README.md", "r") as f:
+        readme = f.read()
+    lines = []
+    active = False
+    start_md = False
+    for line in readme.splitlines():
+        if line.startswith("# Usage"):
+            active = True
+            continue
+        if active:
+            if line.startswith("```"):
+                if not start_md:
+                    start_md = True
+                    continue
+                else:
+                    break # break out once we have reached end of codeblock
+            else:
+                lines.append(line)
+    return "\n".join(lines)
+
 
 
 def get_config_from_cli_arguments(**options) -> dict:
@@ -52,7 +79,13 @@ def parse_config(config: dict) -> dict:
 @click.option("--path", "-p", default=None) # we forego click.Path here and do our own check
 @click.option("--sort", "-s", is_flag=True, default=True) # enable for ascending sorting # TODO: rename sort to one of [sort, sortasc, asc, ascending]
 @click.option("--setup", "-S", is_flag=True)
+@click.option("--help", is_flag=True)
 def main(**options) -> None:
+    if options.pop("help"):
+        click.echo("USAGE:")
+        click.echo(get_help_string())
+        raise SystemExit
+    
     if options.pop("setup", None):
         options = run_first_time_setup()
         # Ask if user wants to generate grid?
