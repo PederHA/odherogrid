@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from typing import Optional, List
+from typing import List, Union
 
 import click
 import yaml
@@ -9,7 +9,7 @@ from .cfg import _get_steam_userdata_path
 from .enums import Brackets, Grouping
 from .parseargs import parse_arg_brackets
 
-CONF = "config.yml"
+CONF = "config.yml" # NOTE: Path("config.yml")?
 
 CONFIG_BASE = {
     "path": None,
@@ -145,6 +145,7 @@ def setup_userdata_cfg_dir(config: dict) -> dict:
     """Configure user's Dota userdata cfg directory.
     """
     # Get default directory for Steam userdata
+    click.echo("\nSteam Userdata Directory:")
     try:
         p = _get_steam_userdata_path()
     except NotImplementedError as e:
@@ -163,7 +164,7 @@ def setup_userdata_cfg_dir(config: dict) -> dict:
             subdirs = {idx+1: d for idx, d in enumerate(directories)}
             
             # Let user select a directory
-            _choices = "\n".join(f"{idx}. {d.stem}" for idx, d in subdirs.items())
+            _choices = "\n".join(f"\t{idx}. {d.stem}" for idx, d in subdirs.items())
             click.echo(_choices)
             
             choice = 0
@@ -183,26 +184,29 @@ def setup_bracket(config: dict) -> dict:
     brackets_end = max(_b_values)
     
     # Prompt user to select a default bracket
-    available_brackets = "\n".join(
-        f"{b.value}. {b.name.capitalize()}" 
-        if b != Brackets.DEFAULT else 
-        f"{b.value}. {b.name.capitalize()} [default]" 
-        for idx, b in enumerate(Brackets)
+    available_brackets = get_enum_string(Brackets)
+    click.echo(f"\nBrackets:\n{available_brackets}")
+
+    brackets = _get_brackets(
+        "Specify default skill bracket(s), separated by spaces", 
+        brackets_start, 
+        brackets_end
     )
-    click.echo(f"\n{available_brackets}")  
-
-    brackets = _get_brackets(f"Specify default skill bracket(s), separated by spaces ({brackets_start}-{brackets_end})")
     while not brackets:
-        brackets = _get_brackets(f"No valid brackets provided. Try again ({brackets_start}-{brackets_end})")
+        brackets = _get_brackets(
+            "No valid brackets provided. Try again", 
+            brackets_start, 
+            brackets_end
+        )
 
-    config["brackets"] = list(set(brackets))
+    config["brackets"] = brackets
 
     return config
 
 
-def _get_brackets(msg: str) -> Optional[List[int]]:
+def _get_brackets(msg: str, brackets_start: int, brackets_end: int) -> List[int]:
     b = click.prompt(
-        msg,
+        f"{msg} ({brackets_start}-{brackets_end})",
         type=str,
         default=str(Brackets.DEFAULT.value),
         show_default=False
@@ -217,23 +221,32 @@ def setup_grouping(config: dict) -> dict:
     grouping_end = max(_g_values)
     
     # Prompt user to select a default grouping
-    grouping = "\n".join(f"{g.value}. {g.name.capitalize()}" for idx, g in enumerate(Grouping))
-    click.echo(grouping)
+    click.echo(get_enum_string(Grouping))
+
     
-    default_grouping = click.prompt(
-        f"Select default hero grouping ({grouping_start}-{grouping_end})",
-        type=int
-        )
+    get_grp = lambda m: click.prompt(
+        f"{m} ({grouping_start}-{grouping_end})",
+        type=int,
+        default=Grouping.DEFAULT.value,
+        show_default=False
+    )  
+    grouping = get_grp("\nSelect default hero grouping") 
+    while grouping not in _g_values:
+        grouping = get_grp("Invalid grouping. Try again")
     
-    while default_grouping not in _g_values:
-        default_grouping = click.prompt(
-            f"Invalid grouping. Try again ({grouping_start}-{grouping_end})",
-            type=int
-            )
-    
-    config["grouping"] = default_grouping
+    config["grouping"] = grouping
 
     return config
+
+
+def get_enum_string(enum: Union[Brackets, Grouping]) -> str:
+    choices = "\n".join(
+        f"\t{e.value}. {e.name.capitalize()}" 
+        if e != enum.DEFAULT else 
+        f"\t{e.value}. {e.name.capitalize()} [default]" 
+        for idx, e in enumerate(enum)
+    )
+    return choices
 
 
 def setup_config_name(config: dict) -> dict:
@@ -266,9 +279,10 @@ def setup_winrate_sorting(config: dict) -> dict:
 
 def run_first_time_setup() -> dict:
     # Create new config file
+    p = Path(CONF)
     if Path(CONF).exists():
         if not click.confirm(
-            "'config.yml' already exists. Are you sure you want to overwrite it?"
+            f"'{p}' already exists. Are you sure you want to overwrite it?"
         ):
             click.echo("Aborting setup.")
             raise SystemExit
