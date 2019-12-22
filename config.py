@@ -7,6 +7,7 @@ import yaml
 
 from cfg import _get_steam_userdata_path
 from enums import Brackets, Grouping
+from parseargs import parse_arg_brackets
 
 CONF = "config.yml"
 
@@ -208,20 +209,7 @@ def _get_brackets(msg: str) -> Optional[List[int]]:
         default=str(Brackets.DEFAULT.value),
         show_default=False
     )
-    return _parse_user_bracket_input(b) # Parse user input
- 
-
-def _parse_user_bracket_input(inp: str) -> list:
-    valid = []
-    for bracket in inp.split(" "):
-        try:
-            b = int(bracket)
-            Brackets(b)
-        except ValueError:
-            pass
-        else:
-            valid.append(b)
-    return list(set(valid))
+    return parse_arg_brackets(b.split(" "))
 
 
 def setup_grouping(config: dict) -> dict:

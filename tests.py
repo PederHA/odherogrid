@@ -9,8 +9,7 @@ from categorize import (create_hero_grid, group_by_all, group_by_main_stat,
                         group_by_melee_ranged, group_by_role,
                         sort_heroes_by_winrate, _get_new_category)
 from cfg import _get_steam_userdata_path, get_cfg_path
-from config import (CONFIG_BASE, _check_config_integrity, _load_config,
-                    _parse_user_bracket_input)
+from config import CONFIG_BASE, _check_config_integrity, _load_config
 from enums import Brackets, Grouping
 from odapi import fetch_hero_stats
 from odhg import parse_config
@@ -130,6 +129,8 @@ def test_create_hero_grid(heroes):
     brackets = [b for b in Brackets if b != 0] # don't include ALL
     for bracket, grouping in itertools.product(brackets, Grouping):
         assert create_hero_grid(heroes, bracket, grouping, True)
+        # TODO: Verify that winrates are in accordance with hero winrates
+        #       for the specific bracket (?)
     
 
 def test_sort_heroes_by_winrate(heroes):
@@ -224,7 +225,6 @@ def test__get_new_category():
         assert _get_new_category("test", **params)
 
 
-
 # config.py
 def test__load_config():
     """Tests `config._load_config()`"""
@@ -242,11 +242,3 @@ def test__load_config():
 
 def test__check_config_integrity():
     assert _check_config_integrity(CONFIG_BASE) == CONFIG_BASE
-
-
-def test__parse_user_bracket_input():
-    assert _parse_user_bracket_input("1 2 7") == [1, 2, 7]
-    assert _parse_user_bracket_input("1 q 7") == [1, 7]
-    assert _parse_user_bracket_input("1 2 divine") == [1, 2]
-    assert _parse_user_bracket_input("1 2 3 4 5 6 7 8") == [1, 2, 3, 4, 5, 6, 7, 8]
-    assert _parse_user_bracket_input("7 7 7") == [7]
