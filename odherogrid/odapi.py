@@ -1,6 +1,6 @@
 import requests
 
-from enums import Brackets
+from .enums import Brackets
 
 def fetch_hero_stats() -> list:
     """Retrieves hero win/loss statistics from OpenDotaAPI."""

@@ -1,0 +1,7 @@
+config.yml
+dist
+odherogrid.egg-info
+.vscode
+.pytest*
+TODO
+*__pycache__*

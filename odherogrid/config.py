@@ -5,9 +5,9 @@ from typing import Optional, List
 import click
 import yaml
 
-from cfg import _get_steam_userdata_path
-from enums import Brackets, Grouping
-from parseargs import parse_arg_brackets
+from .cfg import _get_steam_userdata_path
+from .enums import Brackets, Grouping
+from .parseargs import parse_arg_brackets
 
 CONF = "config.yml"
 
@@ -68,14 +68,13 @@ def _check_config_integrity(config: dict) -> dict:
         "sort": setup_winrate_sorting
     }
 
-    # Check for missing keys
-    missing_keys = [(k, v) for (k, v) in CONFIG_BASE.items() if k not in config]
-
     # Remove unknown keys
     for key in config:
         if key not in CONFIG_BASE:
             config.pop(key)
 
+    # Check for missing keys
+    missing_keys = [(k, v) for (k, v) in CONFIG_BASE.items() if k not in config]
     if missing_keys:
         missing = ", ".join([key for (key, value) in missing_keys])
         click.echo(f"'config.yml' is missing the following keys: {missing}")
@@ -83,6 +82,7 @@ def _check_config_integrity(config: dict) -> dict:
         # Replace missing keys in user's config
         for (key, value) in missing_keys:
             func = CONFIG_FUNCS.get(key)
+            # TODO: add missing config_func handling?
             if click.confirm(
                 f"Do you want add a value for the missing key '{key}'?"
                 ):
@@ -195,8 +195,6 @@ def setup_bracket(config: dict) -> dict:
     while not brackets:
         brackets = _get_brackets(f"No valid brackets provided. Try again ({brackets_start}-{brackets_end})")
 
-    # TODO: Select multiple brackets
-    
     config["brackets"] = list(set(brackets))
 
     return config

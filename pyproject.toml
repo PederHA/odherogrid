@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "odherogrid"
+version = "0.1.0"
+description = "Dota 2 hero grid generator using OpenDotaAPI stats"
+authors = ["PederHA <peder.andresen@gmail.com>"]
+homepage = "https://github.com/PederHA/odherogrid"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pyyaml = "^5.2"
+requests = "^2.22.0"
+click = "^7.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pylint = "^2.4.4"
+
+[tool.poetry.scripts]
+odhg = "odherogrid.scripts.cli:run"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

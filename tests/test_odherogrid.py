@@ -6,15 +6,15 @@ from typing import List
 
 import pytest
 
-from categorize import (_get_new_category, create_hero_grid, group_by_all,
+from odherogrid.categorize import (_get_new_category, create_hero_grid, group_by_all,
                         group_by_main_stat, group_by_melee_ranged,
                         group_by_role, sort_heroes_by_winrate)
-from cfg import _get_steam_userdata_path, get_cfg_path
-from config import (CONFIG_BASE, _check_config_integrity, _load_config, update_config)
-from enums import Brackets, Grouping
-from odapi import fetch_hero_stats
-from odhg import parse_config
-from parseargs import parse_arg_brackets, parse_arg_grouping
+from odherogrid.cfg import _get_steam_userdata_path, get_cfg_path
+from odherogrid.config import (CONFIG_BASE, _check_config_integrity, _load_config, update_config)
+from odherogrid.enums import Brackets, Grouping
+from odherogrid.odapi import fetch_hero_stats
+from odherogrid.odhg import parse_config
+from odherogrid.parseargs import parse_arg_brackets, parse_arg_grouping
 
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
 stats = None
@@ -244,7 +244,6 @@ def test_update_config(testconf):
 def test__load_config(testconf):
     for key in _load_config(filename=testconf):
         assert key in CONFIG_BASE
-
 
 
 def test__check_config_integrity():

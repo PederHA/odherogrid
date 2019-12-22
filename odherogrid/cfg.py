@@ -5,9 +5,9 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from enums import Brackets
-from resources import CONFIG_BASE
-from categorize import create_hero_grid
+from .enums import Brackets
+from .resources import CONFIG_BASE
+from .categorize import create_hero_grid
 
 
 def _get_steam_userdata_path() -> Path:  

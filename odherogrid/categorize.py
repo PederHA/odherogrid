@@ -1,8 +1,8 @@
 import copy
 from typing import Union
 
-from enums import Grouping
-from resources import CONFIG, CATEGORY
+from .enums import Grouping
+from .resources import CONFIG, CATEGORY
 
 
 def create_hero_grid(heroes: list, bracket: int, grouping: int, sorting: bool) -> dict:
@@ -49,7 +49,7 @@ def group_by_main_stat(heroes: list) -> dict:
 
 def group_by_all(heroes: list) -> dict:
     """Get hero grid, all heroes together in a single category."""
-    category = _get_new_category("Heroes", height=1180.0) # TODO: Rename? xd 
+    category = _get_new_category("Heroes", height=1180.0)
 
     config = _get_new_config()
     config["categories"] = [category] # Override predefined categories

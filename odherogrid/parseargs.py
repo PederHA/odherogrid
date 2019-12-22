@@ -7,7 +7,7 @@ from typing import List, Optional, Union, Dict, Tuple
 
 import click
 
-from enums import Brackets, Grouping
+from .enums import Brackets, Grouping
 
 
 def make_mapping(mapping: Dict[Tuple[str], IntEnum]) -> Dict[Union[str, int], IntEnum]:
