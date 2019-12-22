@@ -98,7 +98,7 @@ def _check_config_integrity(config: dict) -> dict:
 
 def remake_config() -> None:
     """Unused"""
-    p = Path("config.yml")
+    p = Path(CONF)
     try:
         p.unlink()
     except FileNotFoundError:
@@ -266,10 +266,10 @@ def setup_winrate_sorting(config: dict) -> dict:
 
 def run_first_time_setup() -> dict:
     # Create new config file
-    if Path("config.yml").exists():
+    if Path(CONF).exists():
         if not click.confirm(
             "'config.yml' already exists. Are you sure you want to overwrite it?"
-            ):
+        ):
             click.echo("Aborting setup.")
             raise SystemExit
     
