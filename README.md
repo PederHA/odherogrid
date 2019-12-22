@@ -4,9 +4,8 @@
 Small script that generates a custom Dota 2 Hero Grid layout of heroes sorted by winrate in public or professional games, using stats from OpenDota.
 
 # Installation
-!! NOT PUBLISHED YET !!
 ```
-pip install odhg
+pip install odherogrid
 ```
 
 
