@@ -94,30 +94,23 @@ def group_by_role(heroes: list) -> dict:
 
 
 def _get_new_category(name: str, x_pos: float=0.0, y_pos: float=0.0, width: float=0.0, height: float=0.0) -> dict:
+    # Copy category and give it a name
     category = copy.deepcopy(CATEGORY)
     category["category_name"] = name
 
-    x_pos = _absfloat(x_pos)
-    y_pos = _absfloat(y_pos)
-    width = _absfloat(width)
-    height = _absfloat(height)
-    
-    if x_pos:
-        category["x_position"] = x_pos
-    if y_pos:
-        category["y_position"] = y_pos
-    if width:
-        category["width"] = width
-    if height:
-        category["height"] = height
-    
+    params = {
+        "x_position": x_pos,
+        "y_position": y_pos,
+        "width": width,
+        "height": height
+    }
+    for param, value in params.items():
+        value = float(abs(value)) # ensure value is a positive float
+        if value:
+            category[param] = value
+
     return category
-
-
-def _absfloat(n: Union[float, int]) -> float:
-    return float(abs(n))
 
 
 def _get_new_config() -> dict:
     return copy.deepcopy(CONFIG)
-
