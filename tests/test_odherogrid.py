@@ -13,7 +13,7 @@ from odherogrid.cfg import _get_steam_userdata_path, get_cfg_path
 from odherogrid.config import (CONFIG_BASE, _check_config_integrity, _load_config, update_config)
 from odherogrid.enums import Brackets, Grouping
 from odherogrid.odapi import fetch_hero_stats
-from odherogrid.odhg import parse_config
+from odherogrid.odhg import parse_config, get_help_string
 from odherogrid.parseargs import parse_arg_brackets, parse_arg_grouping
 
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
@@ -64,6 +64,11 @@ def test_parse_config():
     config = parse_config(config)
     for v in config.values():
         assert v is not None
+
+
+def test_get_help_string():
+    """FIXME: Unfinished"""
+    assert get_help_string()
 
 
 # odapi.py
