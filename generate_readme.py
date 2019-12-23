@@ -1,17 +1,17 @@
-from pathlib import Path
-from typing import TextIO
-from .help import get_cli_help_string
 from datetime import datetime
+from pathlib import Path
+
+from odherogrid.scripts.help import get_cli_help_string
 
 
-def codeblock(text: str, lang: str="") -> None:
+def codeblock(text: str, lang: str="") -> str:
     block = f"""```{lang}
 {text}
 ```"""
     return block
 
 
-def intro(f: TextIO) -> None:
+def intro() -> str:
     text = """# ODHeroGrid
 ![logo](logo.png)
 
@@ -19,27 +19,38 @@ Small script that generates a custom Dota 2 Hero Grid layout of heroes sorted
 by winrate in public or professional games, using stats from OpenDota.
 
 """
-    f.write(text)
+    return text
 
 
-
-def installation(f: TextIO) -> None:
+def installation() -> str:
     text = f"""# Installation
 {codeblock('pip install odherogrid')}
 
 """
-    f.write(text)
+    return text
 
 
-def usage(f: TextIO) -> None:
+def usage() -> str:
     text = f"""# Usage
 {codeblock(get_cli_help_string())}
 
-    """
-    f.write(text)
+"""
+    return text
 
-def examples(f: TextIO) -> None:
-    text = """#
+def examples() -> str:
+    text = """# Examples
+
+
+#### Use options stored in config. (Runs first-time setup if no config exists)
+```bash
+odhg
+```
+The config file will be stored as `~/.odhg/config.yml`
+
+It is recommended to create a config rather than using command-line options.
+
+
+#
 ## Bracket
 
 
@@ -101,24 +112,23 @@ odhg --path C:\\Program Files (x86)\\Steam\\userdata\\420666\\570\\remote\\cfg
 
 
 """
-    f.write(text)
+    return text
 
 
-def screenshots(f: TextIO) -> None:
-    img = Path(__file__).parent.parent.parent / "screenshot_divine.png"
+def screenshots() -> str:
+    fname = "screenshot.png"
+
+    img = Path(fname)
     timestamp = datetime.fromtimestamp(img.stat().st_mtime).isoformat().split("T")[0]
 
     text = f"""# Screenshots
 
-![Divine Winrates](screenshot_divine.png)
+![Divine Winrates]({fname})
 _Divine winrate hero grid generated {timestamp}_
 """
-    f.write(text)
+    return text
 
 if __name__ == "__main__":
-    with open(Path(__file__).parent.parent.parent / "README2.md", "w") as f:
-        intro(f)
-        installation(f)
-        usage(f)
-        examples(f)
-        screenshots(f)
+    with open("README.md", "w") as f:
+        for func in [intro, installation, usage, examples, screenshots]:
+            f.write(func())
