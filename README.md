@@ -41,6 +41,9 @@ odhg  [-b, --brackets] BRACKET (default: 7)
       
       [-S, --setup] (flag)
         Runs first-time setup in order to create a persistent config.
+      
+      [-h, --help] (flag)
+        Displays command usage information.
 ```
 
 # Examples
