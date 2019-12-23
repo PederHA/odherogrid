@@ -40,21 +40,19 @@ odhg  [-b, --brackets] BRACKET (default: 7)
         Sort heroes by winrate in ascending order. (Default: descending)
       
       [--setup] (flag)
-        Runs first-time setup in order to create an ODHG config.
+        Runs first-time setup in order to create a persistent config.
 ```
 
 # Examples
 
 
-#### Use program defaults. (Runs first-time setup if no config.yml exists)
+#### Use options stored in config. (Runs first-time setup if no config exists)
 ```bash
 odhg
 ```
+The config file will be stored as `~/.odhg/config.yml`
 
-#### Corresponding options:
-```bash
-odhg -b 7 -g 1 -sort desc
-```
+It is recommended to create a config rather than using command-line options.
 
 
 #
@@ -77,11 +75,16 @@ odhg -b 1
 odhg -b h
 ```
 
+#
 #### Create grids for Herald, Divine & Pro winrates:
 ```bash
-odhg -b 1 -b d -b pro
+odhg -b 1 -b 7 -b 8
 ```
-
+#### Alternatively:
+```bash
+odhg -b h -b d -b p
+```
+#
 #### Create grids for all brackets:
 ```bash
 odhg -b 0
@@ -94,12 +97,12 @@ odhg -b 0
 
 #### Create grids for Divine hero winrates, grouped by Hero roles (Carry/Support/Flex):
 ```bash
-odhg -g 3
+odhg -g 3 -b 7
 ```
 
 #### Name of grouping method can also be used:
 ```bash
-odhg -g role
+odhg -g role -b 7
 ```
 
 
@@ -111,6 +114,7 @@ odhg -g role
 ```bash
 odhg --path C:\Program Files (x86)\Steam\userdata\420666\570\remote\cfg
 ```
+
 
 
 # Screenshots
