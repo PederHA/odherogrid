@@ -10,7 +10,7 @@ from odherogrid.categorize import (_get_new_category, create_hero_grid, group_by
                         group_by_main_stat, group_by_melee_ranged,
                         group_by_role, sort_heroes_by_winrate)
 from odherogrid.cfg import _get_steam_userdata_path, get_cfg_path
-from odherogrid.config import (CONFIG_BASE, _check_config_integrity, _load_config, update_config)
+from odherogrid.config import (CONFIG_BASE, check_config_integrity, _load_config, update_config)
 from odherogrid.enums import Brackets, Grouping
 from odherogrid.odapi import fetch_hero_stats
 from odherogrid.odhg import parse_config, get_help_string
@@ -19,7 +19,7 @@ from odherogrid.parseargs import parse_arg_brackets, parse_arg_grouping
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
 stats = None
 N_HEROES = 119
-TEST_CONFIG_PATH = "testconf.yml"
+TEST_CONFIG_PATH = "tests/testconf.yml"
 
 
 def _get_hero_stats(sort: bool=False) -> List[dict]:
@@ -251,5 +251,5 @@ def test__load_config(testconf):
         assert key in CONFIG_BASE
 
 
-def test__check_config_integrity():
-    assert _check_config_integrity(CONFIG_BASE) == CONFIG_BASE
+def test_check_config_integrity():
+    assert check_config_integrity(CONFIG_BASE) == CONFIG_BASE

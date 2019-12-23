@@ -27,7 +27,13 @@ def _load_config(*, filename: Union[str, Path]=None) -> dict:
     with open(path, "r") as f:
         config = yaml.load(f.read(), Loader=yaml.loader.FullLoader)
     if not config:
-        raise ValueError
+        if click.confirm(
+            "Config is empty or damaged! "
+            "Do you want to attempt to repair it?"
+        ):
+            return check_config_integrity(config)
+        else:
+            raise SystemExit("Cannot proceed with the current config! Exiting.")
     return config
 
 
@@ -48,7 +54,7 @@ def load_config() -> dict:
             raise SystemExit("Exiting.")
     
     # Ensure all necessary config keys are present
-    config = _check_config_integrity(config)
+    config = check_config_integrity(config)
 
     return config
 
@@ -62,15 +68,7 @@ def update_config(config: dict, *, filename: Union[str, Path]=None) -> None:
         f.write(yaml.dump(config, default_flow_style=False))    
 
 
-def _check_config_integrity(config: dict) -> dict:
-    CONFIG_FUNCS = {
-        "path": setup_userdata_cfg_dir,
-        "brackets": setup_bracket,
-        "grouping": setup_grouping,
-        "config_name": setup_config_name,
-        "sort": setup_winrate_sorting
-    }
-
+def check_config_integrity(config: dict) -> dict:
     # Remove unknown keys
     for key in config:
         if key not in CONFIG_BASE:
@@ -79,22 +77,36 @@ def _check_config_integrity(config: dict) -> dict:
     # Check for missing keys
     missing_keys = [(k, v) for (k, v) in CONFIG_BASE.items() if k not in config]
     if missing_keys:
-        missing = ", ".join([key for (key, value) in missing_keys])
-        click.echo(f"'config.yml' is missing the following keys: {missing}")
+        _fix_missing_keys(config, missing_keys)
+    
+    update_config(config)
+    
+    return config
 
-        # Replace missing keys in user's config
-        for (key, value) in missing_keys:
-            func = CONFIG_FUNCS.get(key)
-            # TODO: add missing config_func handling?
-            if click.confirm(
-                f"Do you want add a value for the missing key '{key}'?"
-                ):
-                config = func(config)
-            else:
-                config[key] = value
-                click.echo("Adding missing key with default value.")
-        
-        update_config(config)
+
+def _fix_missing_keys(config: dict, missing_keys: list) -> dict:
+    CONFIG_FUNCS = {
+        "path": setup_userdata_cfg_dir,
+        "brackets": setup_bracket,
+        "grouping": setup_grouping,
+        "config_name": setup_config_name,
+        "sort": setup_winrate_sorting
+    }
+
+    missing = ", ".join([key for (key, value) in missing_keys])
+    click.echo(f"'config.yml' is missing the following keys: {missing}")
+
+    # Replace missing keys in user's config
+    for (key, value) in missing_keys:
+        func = CONFIG_FUNCS.get(key)
+        # TODO: add missing config_func handling?
+        if click.confirm(
+            f"Do you want add a value for the missing key '{key}'?"
+            ):
+            config = func(config)
+        else:
+            config[key] = value
+            click.echo("Adding missing key with default value.")
 
     return config
 
