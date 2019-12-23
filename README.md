@@ -39,7 +39,7 @@ odhg  [-b, --brackets] BRACKET (default: 7)
       [-s, --sort] (flag)
         Sort heroes by winrate in ascending order. (Default: descending)
       
-      [--setup] (flag)
+      [-S, --setup] (flag)
         Runs first-time setup in order to create a persistent config.
 ```
 
@@ -119,5 +119,5 @@ odhg --path C:\Program Files (x86)\Steam\userdata\420666\570\remote\cfg
 
 # Screenshots
 
-![Divine Winrates](screenshot_divine.png)
+![Divine Winrates](screenshot.png)
 _Divine winrate hero grid generated 2019/12/06_
