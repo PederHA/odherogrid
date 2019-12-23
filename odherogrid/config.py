@@ -9,7 +9,8 @@ from .cfg import _get_steam_userdata_path
 from .enums import Brackets, Grouping
 from .parseargs import parse_arg_brackets
 
-CONF = "config.yml" # NOTE: Path("config.yml")?
+CONF_NAME = "config.yml" # NOTE: Path("config.yml")?
+CONF = Path().home() / ".odhg" / CONF_NAME 
 
 CONFIG_BASE = {
     "path": None,
@@ -20,7 +21,7 @@ CONFIG_BASE = {
 }
 
 
-def _load_config(*, filename: str=None) -> dict:
+def _load_config(*, filename: Union[str, Path]=None) -> dict:
     """Loads configuration file and returns it as a dict."""
     path = filename or CONF
     with open(path, "r") as f:
@@ -52,9 +53,11 @@ def load_config() -> dict:
     return config
 
 
-def update_config(config: dict, *, filename: str=None) -> None:
+def update_config(config: dict, *, filename: Union[str, Path]=None) -> None:
     """Saves config as a YAML file."""
-    path = filename or CONF
+    path = Path((filename or CONF)) # make sure we have a path object
+    if not path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
         f.write(yaml.dump(config, default_flow_style=False))    
 
@@ -262,10 +265,9 @@ def setup_winrate_sorting(config: dict) -> dict:
 
 def run_first_time_setup() -> dict:
     # Create new config file
-    p = Path(CONF)
-    if Path(CONF).exists():
+    if CONF.exists():
         if not click.confirm(
-            f"'{p}' already exists. Are you sure you want to overwrite it?"
+            f"'{CONF}' already exists. Are you sure you want to overwrite it?"
         ):
             click.echo("Aborting setup.")
             raise SystemExit
