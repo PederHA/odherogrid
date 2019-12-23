@@ -96,23 +96,6 @@ def _check_config_integrity(config: dict) -> dict:
     return config
 
 
-def remake_config() -> None:
-    """Unused"""
-    p = Path(CONF)
-    try:
-        p.unlink()
-    except FileNotFoundError:
-        click.echo("Config.yml does not exist!")
-        if not click.confirm("Do you want to run first time setup to create a config?"):
-            return
-    else:
-        click.echo("Running first time setup.")       
-    finally:
-        config = run_first_time_setup()
-        update_config(config)
-        click.echo("Successfully remade config!")
-
-
 def get_path_from_user() -> Path:
     """Gets a valid path from user input."""
     p = click.prompt("Path: ")
