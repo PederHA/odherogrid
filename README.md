@@ -49,7 +49,7 @@ odhg  [-b, --brackets] BRACKET (default: 7)
 
 
 #### Use options stored in config. (Runs first-time setup if no config exists)
-```bash
+```
 odhg
 ```
 The config file will be stored as `~/.odhg/config.yml`
@@ -62,33 +62,38 @@ It is recommended to create a config rather than using command-line options.
 
 
 #### Create grid for Herald hero winrates:
-```bash
+```
 odhg --brackets 1
 ```
 
+
 #### Bracket names can also be used:
-```bash
+```
 odhg --brackets herald
 ```
 
+
 #### Shorter:
-```bash
-odhg -b 1
+```
 odhg -b h
 ```
 
+
 #
 #### Create grids for Herald, Divine & Pro winrates:
-```bash
+```
 odhg -b 1 -b 7 -b 8
 ```
+
 #### Alternatively:
-```bash
+```
 odhg -b h -b d -b p
 ```
+
+
 #
 #### Create grids for all brackets:
-```bash
+```
 odhg -b 0
 ```
 
@@ -98,12 +103,12 @@ odhg -b 0
 
 
 #### Create grids for Divine hero winrates, grouped by Hero roles (Carry/Support/Flex):
-```bash
+```
 odhg -g 3 -b 7
 ```
 
 #### Name of grouping method can also be used:
-```bash
+```
 odhg -g role -b 7
 ```
 
@@ -113,10 +118,9 @@ odhg -g role -b 7
 
 
 #### Specify a specific Steam user CFG directory:
-```bash
-odhg --path C:\Program Files (x86)\Steam\userdata\420666\570\remote\cfg
 ```
-
+odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg
+```
 
 # Screenshots
 
