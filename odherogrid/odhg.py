@@ -6,7 +6,7 @@ from .cfg import make_herogrid, get_cfg_path
 from .config import load_config, run_first_time_setup
 from .odapi import fetch_hero_stats
 from .parseargs import parse_arg_brackets, parse_arg_grouping
-from .scripts.help import get_cli_help_string
+from .help import get_cli_help_string
 
 
 def get_config_from_cli_arguments(**options) -> dict:

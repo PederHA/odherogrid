@@ -1,7 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 
-from odherogrid.scripts.help import get_cli_help_string
+from odherogrid.help import get_cli_help_string
 
 
 def codeblock(text: str, lang: str="") -> str:

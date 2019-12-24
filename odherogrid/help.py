@@ -1,9 +1,18 @@
 from collections import namedtuple, defaultdict
+from enum import Enum, EnumMeta
+from typing import NamedTuple, Iterable, Any, Optional
 
-from ..parseargs import GROUPING, BRACKETS
-from ..enums import Brackets, Grouping
+from .parseargs import GROUPING, BRACKETS
+from .enums import Brackets, Grouping
 
-Param = namedtuple("Param", ["options", "argument_format", "description", "arguments", "argument_type", "description_post"], defaults=[None, None, None])
+
+class Param(NamedTuple):
+    options: Iterable[str]
+    argument_format: str
+    description: str
+    arguments: dict = None
+    argument_type: Optional[Enum] = None # this is quite hacky
+    description_post: str = None
 
 
 params = [
@@ -62,18 +71,18 @@ def get_cli_help_string() -> str:
         # Add description
         lines.append(ident(8) + p.description)
 
-        # Add accepted arguments (if any)
+        # Add valid arguments (if any)
         if p.arguments:
             args = defaultdict(list)
             for arg, value in p.arguments.items():
                 args[value].append(arg)
             for i, vals in args.items():
                 a = f"<{', '.join(str(v) for v in vals)}>"
-                lines.append(ident(12) + a + ident(40-len(a)) + p.argument_type(i).name.capitalize())
+                # Get name associated with Enum value if arg type is Enum
+                if type(p.argument_type) == EnumMeta:
+                    argval = p.argument_type(i).name.capitalize()
+                else:
+                    argval = ""
+                lines.append(ident(12) + a + ident(40-len(a)) + argval)
         lines.append("")
     return "\n".join(lines)
-
-            
-    
-
-    
