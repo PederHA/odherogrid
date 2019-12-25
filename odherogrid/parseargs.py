@@ -1,4 +1,7 @@
-"""Not to be confused with the argparse module in the Python standard library.
+"""
+Functions for parsing command-line arguments.
+
+Not to be confused with the argparse module in the Python standard library.
 You can easily tell the difference, because this module is a piece of shit.
 """
 
@@ -94,4 +97,3 @@ def find_argument_in_mapping(argument: Union[str, int], mapping: dict) -> Option
     if isinstance(argument, str) and argument.isdigit():
         argument = int(argument)
     return mapping.get(argument)  # None is default
-

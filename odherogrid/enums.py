@@ -21,6 +21,7 @@ class Grouping(IntEnum):
     MAINSTAT = 1
     ATTACK = 2
     ROLE = 3
+    EXISTING = 4
 
     # default grouping (Standard Dota 2 hero grid [str, int, agi])
     DEFAULT = MAINSTAT

@@ -9,11 +9,12 @@ import pytest
 from odherogrid.categorize import (_get_new_category, create_hero_grid, group_by_all,
                         group_by_main_stat, group_by_melee_ranged,
                         group_by_role, sort_heroes_by_winrate)
-from odherogrid.cfg import _get_steam_userdata_path, get_cfg_path
+from odherogrid.cfg import _autodetect_steam_userdata_path, get_cfg_path
 from odherogrid.config import (CONFIG_BASE, check_config_integrity, _load_config, update_config)
 from odherogrid.enums import Brackets, Grouping
 from odherogrid.odapi import fetch_hero_stats
-from odherogrid.odhg import parse_config, get_help_string
+from odherogrid.odhg import parse_config
+from odherogrid.help import get_cli_help_string
 from odherogrid.parseargs import parse_arg_brackets, parse_arg_grouping
 
 PATH = r"C:\Program Files (x86)\Steam\userdata\19123403\570\remote\cfg"
@@ -66,9 +67,9 @@ def test_parse_config():
         assert v is not None
 
 
-def test_get_help_string():
+def test_get_cli_help_string():
     """FIXME: Unfinished"""
-    assert get_help_string()
+    assert get_cli_help_string()
 
 
 # odapi.py
@@ -117,7 +118,7 @@ def test_parse_arg_grouping():
 # cfg.py
 def test_get_cfg_path_nopath():
     """Tests `odhg.get_cfg_path()` with no argument."""
-    assert _get_steam_userdata_path().exists()
+    assert _autodetect_steam_userdata_path().exists()
 
 
 def test_get_cfg_path():

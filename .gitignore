@@ -4,3 +4,4 @@ odherogrid.egg-info
 .vscode
 .pytest*
 *__pycache__*
+README2.md

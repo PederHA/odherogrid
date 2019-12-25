@@ -2,7 +2,7 @@ from pathlib import Path
 
 import click
 
-from .cfg import make_herogrid, get_cfg_path
+from .cfg import make_new_herogrid, modify_existing_herogrid, get_cfg_path
 from .config import load_config, run_first_time_setup
 from .odapi import fetch_hero_stats
 from .parseargs import parse_arg_brackets, parse_arg_grouping
@@ -56,6 +56,7 @@ def parse_config(config: dict) -> dict:
 @click.option("--sort", "-s", is_flag=True, default=True) # enable for ascending sorting # TODO: rename sort to one of [sort, sortasc, asc, ascending]
 @click.option("--setup", "-S", is_flag=True)
 @click.option("--help", "-h", is_flag=True)
+@click.option("--name", "-n", default=None, type=str)
 def main(**options) -> None:
     if options.pop("help"):
         click.echo("USAGE:")
@@ -65,15 +66,21 @@ def main(**options) -> None:
     if options.pop("setup", None):
         options = run_first_time_setup()
         # Ask if user wants to generate grid?
+
+    name = options.pop("name")
     
     config = get_config_from_cli_arguments(**options)
+
 
     # Fetch hero W/L stats from API
     data = fetch_hero_stats()
     
     # Create grid for each specified bracket
-    for bracket in config["brackets"]:
-        make_herogrid(data, config, bracket)
+    for bracket in config["brackets"]:    
+        if name: # TODO: Only supports 1 bracket
+            modify_existing_herogrid(data, config, name, bracket) 
+        else:
+            make_new_herogrid(data, config, bracket)
     
 
 # TODO: Config class?

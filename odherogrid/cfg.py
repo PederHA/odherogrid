@@ -1,3 +1,8 @@
+"""
+Functions for loading, modifying and updating `hero_grid_config.json`,
+which is the file in which Dota 2 hero grid layouts are stored.
+"""
+
 import copy
 import json
 import random
@@ -7,10 +12,10 @@ from typing import Optional
 
 from .enums import Brackets
 from .resources import CONFIG_BASE
-from .categorize import create_hero_grid
+from .categorize import create_hero_grid, group_existing
 
 
-def _get_steam_userdata_path() -> Path:  
+def _autodetect_steam_userdata_path() -> Path:  
     if sys.platform == "win32":
         p = Path("C:/Program Files (x86)")
     elif sys.platform == "darwin":
@@ -20,7 +25,11 @@ def _get_steam_userdata_path() -> Path:
     else:
         raise NotImplementedError("Userdata directory auto-detection is not supported for your OS!")  
     
-    return p / "Steam/userdata"
+    p = p / "Steam/userdata"
+    if not p.exists():
+        raise FileNotFoundError("Unable to automatically detect userdata directory!")
+
+    return p
 
 
 def get_cfg_path(path: str) -> Path:
@@ -33,11 +42,11 @@ def get_cfg_path(path: str) -> Path:
     return cfg_path
 
 
-def make_herogrid(data: dict, config: dict, bracket: int) -> None:
-    config_name = f"{config['config_name']} ({Brackets(bracket).name.capitalize()})"
-    grouping = config["grouping"]
-    sorting = config["sort"]
-    path = config["path"]
+def make_new_herogrid(data: list, options: dict, bracket: int) -> None:
+    config_name = f"{options['config_name']} ({Brackets(bracket).name.capitalize()})"
+    grouping = options["grouping"]
+    sorting = options["sort"]
+    path = options["path"]
 
     # Create a new hero grid 
     grid = create_hero_grid(data, bracket, grouping, sorting)
@@ -46,13 +55,20 @@ def make_herogrid(data: dict, config: dict, bracket: int) -> None:
     update_config(grid, config_name, path)
 
 
+def modify_existing_herogrid(heroes: list, options: dict, grid_name: str, bracket: int) -> dict:
+    config = load_herogrid_config(options["path"])
+    for idx, grid in enumerate(config["configs"]):
+        if grid["config_name"] == grid_name:
+            grid = group_existing(grid, heroes, bracket, options["sort"])
+            config["configs"][idx] = grid
+    save_herogrid_config(options["path"], config)
+
+
 def update_config(grid: dict, config_name: str, path: Path) -> None:
     """Updates hero grid config file in Steam userdata directory."""
-    p = path/"hero_grid_config.json"
-
     # Load contents of file if it exists
-    if p.exists():
-        config = load_herogrid_config(p) # Load contents of config file if it exists
+    if path.exists():
+        config = load_herogrid_config(path) # Load contents of config file if it exists
     else:
         config = None
     
@@ -68,7 +84,7 @@ def update_config(grid: dict, config_name: str, path: Path) -> None:
     else:
         config["configs"].append(grid)
 
-    save_herogrid_config(p, config)
+    save_herogrid_config(path, config)
 
 
 def load_herogrid_config(path: Path) -> dict:

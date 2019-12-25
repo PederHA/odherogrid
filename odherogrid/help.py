@@ -7,6 +7,8 @@ from .enums import Brackets, Grouping
 
 
 class Param(NamedTuple):
+    """Describes an ODHG CLI parameter."""
+    # TODO: option_short, option_long ?
     options: Iterable[str]
     argument_format: str
     description: str
@@ -15,6 +17,8 @@ class Param(NamedTuple):
     description_post: str = None
 
 
+# TODO: params dict with "help", "setup" etc. keys
+#       dynamically add click.parameter decorators to odhg.main
 params = [
     Param(
         options=["-b", "--brackets"],
@@ -35,8 +39,13 @@ params = [
     Param(
         options=["-p", "--path"],
         argument_format="PATH",
-        description="""Specify absolute path of Dota 2 userdata/cfg directory.
-        (It's usually better to run --setup to configure this path.)""",
+        description="Specify absolute path of Dota 2 userdata/cfg directory.",
+        description_post="(It's usually better to run --setup to configure this path.)",
+    ),
+    Param(
+        options=["-n", "--name"],
+        argument_format="NAME",
+        description="""Sort heroes by winrate in an already existing custom hero grid.""",
     ),
     Param(
         options=["-s", "--sort"],
@@ -84,5 +93,9 @@ def get_cli_help_string() -> str:
                 else:
                     argval = ""
                 lines.append(ident(12) + a + ident(40-len(a)) + argval)
+        
+        if p.description_post:
+            lines.append(p.description_post)
+        
         lines.append("")
     return "\n".join(lines)

@@ -17,7 +17,7 @@ pytest = "^5.2"
 pylint = "^2.4.4"
 
 [tool.poetry.scripts]
-odhg = "odherogrid.scripts.cli:run"
+odhg = "odherogrid.odhg:main"
 
 [build-system]
 requires = ["poetry>=0.12"]

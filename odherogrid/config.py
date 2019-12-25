@@ -1,3 +1,8 @@
+"""
+This module implements functionality related to generating, maintaining
+and updating a persistent user configuration file for ODHeroGrid. 
+"""
+
 import sys
 from pathlib import Path
 from typing import List, Union
@@ -5,7 +10,7 @@ from typing import List, Union
 import click
 import yaml
 
-from .cfg import _get_steam_userdata_path
+from .cfg import _autodetect_steam_userdata_path
 from .enums import Brackets, Grouping
 from .parseargs import parse_arg_brackets
 
@@ -145,7 +150,7 @@ def setup_userdata_cfg_dir(config: dict) -> dict:
     # Get default directory for Steam userdata
     click.echo("\nSteam Userdata Directory:")
     try:
-        p = _get_steam_userdata_path()
+        p = _autodetect_steam_userdata_path()
     except NotImplementedError as e:
         click.echo(e.args[0])
         cfg_path = ask_steam_userdata_path()
@@ -170,7 +175,7 @@ def setup_userdata_cfg_dir(config: dict) -> dict:
                 choice = click.prompt(f"Select directory (1-{len(directories)})", type=int) 
             cfg_path = subdirs.get(choice)
     finally:    
-        config["path"] = str((cfg_path / "570/remote/cfg"))
+        config["path"] = str((cfg_path / "570/remote/cfg/hero_grid_config.json"))
     
     return config
 
