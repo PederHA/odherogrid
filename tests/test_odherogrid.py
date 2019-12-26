@@ -251,6 +251,3 @@ def test__load_config(testconf):
     for key in _load_config(filename=testconf):
         assert key in CONFIG_BASE
 
-
-def test_check_config_integrity():
-    assert check_config_integrity(CONFIG_BASE) == CONFIG_BASE
