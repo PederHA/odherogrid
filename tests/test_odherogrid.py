@@ -1,6 +1,7 @@
 import itertools
 import random
 from copy import deepcopy
+from io import StringIO
 from pathlib import Path
 from typing import List
 
@@ -53,6 +54,11 @@ def testconf():
     update_config(CONFIG_BASE, filename=path)
     yield path
     return path.unlink()
+
+
+@pytest.fixture
+def config_empty():
+    return deepcopy(CONFIG_BASE)
 
 
 # odhg.py
@@ -249,3 +255,36 @@ def test_update_config(testconf):
 def test__load_config(testconf):
     for key in _load_config(filename=testconf):
         assert key in CONFIG_BASE
+
+
+def test_check_config_integrity_default(monkeypatch, config_empty, testconf):
+    """Tests check_config_integrity(), and chooses to replace missing keys
+    with their default values."""
+    for key in list(config_empty.keys()): # capture keys before modifying
+        config_empty.pop(key)
+
+        # replace with default value ("n" on  Y/n prompt)
+        monkeypatch.setattr("sys.stdin", StringIO("n"))
+        fixed = check_config_integrity(config_empty, filename=testconf)
+        assert fixed == CONFIG_BASE
+
+
+def test_check_config_integrity_userdefined(monkeypatch, config_empty, testconf):
+    """Tests check_config_integrity(), and chooses to replace missing keys
+    with custom values."""
+    answers = {
+        "brackets": "7",
+        "config_name": "test",
+        "grouping": "1",
+        "path": "1",
+        "sort": "1"
+    }
+    for key in list(config_empty.keys()): # capture keys before modifying
+        config_empty.pop(key)
+        
+        # replace with custom value ("y" on Y/n prompt followed by desired choice)
+        answer = answers.get(key)
+        monkeypatch.setattr("sys.stdin", StringIO(f"y\n{answer}"))
+        fixed = check_config_integrity(config_empty, filename=testconf)
+        
+        assert fixed.keys() == CONFIG_BASE.keys()
