@@ -13,6 +13,7 @@ import yaml
 from .cfg import _autodetect_steam_userdata_path
 from .enums import Brackets, Grouping
 from .parseargs import parse_arg_brackets
+from .resources import DEFAULT_NAME
 
 CONF_NAME = "config.yml" # NOTE: Path("config.yml")?
 CONF = Path().home() / ".odhg" / CONF_NAME 
@@ -21,8 +22,8 @@ CONFIG_BASE = {
     "path": None,
     "brackets": [Brackets.DEFAULT.value],
     "grouping": Grouping.DEFAULT.value,
-    "config_name": "OpenDota Hero Winrates",
-    "sort": "desc"
+    "config_name": DEFAULT_NAME,
+    "sort": True,
 }
 
 
@@ -107,7 +108,7 @@ def _fix_missing_keys(config: dict, missing_keys: list) -> dict:
         # TODO: add missing config_func handling?
         if click.confirm(
             f"Do you want add a value for the missing key '{key}'?"
-            ):
+        ):
             config = func(config)
         else:
             config[key] = value
@@ -269,7 +270,7 @@ def setup_config_name(config: dict) -> dict:
 
 def setup_winrate_sorting(config: dict) -> dict:
     click.echo("\nDo you want to sort heroes by winrates descending or ascending?")
-    click.echo("1. Descending [default]")
+    click.echo("1. Descending [default]") # TODO: don't harcode "[default]"
     click.echo("2. Ascending")
     
     choice = 0
