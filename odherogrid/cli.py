@@ -1,18 +1,30 @@
 from collections import namedtuple, defaultdict
 from enum import Enum, EnumMeta
-from typing import NamedTuple, Iterable, Any, Optional
+from typing import NamedTuple, Iterable, Any, Optional, Type, List
+
+import click
 
 from .parseargs import GROUPING, BRACKETS
 from .enums import Brackets, Grouping
 
 INDENT_SPACES = 2
 
+
+# since we can't subclass click.Parameter, we have to do this
 class Param(NamedTuple):
     """Describes an ODHG CLI parameter."""
     # TODO: option_short, option_long ?
+
+    # click.Parameter
     options: Iterable[str]
-    argument_format: str
-    description: str
+    default: Any = None
+    is_flag: bool = False
+    type: Type = None
+    multiple: bool = False
+    
+    # Help text
+    argument_format: str = ""
+    description: str = ""
     arguments: dict = None
     argument_type: Optional[Enum] = None # this is quite hacky
     description_post: str = None
@@ -20,9 +32,11 @@ class Param(NamedTuple):
 
 # TODO: params dict with "help", "setup" etc. keys
 #       dynamically add click.parameter decorators to odhg.main
-params = [
+PARAMS = [
     Param(
         options=["-b", "--brackets"],
+        default=None, # do we need this?
+        multiple=True,
         argument_format=f"BRACKET (default: {Brackets.DEFAULT})",
         description="Which skill bracket to get winrates from.", 
         arguments=BRACKETS,
@@ -32,6 +46,7 @@ params = [
     ),
     Param(
         options=["-g", "--grouping"],
+        default=None,
         argument_format=f"GROUPING (default: {Grouping.DEFAULT})",
         description="How heroes should be grouped in the grid",
         arguments=GROUPING,
@@ -39,44 +54,52 @@ params = [
     ),
     Param(
         options=["-p", "--path"],
+        default=None,
         argument_format="PATH",
         description="Specify absolute path of Dota 2 userdata/cfg directory.",
         description_post="(It's usually better to run --setup to configure this path.)",
     ),
     Param(
         options=["-s", "--sort"],
+        is_flag=True,
+        default=True,
         argument_format="(flag)",
         description="Sort heroes by winrate in ascending order. (Default: descending).",
     ),
     Param(
         options=["-S", "--setup"],
+        is_flag=True,
         argument_format="(flag)",
         description= "Runs first-time setup in order to create a persistent config.",
     ),
     Param(
         options=["-n", "--name"],
+        default=None,
+        type=str,
         argument_format="NAME",
         description="""Sort heroes by winrate in an already existing custom hero grid.""",
     ),
     Param(
         options=["-h", "--help"],
+        is_flag=True,
         argument_format="(flag)",
         description= "Show this message and exit.",
     ),
 ]
 
+
 def indent(steps: int) -> str:
     return " "*INDENT_SPACES * steps
 
-def get_cli_help_string() -> str:
-    ident = lambda i: " "*i
-    BASE_INDENT = 1
+
+def get_help_string() -> str:
+    BASE_INDENT = 1 # steps
 
     lines = []
     lines.append("Usage:")
     lines.append(f"{indent(BASE_INDENT)}odhg [OPTIONS]")
     lines.append("\nOptions:")
-    for p in params:
+    for p in PARAMS:
         # Add option(s) and argument format. E.g. "[-o, --option] OPTION"
         lines.append(f"{indent(BASE_INDENT)}[{', '.join(p.options)}] {p.argument_format}")
 
@@ -102,3 +125,16 @@ def get_cli_help_string() -> str:
         
         lines.append("")
     return "\n".join(lines)
+
+
+def get_click_params() -> List[click.Option]:  
+    return [
+        click.Option(
+            p.options,
+            default=p.default,
+            is_flag=p.is_flag,
+            type=p.type,
+            multiple=p.multiple
+        )
+        for p in PARAMS
+    ]

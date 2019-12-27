@@ -6,7 +6,7 @@ from .cfg import make_new_herogrid, modify_existing_herogrid, get_cfg_path
 from .config import load_config, run_first_time_setup
 from .odapi import fetch_hero_stats
 from .parseargs import parse_arg_brackets, parse_arg_grouping
-from .help import get_cli_help_string
+from .cli import get_help_string, get_click_params
 
 
 def get_config_from_cli_arguments(**options) -> dict:
@@ -58,8 +58,8 @@ def parse_config(config: dict) -> dict:
 @click.option("--help", "-h", is_flag=True)
 @click.option("--name", "-n", default=None, type=str)
 def main(**options) -> None:
-    if options.pop("help"):
-        click.echo(get_cli_help_string())
+    if options.pop("help", None):
+        click.echo(get_help_string())
         raise SystemExit
 
     if options.pop("setup", None):

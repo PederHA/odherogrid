@@ -1,7 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 
-from odherogrid.help import get_cli_help_string
+from odherogrid.cli import get_help_string
 
 
 def codeblock(text: str, lang: str="") -> str:
@@ -32,7 +32,7 @@ def installation() -> str:
 
 def usage() -> str:
     text = f"""# Usage
-{codeblock(get_cli_help_string())}
+{codeblock(get_help_string())}
 
 """
     return text
