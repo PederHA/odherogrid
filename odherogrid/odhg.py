@@ -50,27 +50,19 @@ def parse_config(config: dict) -> dict:
 
 
 @click.command()
-@click.option("--brackets", "-b", default=None, multiple=True)
-@click.option("--grouping", "-g", default=None)
-@click.option("--path", "-p", default=None) # we forego click.Path here and do our own check
-@click.option("--sort", "-s", is_flag=True, default=True) # enable for ascending sorting # TODO: rename sort to one of [sort, sortasc, asc, ascending]
-@click.option("--setup", "-S", is_flag=True)
-@click.option("--help", "-h", is_flag=True)
-@click.option("--name", "-n", default=None, type=str)
 def main(**options) -> None:
     if options.pop("help", None):
         click.echo(get_help_string())
         raise SystemExit
-
+    
     if options.pop("setup", None):
         options = run_first_time_setup()
         # Ask if user wants to generate grid?
 
-    name = options.pop("name")
+    name = options.pop("name", None)
     
     config = get_config_from_cli_arguments(**options)
-
-
+    
     # Fetch hero W/L stats from API
     data = fetch_hero_stats()
     
@@ -78,11 +70,14 @@ def main(**options) -> None:
     for bracket in config["brackets"]:    
         if name: # TODO: Only supports 1 bracket
             modify_existing_herogrid(data, config, name, bracket) 
+            break
         else:
             make_new_herogrid(data, config, bracket)
-    
 
-# TODO: Config class?
+# add parameters defined in cli.py
+main.params.extend(get_click_params())
+
 
 if __name__ == "__main__":   
     main()
+

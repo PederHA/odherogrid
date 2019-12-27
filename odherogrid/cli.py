@@ -29,13 +29,12 @@ class Param(NamedTuple):
     argument_type: Optional[Enum] = None # this is quite hacky
     description_post: str = None
 
-
-# TODO: params dict with "help", "setup" etc. keys
-#       dynamically add click.parameter decorators to odhg.main
+# This is the alternative to stacking decorators on odhg.main()
+# and it also makes it easier to gather documentation and behavior 
+# of command parameters in one place
 PARAMS = [
     Param(
         options=["-b", "--brackets"],
-        default=None, # do we need this?
         multiple=True,
         argument_format=f"BRACKET (default: {Brackets.DEFAULT})",
         description="Which skill bracket to get winrates from.", 
@@ -46,7 +45,6 @@ PARAMS = [
     ),
     Param(
         options=["-g", "--grouping"],
-        default=None,
         argument_format=f"GROUPING (default: {Grouping.DEFAULT})",
         description="How heroes should be grouped in the grid",
         arguments=GROUPING,
@@ -54,7 +52,6 @@ PARAMS = [
     ),
     Param(
         options=["-p", "--path"],
-        default=None,
         argument_format="PATH",
         description="Specify absolute path of Dota 2 userdata/cfg directory.",
         description_post="(It's usually better to run --setup to configure this path.)",
@@ -74,7 +71,6 @@ PARAMS = [
     ),
     Param(
         options=["-n", "--name"],
-        default=None,
         type=str,
         argument_format="NAME",
         description="""Sort heroes by winrate in an already existing custom hero grid.""",
