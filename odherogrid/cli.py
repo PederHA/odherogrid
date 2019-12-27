@@ -4,6 +4,7 @@ from typing import NamedTuple, Iterable, Any, Optional, Type, List
 
 import click
 
+from . import __version__
 from .parseargs import GROUPING, BRACKETS
 from .enums import Brackets, Grouping
 
@@ -21,6 +22,7 @@ class Param(NamedTuple):
     is_flag: bool = False
     type: Type = None
     multiple: bool = False
+    callback: Any = None
     
     # Help text
     argument_format: str = ""
@@ -28,60 +30,6 @@ class Param(NamedTuple):
     arguments: dict = None
     argument_type: Optional[Enum] = None # this is quite hacky
     description_post: str = None
-
-# This is the alternative to stacking decorators on odhg.main()
-# and it also makes it easier to gather documentation and behavior 
-# of command parameters in one place
-PARAMS = [
-    Param(
-        options=["-b", "--brackets"],
-        multiple=True,
-        argument_format=f"BRACKET (default: {Brackets.DEFAULT})",
-        description="Which skill bracket to get winrates from.", 
-        arguments=BRACKETS,
-        argument_type=Brackets,
-        description_post="Hero grids for multiple brackets can be generated "
-                         "by specifying the -b option several times."
-    ),
-    Param(
-        options=["-g", "--grouping"],
-        argument_format=f"GROUPING (default: {Grouping.DEFAULT})",
-        description="How heroes should be grouped in the grid",
-        arguments=GROUPING,
-        argument_type=Grouping
-    ),
-    Param(
-        options=["-p", "--path"],
-        argument_format="PATH",
-        description="Specify absolute path of Dota 2 userdata/cfg directory.",
-        description_post="(It's usually better to run --setup to configure this path.)",
-    ),
-    Param(
-        options=["-s", "--sort"],
-        is_flag=True,
-        default=True,
-        argument_format="(flag)",
-        description="Sort heroes by winrate in ascending order. (Default: descending).",
-    ),
-    Param(
-        options=["-S", "--setup"],
-        is_flag=True,
-        argument_format="(flag)",
-        description= "Runs first-time setup in order to create a persistent config.",
-    ),
-    Param(
-        options=["-n", "--name"],
-        type=str,
-        argument_format="NAME",
-        description="""Sort heroes by winrate in an already existing custom hero grid.""",
-    ),
-    Param(
-        options=["-h", "--help"],
-        is_flag=True,
-        argument_format="(flag)",
-        description= "Show this message and exit.",
-    ),
-]
 
 
 def indent(steps: int) -> str:
@@ -130,7 +78,78 @@ def get_click_params() -> List[click.Option]:
             default=p.default,
             is_flag=p.is_flag,
             type=p.type,
-            multiple=p.multiple
+            multiple=p.multiple,
         )
         for p in PARAMS
     ]
+
+
+def print_version(ctx, param, value) -> None:
+    click.echo(f"Version {__version__}")
+    ctx.exit()
+
+
+def print_help(ctx, param, value) -> None:
+    click.echo(get_help_string())
+    ctx.exit()
+
+
+# This is the alternative to stacking decorators on odhg.main()
+# and it also makes it easier to gather documentation and behavior 
+# of command parameters in one place
+PARAMS = [
+    Param(
+        options=["-b", "--brackets"],
+        multiple=True,
+        argument_format=f"BRACKET (default: {Brackets.DEFAULT})",
+        description="Which skill bracket to get winrates from.", 
+        arguments=BRACKETS,
+        argument_type=Brackets,
+        description_post="Hero grids for multiple brackets can be generated "
+                         "by specifying the -b option several times."
+    ),
+    Param(
+        options=["-g", "--grouping"],
+        argument_format=f"GROUPING (default: {Grouping.DEFAULT})",
+        description="How heroes should be grouped in the grid",
+        arguments=GROUPING,
+        argument_type=Grouping
+    ),
+    Param(
+        options=["-p", "--path"],
+        argument_format="PATH",
+        description="Specify absolute path of Dota 2 userdata/cfg directory.",
+        description_post="(It's usually better to run --setup to configure this path.)",
+    ),
+    Param(
+        options=["-s", "--sort"],
+        is_flag=True,
+        default=True,
+        argument_format="(flag)",
+        description="Sort heroes by winrate in ascending order. (Default: descending).",
+    ),
+    Param(
+        options=["-S", "--setup"],
+        is_flag=True,
+        argument_format="(flag)",
+        description= "Runs first-time setup in order to create a persistent config.",
+    ),
+    Param(
+        options=["-n", "--name"],
+        type=str,
+        argument_format="NAME",
+        description="""Sort heroes by winrate in an already existing custom hero grid.""",
+    ),
+    Param(
+        options=["--version"],
+        is_flag=True,
+        argument_format="(flag)",
+        description= "Show program version.",
+    ),
+    Param(
+        options=["-h", "--help"],
+        is_flag=True,
+        argument_format="(flag)",
+        description= "Show this message and exit.",
+    ),
+]
