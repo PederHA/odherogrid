@@ -74,7 +74,7 @@ def update_config(config: dict, *, filename: Union[str, Path]=None) -> None:
         f.write(yaml.dump(config, default_flow_style=False))    
 
 
-def check_config_integrity(config: dict) -> dict:
+def check_config_integrity(config: dict, *, filename: Union[str, Path]=None) -> dict:
     # Remove unknown keys
     for key in config:
         if key not in CONFIG_BASE:
@@ -84,8 +84,7 @@ def check_config_integrity(config: dict) -> dict:
     missing_keys = [(k, v) for (k, v) in CONFIG_BASE.items() if k not in config]
     if missing_keys:
         _fix_missing_keys(config, missing_keys)
-    
-    update_config(config)
+        update_config(config, filename=filename) # save modified config
     
     return config
 
