@@ -59,7 +59,6 @@ def parse_config(config: dict) -> dict:
 @click.option("--name", "-n", default=None, type=str)
 def main(**options) -> None:
     if options.pop("help"):
-        click.echo("USAGE:")
         click.echo(get_cli_help_string())
         raise SystemExit
 

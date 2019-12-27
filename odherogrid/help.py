@@ -5,6 +5,7 @@ from typing import NamedTuple, Iterable, Any, Optional
 from .parseargs import GROUPING, BRACKETS
 from .enums import Brackets, Grouping
 
+INDENT_SPACES = 2
 
 class Param(NamedTuple):
     """Describes an ODHG CLI parameter."""
@@ -26,8 +27,8 @@ params = [
         description="Which skill bracket to get winrates from.", 
         arguments=BRACKETS,
         argument_type=Brackets,
-        description_post="""Hero grids for multiple brackets can be generated
-        by specifying the -b option several times."""
+        description_post="Hero grids for multiple brackets can be generated "
+                         "by specifying the -b option several times."
     ),
     Param(
         options=["-g", "--grouping"],
@@ -43,11 +44,6 @@ params = [
         description_post="(It's usually better to run --setup to configure this path.)",
     ),
     Param(
-        options=["-n", "--name"],
-        argument_format="NAME",
-        description="""Sort heroes by winrate in an already existing custom hero grid.""",
-    ),
-    Param(
         options=["-s", "--sort"],
         argument_format="(flag)",
         description="Sort heroes by winrate in ascending order. (Default: descending).",
@@ -58,27 +54,34 @@ params = [
         description= "Runs first-time setup in order to create a persistent config.",
     ),
     Param(
+        options=["-n", "--name"],
+        argument_format="NAME",
+        description="""Sort heroes by winrate in an already existing custom hero grid.""",
+    ),
+    Param(
         options=["-h", "--help"],
         argument_format="(flag)",
-        description= "Displays command usage information.",
+        description= "Show this message and exit.",
     ),
 ]
 
+def indent(steps: int) -> str:
+    return " "*INDENT_SPACES * steps
 
 def get_cli_help_string() -> str:
     ident = lambda i: " "*i
+    BASE_INDENT = 1
+
     lines = []
-    lines.append("odhg  ")
-    i = 0
-    for idx, p in enumerate(params):
-        if idx != 0:
-            lines.append(ident(6))
-        
+    lines.append("Usage:")
+    lines.append(f"{indent(BASE_INDENT)}odhg [OPTIONS]")
+    lines.append("\nOptions:")
+    for p in params:
         # Add option(s) and argument format. E.g. "[-o, --option] OPTION"
-        lines[len(lines)-1] += f"[{', '.join(p.options)}] {p.argument_format}"
+        lines.append(f"{indent(BASE_INDENT)}[{', '.join(p.options)}] {p.argument_format}")
 
         # Add description
-        lines.append(ident(8) + p.description)
+        lines.append(indent(BASE_INDENT+1) + p.description)
 
         # Add valid arguments (if any)
         if p.arguments:
@@ -92,10 +95,10 @@ def get_cli_help_string() -> str:
                     argval = p.argument_type(i).name.capitalize()
                 else:
                     argval = ""
-                lines.append(ident(12) + a + ident(40-len(a)) + argval)
+                lines.append(indent(BASE_INDENT+2) + a + " "*(40-len(a)) + argval)
         
         if p.description_post:
-            lines.append(p.description_post)
+            lines.append(indent(BASE_INDENT+1) + p.description_post)
         
         lines.append("")
     return "\n".join(lines)
