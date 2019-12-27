@@ -256,11 +256,11 @@ def get_enum_string(enum: Union[Brackets, Grouping]) -> str:
 def setup_config_name(config: dict) -> dict:
     """Setup for default name of hero grid."""
     click.echo(
-        f"\nChoose a default hero grid name. (current: {config['config_name']})"
+        f"\nChoose a default hero grid name. (default: {DEFAULT_NAME})"
         )
     name = click.prompt(
-        f"New name (leave blank to keep current name)", 
-        default="",
+        f"New name (leave blank to keep default name)", 
+        default=DEFAULT_NAME,
         show_default=False
         )
     if name:
