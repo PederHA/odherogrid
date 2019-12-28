@@ -91,7 +91,7 @@ def check_config_integrity(config: dict, *, filename: Union[str, Path]=None) -> 
 
 def _fix_missing_keys(config: dict, missing_keys: list) -> dict:
     CONFIG_FUNCS = {
-        "path": setup_userdata_cfg_dir,
+        "path": setup_hero_grid_config_path,
         "brackets": setup_bracket,
         "grouping": setup_grouping,
         "config_name": setup_config_name,
@@ -140,11 +140,12 @@ def ask_steam_userdata_path() -> Path:
             click.echo("~/Steam/userdata/<ID>")
         
         return get_path_from_user()
+
     else:
         raise SystemExit("Unable to locate Steam userdata directory.") # abort
 
 
-def setup_userdata_cfg_dir(config: dict) -> dict:
+def setup_hero_grid_config_path(config: dict) -> dict:
     """Configure user's Dota userdata cfg directory.
     """
     # Get default directory for Steam userdata
@@ -256,12 +257,12 @@ def setup_config_name(config: dict) -> dict:
     """Setup for default name of hero grid."""
     click.echo(
         f"\nChoose a default hero grid name. (default: {DEFAULT_NAME})"
-        )
+    )
     name = click.prompt(
         f"New name (leave blank to keep default name)", 
         default=DEFAULT_NAME,
         show_default=False
-        )
+    )
     if name:
         config["config_name"] = name
     return config
@@ -293,7 +294,7 @@ def run_first_time_setup() -> dict:
     config = CONFIG_BASE
 
     # Setup config parameters
-    config = setup_userdata_cfg_dir(config)
+    config = setup_hero_grid_config_path(config)
     config = setup_bracket(config)
     config = setup_grouping(config)
     config = setup_winrate_sorting(config)
