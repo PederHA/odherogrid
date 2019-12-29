@@ -16,7 +16,8 @@ from .parseargs import parse_arg_brackets
 from .resources import DEFAULT_NAME
 
 CONF_NAME = "config.yml" # NOTE: Path("config.yml")?
-CONF = Path().home() / ".odhg" / CONF_NAME 
+CONF_PATH = Path().home() / ".odhg"
+CONFIG = CONF_PATH / CONF_NAME 
 
 CONFIG_BASE = {
     "path": None,
@@ -29,7 +30,7 @@ CONFIG_BASE = {
 
 def _load_config(*, filename: Union[str, Path]=None) -> dict:
     """Loads configuration file and returns it as a dict."""
-    path = filename or CONF
+    path = filename or CONFIG
     with open(path, "r") as f:
         config = yaml.load(f.read(), Loader=yaml.loader.FullLoader)
     if not config:
@@ -67,7 +68,7 @@ def load_config() -> dict:
 
 def update_config(config: dict, *, filename: Union[str, Path]=None) -> None:
     """Saves config as a YAML file."""
-    path = Path((filename or CONF)) # make sure we have a path object
+    path = Path((filename or CONFIG)) # make sure we have a path object
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
@@ -283,9 +284,9 @@ def setup_winrate_sorting(config: dict) -> dict:
 
 def run_first_time_setup() -> dict:
     # Create new config file
-    if CONF.exists():
+    if CONFIG.exists():
         if not click.confirm(
-            f"'{CONF}' already exists. Are you sure you want to overwrite it?"
+            f"'{CONFIG}' already exists. Are you sure you want to overwrite it?"
         ):
             click.echo("Aborting setup.")
             raise SystemExit

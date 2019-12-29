@@ -11,7 +11,7 @@ from enum import Enum
 
 import click
 
-from ..config import CONF
+from ..config import CONFIG
 
 
 class Schedule(Enum):

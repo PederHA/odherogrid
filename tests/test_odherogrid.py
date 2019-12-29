@@ -13,7 +13,7 @@ from odherogrid.categorize import (_get_new_category, create_hero_grid,
                                    sort_heroes_by_winrate)
 from odherogrid.cfg import _autodetect_steam_userdata_path, get_cfg_path
 from odherogrid.cli import get_help_string
-from odherogrid.config import (CONF, CONFIG_BASE, _load_config,
+from odherogrid.config import (CONFIG, CONFIG_BASE, _load_config,
                                check_config_integrity, update_config)
 from odherogrid.enums import Brackets, Grouping
 from odherogrid.odapi import fetch_hero_stats
@@ -128,7 +128,7 @@ def test_get_cfg_path_nopath():
 
 def test_get_cfg_path():
     # Test with default config path
-    assert get_cfg_path(CONF).exists()
+    assert get_cfg_path(CONFIG).exists()
     
     # Test with nonexistant path
     with pytest.raises(ValueError):
