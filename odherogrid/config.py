@@ -15,9 +15,9 @@ from .enums import Brackets, Grouping
 from .parseargs import parse_arg_brackets
 from .resources import DEFAULT_NAME
 
-CONF_NAME = "config.yml" # NOTE: Path("config.yml")?
-CONF_PATH = Path().home() / ".odhg"
-CONFIG = CONF_PATH / CONF_NAME 
+CONFIG_NAME = "config.yml" # NOTE: Path("config.yml")?
+CONFIG_PATH = Path().home() / ".odhg"
+CONFIG = CONFIG_PATH / CONFIG_NAME 
 
 CONFIG_BASE = {
     "path": None,
