@@ -295,11 +295,21 @@ def run_first_time_setup() -> dict:
     config = CONFIG_BASE
 
     # Setup config parameters
-    config = setup_hero_grid_config_path(config)
-    config = setup_bracket(config)
-    config = setup_grouping(config)
-    config = setup_winrate_sorting(config)
-    config = setup_config_name(config)
+    functions = [
+        setup_hero_grid_config_path,
+        setup_bracket,
+        setup_grouping,
+        setup_winrate_sorting,
+        setup_config_name
+    ]
+    # NOTE: I could have done some bullshit with globals()
+    #       and startswith("setup_"), but let's keep it simple
+
+    with click.progressbar(functions) as bar:
+        click.clear()
+        for func in bar:
+            config = func(config)
+            click.clear()
 
     update_config(config)
 
