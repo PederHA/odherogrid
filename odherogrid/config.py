@@ -189,7 +189,7 @@ def setup_bracket(config: dict) -> dict:
     brackets_end = max(_b_values)
     
     # Prompt user to select a default bracket
-    available_brackets = get_enum_string(Brackets)
+    available_brackets = enum_string(Brackets)
     click.echo(f"\nBrackets:\n{available_brackets}")
 
     brackets = _get_brackets(
@@ -226,7 +226,8 @@ def setup_grouping(config: dict) -> dict:
     grouping_end = max(_g_values)
     
     # Prompt user to select a default grouping
-    click.echo(get_enum_string(Grouping))
+    available_grouping = enum_string(Grouping)
+    click.echo(f"Brackets:\n{available_grouping}")
 
     
     get_grp = lambda m: click.prompt(
@@ -244,23 +245,13 @@ def setup_grouping(config: dict) -> dict:
     return config
 
 
-def get_enum_string(enum: Union[Brackets, Grouping]) -> str:
-    choices = "\n".join(
-        f"\t{e.value}. {e.name.capitalize()}" 
-        if e != enum.DEFAULT else 
-        f"\t{e.value}. {e.name.capitalize()} [default]" 
-        for idx, e in enumerate(enum)
-    )
-    return choices
-
-
 def setup_config_name(config: dict) -> dict:
     """Setup for default name of hero grid."""
     click.echo(
-        f"\nChoose a default hero grid name. (default: {DEFAULT_NAME})"
+        f"Choose a default hero grid name. (default: {DEFAULT_NAME})"
     )
     name = click.prompt(
-        f"New name (leave blank to keep default name)", 
+        f"Name", 
         default=DEFAULT_NAME,
         show_default=False
     )

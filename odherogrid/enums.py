@@ -24,3 +24,13 @@ class Grouping(IntEnum):
 
     # default grouping (Standard Dota 2 hero grid [str, int, agi])
     DEFAULT = MAINSTAT
+
+
+def enum_string(enum: IntEnum) -> str:
+    choices = "\n".join(
+        f"\t{e.value}. {e.name.capitalize()}" 
+        if e != enum.DEFAULT else 
+        f"\t{e.value}. {e.name.capitalize()} [default]" 
+        for e in enum
+    )
+    return choices
