@@ -11,7 +11,7 @@ import click
 import yaml
 
 from .cfg import _autodetect_steam_userdata_path
-from .enums import Brackets, Grouping
+from .enums import Brackets, Grouping, enum_start_end, enum_string
 from .parseargs import parse_arg_brackets
 from .resources import DEFAULT_NAME
 
@@ -184,10 +184,8 @@ def setup_hero_grid_config_path(config: dict) -> dict:
 
 def setup_bracket(config: dict) -> dict:
     # Determine lowest and highest Bracket enum value
-    _b_values = [b.value for b in Brackets]
-    brackets_start = min(_b_values)
-    brackets_end = max(_b_values)
-    
+    brackets_start, brackets_end = enum_start_end(Brackets)
+
     # Prompt user to select a default bracket
     available_brackets = enum_string(Brackets)
     click.echo(f"\nBrackets:\n{available_brackets}")
@@ -220,15 +218,13 @@ def _get_brackets(msg: str, brackets_start: int, brackets_end: int) -> List[int]
 
 
 def setup_grouping(config: dict) -> dict:
-    # Determine lowest and highest Grouping enum value
-    _g_values = [g.value for g in Grouping]
-    grouping_start = min(_g_values)
-    grouping_end = max(_g_values)
-    
     # Prompt user to select a default grouping
     available_grouping = enum_string(Grouping)
     click.echo(f"Brackets:\n{available_grouping}")
 
+    # Determine lowest and highest Grouping enum value
+    grouping_start, grouping_end = enum_start_end(Grouping)
+    g_range = list(range(grouping_start, grouping_end+1))
     
     get_grp = lambda m: click.prompt(
         f"{m} ({grouping_start}-{grouping_end})",
@@ -236,8 +232,8 @@ def setup_grouping(config: dict) -> dict:
         default=Grouping.DEFAULT.value,
         show_default=False
     )  
-    grouping = get_grp("\nSelect default hero grouping") 
-    while grouping not in _g_values:
+    grouping = get_grp("Select default hero grouping") 
+    while grouping not in g_range:
         grouping = get_grp("Invalid grouping. Try again")
     
     config["grouping"] = grouping
@@ -261,7 +257,7 @@ def setup_config_name(config: dict) -> dict:
 
 
 def setup_winrate_sorting(config: dict) -> dict:
-    click.echo("\nDo you want to sort heroes by winrates descending or ascending?")
+    click.echo("Do you want to sort heroes by winrates descending or ascending?")
     click.echo("1. Descending [default]") # TODO: don't harcode "[default]"
     click.echo("2. Ascending")
     

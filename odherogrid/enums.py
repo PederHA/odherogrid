@@ -1,4 +1,5 @@
 from enum import IntEnum
+from typing import Tuple
 
 
 class Brackets(IntEnum):
@@ -24,6 +25,13 @@ class Grouping(IntEnum):
 
     # default grouping (Standard Dota 2 hero grid [str, int, agi])
     DEFAULT = MAINSTAT
+
+
+def enum_start_end(enum: IntEnum) -> Tuple[int, int]:
+    _e_values = [e.value for e in enum]
+    e_start = min(_e_values)
+    e_end = max(_e_values) 
+    return e_start, e_end   
 
 
 def enum_string(enum: IntEnum) -> str:
