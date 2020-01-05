@@ -8,6 +8,7 @@ from . import __version__
 from .parseargs import GROUPING, BRACKETS
 from .enums import Brackets, Grouping
 
+
 INDENT_SPACES = 2
 
 
@@ -151,5 +152,12 @@ PARAMS = [
         is_flag=True,
         argument_format="(flag)",
         description= "Show this message and exit.",
+    ),
+    Param(
+        options=["--schedule"],
+        is_flag=True,
+        argument_format="(flag)",
+        description= "Schedule ODHG to run periodically.\n"
+                     "(crontab on UNIX, Task Scheduler on Windows)",
     ),
 ]

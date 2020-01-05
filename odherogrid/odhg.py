@@ -51,6 +51,9 @@ def parse_config(config: dict) -> dict:
 
 @click.command()
 def main(**options) -> None:
+    if options.pop("schedule", None):
+        pass # NYI
+    
     if options.pop("help", None):
         click.echo(get_help_string())
         raise SystemExit
@@ -73,9 +76,6 @@ def main(**options) -> None:
             break
         else:
             make_new_herogrid(data, config, bracket)
-
-# add parameters defined in cli.py
-main.params.extend(get_click_params())
 
 
 if __name__ == "__main__":   
