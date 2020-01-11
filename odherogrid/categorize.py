@@ -2,7 +2,7 @@ import copy
 from typing import Union
 
 from .enums import Grouping
-from .resources import CONFIG, CATEGORY
+from .resources import HERO_GRID_BASE, CATEGORY_BASE
 
 
 def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) -> list:
@@ -28,9 +28,9 @@ def create_hero_grid(heroes: list, bracket: int, grouping: int, sorting: bool) -
     if not grp_func:
         raise ValueError(f"No such grouping: '{grouping}'")
     
-    config = grp_func(heroes)
+    hero_grid = grp_func(heroes)
     
-    return config
+    return hero_grid
 
 
 def group_by_main_stat(heroes: list) -> dict:
@@ -40,23 +40,23 @@ def group_by_main_stat(heroes: list) -> dict:
         "agi": 1,
         "int": 2
     }
-    config = _get_new_config()
+    hero_grid = _get_new_hero_grid_base()
     for hero in heroes:
         idx = CATEGORY_IDX.get(hero["primary_attr"])
-        config["categories"][idx]["hero_ids"].append(hero["id"])
-    return config
+        hero_grid["categories"][idx]["hero_ids"].append(hero["id"])
+    return hero_grid
 
 
 def group_by_all(heroes: list) -> dict:
     """Creates hero grid, all heroes together in a single category."""
     category = _get_new_category("Heroes", height=1180.0)
 
-    config = _get_new_config()
-    config["categories"] = [category] # Override predefined categories
+    hero_grid = _get_new_hero_grid_base()
+    hero_grid["categories"] = [category] # Override predefined categories
 
     for hero in heroes:
-        config["categories"][0]["hero_ids"].append(hero["id"])
-    return config
+        hero_grid["categories"][0]["hero_ids"].append(hero["id"])
+    return hero_grid
 
 
 def group_by_melee_ranged(heroes: list) -> dict:
@@ -64,13 +64,13 @@ def group_by_melee_ranged(heroes: list) -> dict:
     melee = _get_new_category("Melee", height=280.0)
     ranged = _get_new_category("Ranged", y_pos=300.0, height=280.0)
 
-    config = _get_new_config()
-    config["categories"] = [melee, ranged] # Override predefined categories
+    hero_grid = _get_new_hero_grid_base()
+    hero_grid["categories"] = [melee, ranged] # Override predefined categories
 
     for hero in heroes:
         idx = 1 if hero["attack_type"] == "Ranged" else 0
-        config["categories"][idx]["hero_ids"].append(hero["id"])
-    return config
+        hero_grid["categories"][idx]["hero_ids"].append(hero["id"])
+    return hero_grid
 
 
 def group_by_role(heroes: list) -> dict:
@@ -79,8 +79,8 @@ def group_by_role(heroes: list) -> dict:
     support = _get_new_category("Support", y_pos=200.0)
     flex = _get_new_category("Flexible", y_pos=400.0)
 
-    config = _get_new_config()
-    config["categories"] = [carry, support, flex] # Override predefined categories
+    hero_grid = _get_new_hero_grid_base()
+    hero_grid["categories"] = [carry, support, flex] # Override predefined categories
 
     for hero in heroes:
         if "Carry" in hero["roles"]:
@@ -89,31 +89,8 @@ def group_by_role(heroes: list) -> dict:
             idx = 1
         else:
             idx = 2
-        config["categories"][idx]["hero_ids"].append(hero["id"])
-    return config
-
-
-def _get_new_category(name: str, x_pos: float=0.0, y_pos: float=0.0, width: float=0.0, height: float=0.0) -> dict:
-    # Copy category and give it a name
-    category = copy.deepcopy(CATEGORY)
-    category["category_name"] = name
-
-    params = {
-        "x_position": x_pos,
-        "y_position": y_pos,
-        "width": width,
-        "height": height
-    }
-    for param, value in params.items():
-        value = float(abs(value)) # ensure value is a positive float
-        if value:
-            category[param] = value
-
-    return category
-
-
-def _get_new_config() -> dict:
-    return copy.deepcopy(CONFIG)
+        hero_grid["categories"][idx]["hero_ids"].append(hero["id"])
+    return hero_grid
 
 
 def group_existing(config: dict, heroes: list, bracket: int, sort_desc: bool) -> dict:
@@ -132,3 +109,26 @@ def group_existing(config: dict, heroes: list, bracket: int, sort_desc: bool) ->
         category["hero_ids"] = [h[0] for h in heroes_cat]
     
     return config
+
+
+def _get_new_category(name: str, x_pos: float=0.0, y_pos: float=0.0, width: float=0.0, height: float=0.0) -> dict:
+    # Copy category and give it a name
+    category = copy.deepcopy(CATEGORY_BASE)
+    category["category_name"] = name
+
+    params = {
+        "x_position": x_pos,
+        "y_position": y_pos,
+        "width": width,
+        "height": height
+    }
+    for param, value in params.items():
+        value = float(abs(value)) # ensure value is a positive float
+        if value:
+            category[param] = value
+
+    return category
+
+
+def _get_new_hero_grid_base() -> dict:
+    return copy.deepcopy(HERO_GRID_BASE)
