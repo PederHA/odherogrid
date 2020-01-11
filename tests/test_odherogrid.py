@@ -92,25 +92,31 @@ def test_opendota_api(heroes):
 
 
 # parseargs.py
-def test_parse_arg_brackets():
-    """Tests every Bracket value against `odhg.parse_brackets()`"""
+def test_parse_arg_brackets_enum():
+    """Tests every Enum Bracket value against `odhg.parse_brackets()`"""
     for b in [b for b in Brackets if b != Brackets.ALL]:
         assert parse_arg_brackets([str(b.value)]) == [b.value]
         assert parse_arg_brackets([b.value]) == [b.value]
-    
-    # Mix of ints, chars and strings
-    assert parse_arg_brackets([1, 6, "d", "pro"]) == list(set([1, 6, 7, 8]))
-    
-    # 0 as arg
-    assert parse_arg_brackets([0]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
-    assert parse_arg_brackets(["0"]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
-    assert parse_arg_brackets([0, 1, 2, 3, 7]) == list(set([1, 2, 3, 4, 5, 6, 7, 8]))
-    
-    # Different arguments evaluating to the same value
-    assert parse_arg_brackets([7, "d", "divine"]) == [7]
 
-    # Duplicate arguments
-    assert parse_arg_brackets([7, 7, 7]) == [7]
+
+@pytest.mark.parametrize(
+    "test_input,expected",
+    [
+        # Mix of ints, chars and strings
+        ([1, 6, "d", "pro"], list(set([1, 6, 7, 8]))),
+        # 0 as arg
+        ([0], list(set([1, 2, 3, 4, 5, 6, 7, 8]))),
+        (["0"], list(set([1, 2, 3, 4, 5, 6, 7, 8]))),
+        ([0, 1, 2, 3, 7], list(set([1, 2, 3, 4, 5, 6, 7, 8]))),
+        # Duplicate arguments
+        ([7, "d", "divine"], [7]),
+        ([7, 7, 7], [7]),
+        ]
+)
+def test_parse_arg_brackets_mixed(test_input, expected):
+    """Tests different arguments and argument types."""
+    assert parse_arg_brackets(test_input) == expected
+
 
 
 def test_parse_arg_grouping():
