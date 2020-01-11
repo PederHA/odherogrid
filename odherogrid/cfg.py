@@ -32,13 +32,19 @@ def _autodetect_steam_userdata_path() -> Path:
     return p
 
 
-def get_cfg_path(path: str) -> Path:
+def get_hero_grid_config_path(path: str) -> Path:
     try:
         cfg_path = Path(path)
     except TypeError:
         raise TypeError("User cfg directory cannot be a None value!")
+    
+    # Append hero grid config filename if only a directory path is provided
+    if cfg_path.name != "hero_grid_config.json":
+        cfg_path = cfg_path / "hero_grid_config.json"
+    
     if not cfg_path.exists():
-        raise ValueError(f"User cfg directory '{cfg_path}' does not exist!")
+        raise ValueError(f"'{cfg_path}' does not exist!")
+
     return cfg_path
 
 

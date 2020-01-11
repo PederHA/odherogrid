@@ -2,7 +2,7 @@ from pathlib import Path
 
 import click
 
-from .cfg import make_new_herogrid, modify_existing_herogrid, get_cfg_path
+from .cfg import make_new_herogrid, modify_existing_herogrid, get_hero_grid_config_path
 from .config import load_config, run_first_time_setup
 from .odapi import fetch_hero_stats
 from .parseargs import parse_arg_brackets, parse_arg_grouping
@@ -37,7 +37,7 @@ def parse_config(config: dict) -> dict:
     # We can fall back on bracket and grouping defaults
     # But we can't fall back on a default Steam userdata directory path
     try:
-        config["path"] = get_cfg_path(config["path"]) # Steam userdata directory
+        config["path"] = get_hero_grid_config_path(config["path"]) # Steam userdata directory
     except (TypeError, ValueError) as e:
         click.echo(e.args[0])
         click.echo(
