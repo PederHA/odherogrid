@@ -15,13 +15,14 @@ def get_config_from_cli_arguments(**options) -> dict:
     Returns config
     """
     
-    if all(v for v in options.values()):
+    if options and all(v for v in options.values()):
         config = options
-    else: # Load config.yml if not all CLI arguments are passed in
+    else: # Load config.yml if not all required CLI arguments are passed in
+        # Attempt to load config. If no config exists, runs first-time setup.
         config = load_config()
-        # Fill config with CLI arguments
+        # Replace values in config with given CLI arguments (if any)
         for option, argument in options.items():
-            if argument or argument == 0: # we need to accept 0
+            if argument or argument == 0: # we need to accept 0 as a valid argument
                 config[option] = argument
 
     # Parse config values
