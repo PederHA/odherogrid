@@ -16,8 +16,8 @@ from .parseargs import parse_arg_brackets
 from .resources import DEFAULT_NAME
 
 CONFIG_NAME = "config.yml" # NOTE: Path("config.yml")?
-CONFIG_PATH = Path().home() / ".odhg"
-CONFIG = CONFIG_PATH / CONFIG_NAME 
+CONFIG_DIR = Path().home() / ".odhg"
+CONFIG = CONFIG_DIR / CONFIG_NAME 
 
 CONFIG_BASE = {
     "path": None,
@@ -105,10 +105,15 @@ def _fix_missing_keys(config: dict, missing_keys: list) -> dict:
     # Replace missing keys in user's config
     for (key, value) in missing_keys:
         func = CONFIG_FUNCS.get(key)
-        # TODO: add missing config_func handling?
+
         if click.confirm(
             f"Do you want add a value for the missing key '{key}'?"
         ):
+            if not func:
+                raise KeyError(
+                    f"No function exists to fill config entry '{key}'! "
+                    "Report this bug!"
+                    )
             config = func(config)
         else:
             config[key] = value

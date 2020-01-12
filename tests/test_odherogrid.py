@@ -11,11 +11,13 @@ from odherogrid.categorize import (_get_new_category, create_hero_grid,
                                    group_by_all, group_by_main_stat,
                                    group_by_melee_ranged, group_by_role,
                                    sort_heroes_by_winrate)
-from odherogrid.cfg import _autodetect_steam_userdata_path, get_hero_grid_config_path
+from odherogrid.cfg import (_autodetect_steam_userdata_path,
+                            get_hero_grid_config_path)
 from odherogrid.cli import get_help_string
 from odherogrid.config import (CONFIG, CONFIG_BASE, _load_config,
                                check_config_integrity, update_config)
 from odherogrid.enums import Brackets, Grouping
+from odherogrid.error import get_stack_frames
 from odherogrid.odapi import fetch_hero_stats
 from odherogrid.odhg import parse_config
 from odherogrid.parseargs import parse_arg_brackets, parse_arg_grouping
@@ -102,7 +104,12 @@ def test_parse_arg_brackets_enum():
 @pytest.mark.parametrize(
     "test_input,expected",
     [
-        # Mix of ints, chars and strings
+        ##
+        # list(set([1,6,7,8])) == [8, 1, 6, 7] on my computer, so to ensure
+        # testing against correct expected values, all expected values are
+        # converted to set then list.
+        ##
+        # Mix of ints, single chars and strings
         ([1, 6, "d", "pro"], list(set([1, 6, 7, 8]))),
         # 0 as arg
         ([0], list(set([1, 2, 3, 4, 5, 6, 7, 8]))),
@@ -116,7 +123,6 @@ def test_parse_arg_brackets_enum():
 def test_parse_arg_brackets_mixed(test_input, expected):
     """Tests different arguments and argument types."""
     assert parse_arg_brackets(test_input) == expected
-
 
 
 def test_parse_arg_grouping():
@@ -297,3 +303,10 @@ def test_check_config_integrity_userdefined(monkeypatch, config_empty, testconf)
         fixed = check_config_integrity(config_empty, filename=testconf)
         
         assert fixed.keys() == CONFIG_BASE.keys()
+
+
+# errors.py
+def test_get_stack_frames():
+    assert next(get_stack_frames())
+    for frame in get_stack_frames():
+        assert frame

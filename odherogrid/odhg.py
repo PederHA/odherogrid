@@ -7,7 +7,7 @@ from .config import load_config, run_first_time_setup
 from .odapi import fetch_hero_stats
 from .parseargs import parse_arg_brackets, parse_arg_grouping
 from .cli import get_help_string, get_click_params
-
+from .error import handle_exception
 
 def get_config_from_cli_arguments(**options) -> dict:
     """Fills missing arguments using values from 'config.yml'.
@@ -79,6 +79,9 @@ def main(**options) -> None:
             make_new_herogrid(data, config, bracket)
 
 
-if __name__ == "__main__":   
-    main()
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as e:
+        handle_exception(e)
 
