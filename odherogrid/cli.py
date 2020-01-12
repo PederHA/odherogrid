@@ -24,6 +24,9 @@ class Param(NamedTuple):
     type: Type = None
     multiple: bool = False
     callback: Any = None
+
+    # state
+    enabled: bool = True
     
     # Help text
     argument_format: str = ""
@@ -45,6 +48,8 @@ def get_help_string() -> str:
     lines.append(f"{indent(BASE_INDENT)}odhg [OPTIONS]")
     lines.append("\nOptions:")
     for p in PARAMS:
+        if not p.enabled:
+            continue
         # Add option(s) and argument format. E.g. "[-o, --option] OPTION"
         lines.append(f"{indent(BASE_INDENT)}[{', '.join(p.options)}] {p.argument_format}")
 
@@ -82,6 +87,7 @@ def get_click_params() -> List[click.Option]:
             multiple=p.multiple,
         )
         for p in PARAMS
+        if p.enabled
     ]
 
 
@@ -159,5 +165,7 @@ PARAMS = [
         argument_format="(flag)",
         description= "Schedule ODHG to run periodically.\n"
                      "(crontab on UNIX, Task Scheduler on Windows)",
+        enabled=False
+
     ),
 ]

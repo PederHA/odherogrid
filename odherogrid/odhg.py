@@ -79,6 +79,10 @@ def main(**options) -> None:
             make_new_herogrid(data, config, bracket)
 
 
+# add parameters defined in cli.py	
+main.params.extend(get_click_params())
+
+
 if __name__ == "__main__":
     try:
         main()

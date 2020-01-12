@@ -13,13 +13,13 @@ from odherogrid.categorize import (_get_new_category, create_hero_grid,
                                    sort_heroes_by_winrate)
 from odherogrid.cfg import (_autodetect_steam_userdata_path,
                             get_hero_grid_config_path)
-from odherogrid.cli import get_help_string
+from odherogrid.cli import get_help_string, get_click_params
 from odherogrid.config import (CONFIG, CONFIG_BASE, _load_config,
                                check_config_integrity, update_config)
 from odherogrid.enums import Brackets, Grouping
 from odherogrid.error import get_stack_frames
 from odherogrid.odapi import fetch_hero_stats
-from odherogrid.odhg import parse_config
+from odherogrid.odhg import parse_config, main
 from odherogrid.parseargs import parse_arg_brackets, parse_arg_grouping
 
 stats = None
@@ -78,6 +78,19 @@ def test_get_help_string():
     """FIXME: Unfinished"""
     assert get_help_string()
 
+
+def test_parameters():
+    """Ensures parameters are properly added to odhg.main()"""
+    for parameter in get_click_params():
+        attrs = [
+            "human_readable_name", "default", "name", 
+            "nargs", "opts", "hidden", "is_flag", "is_bool_flag",
+            "multiple",
+        ]
+        main_param = next(p for p in main.params if parameter.name == p.name)
+        assert main_param
+        for attr in attrs:
+            assert getattr(parameter, attr) == getattr(main_param, attr)
 
 # odapi.py
 def test_opendota_api(heroes):
