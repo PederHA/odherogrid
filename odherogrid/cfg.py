@@ -43,7 +43,7 @@ def get_hero_grid_config_path(path: str) -> Path:
         cfg_path = cfg_path / "hero_grid_config.json"
     
     if not cfg_path.exists():
-        raise ValueError(f"'{cfg_path}' does not exist!")
+        raise FileNotFoundError(f"'{cfg_path}' does not exist!")
 
     return cfg_path
 

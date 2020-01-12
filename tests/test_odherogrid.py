@@ -140,7 +140,7 @@ def test_get_cfg_path():
 
 def test_get_cfg_path_invalid():
     """Test with nonexistant path"""
-    with pytest.raises(ValueError):
+    with pytest.raises(FileNotFoundError):
         assert get_hero_grid_config_path("notapath")
 
 
