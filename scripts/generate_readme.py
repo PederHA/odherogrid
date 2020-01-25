@@ -3,6 +3,8 @@ from pathlib import Path
 
 from odherogrid.cli import get_help_string
 
+from resources import ODHG_ROOT
+
 
 def codeblock(text: str, lang: str="") -> str:
     block = f"""```{lang}
@@ -113,6 +115,6 @@ _Divine winrate hero grid generated {timestamp}_
     return text
 
 if __name__ == "__main__":
-    with open("README.md", "w") as f:
+    with open(ODHG_ROOT/"README.md", "w") as f:
         for func in [intro, installation, usage, examples, screenshots]:
             f.write(func())

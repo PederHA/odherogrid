@@ -152,6 +152,7 @@ PARAMS = [
         is_flag=True,
         argument_format="(flag)",
         description= "Show program version.",
+        enabled=False
     ),
     Param(
         options=["-h", "--help"],

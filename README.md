@@ -133,4 +133,4 @@ odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg
 # Screenshots
 
 ![Divine Winrates](screenshot.png)
-_Divine winrate hero grid generated 2019-12-26_
+_Divine winrate hero grid generated 2019-12-23_

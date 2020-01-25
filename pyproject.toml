@@ -4,7 +4,7 @@ version = "0.1.2"
 description = "Dota 2 hero grid generator using OpenDotaAPI stats"
 authors = ["PederHA <peder.andresen@gmail.com>"]
 homepage = "https://github.com/PederHA/odherogrid"
-readme = "README.md"
+readme = "PYPIREADME.md"
 
 [tool.poetry.dependencies]
 python = "^3.7"

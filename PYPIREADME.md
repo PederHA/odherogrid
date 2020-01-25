@@ -133,7 +133,7 @@ odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg
 # Screenshots
 
 ![Divine Winrates](screenshot.png)
-_Divine winrate hero grid generated 2019-12-26_
+_Divine winrate hero grid generated 2019-12-23_
 # Changelog
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
