@@ -164,7 +164,7 @@ PARAMS = [
         is_flag=True,
         argument_format="(flag)",
         description= "Schedule ODHG to run periodically.\n"
-                     "(crontab on UNIX, Task Scheduler on Windows)",
+                     "(crontab on UNIX-like systems, Task Scheduler on Windows)",
         enabled=False
 
     ),
