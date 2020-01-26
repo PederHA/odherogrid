@@ -10,6 +10,8 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+import click
+
 from .enums import Brackets
 from .resources import CONFIG_BASE
 from .categorize import create_hero_grid, group_existing
@@ -66,10 +68,26 @@ def make_new_herogrid(data: list, options: dict, bracket: int) -> None:
 
 def modify_existing_herogrid(heroes: list, options: dict, grid_name: str, bracket: int) -> dict:
     config = load_herogrid_config(options["path"])
+    
     for idx, grid in enumerate(config["configs"]):
         if grid["config_name"] == grid_name:
             grid = group_existing(grid, heroes, bracket, options["sort"])
             config["configs"][idx] = grid
+            break
+    else:
+        names = "\n\t".join(sorted([c["config_name"] for c in config["configs"]]))
+        if names:
+            click.echo(
+                f"Unable to locate a hero grid with the name '{grid_name}'!\n"
+                f"The following hero grids were detected:\n\t{names}"
+            )
+        else:
+            click.echo(
+                "No custom hero grids could be found! "
+                "The --name option should only be used sort existing hero grids."
+            )
+        raise SystemExit
+    
     save_herogrid_config(options["path"], config)
 
 
