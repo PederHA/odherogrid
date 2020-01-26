@@ -101,8 +101,23 @@ It is recommended to create a config rather than using command-line options.
     return text
 
 
+def name() -> str:
+    pre = "screenshots/custom_presort.png"
+    post = "screenshots/custom_postsort.png"
+
+    text = f"""#
+## Sort custom grids with `--name`
+{codeblock("odhg --name MyCustomGrid -b 7")}
+#### Before:
+![Before]({pre})
+#### After:
+![After]({post})
+"""
+    return text
+
+
 def screenshots() -> str:
-    fname = "screenshot.png"
+    fname = "screenshots/screenshot.png"
 
     img = Path(fname)
     timestamp = datetime.fromtimestamp(img.stat().st_mtime).isoformat().split("T")[0]
@@ -114,7 +129,8 @@ _Divine winrate hero grid generated {timestamp}_
 """
     return text
 
+
 if __name__ == "__main__":
     with open(ODHG_ROOT/"README.md", "w") as f:
-        for func in [intro, installation, usage, examples, screenshots]:
+        for func in [intro, installation, usage, examples, name, screenshots]:
             f.write(func())

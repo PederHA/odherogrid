@@ -12,3 +12,4 @@ def make_pypi_readme() -> None:
 
 if __name__ == "__main__":
     make_pypi_readme()
+    # TODO: Remove all image tags

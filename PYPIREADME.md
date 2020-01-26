@@ -130,10 +130,19 @@ odhg -g role -b 7
 odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg
 ```
 
+#
+## Sort custom grids with `--name`
+```
+odhg --name MyCustomGrid -b 7
+```
+#### Before:
+![Before](screenshots/custom_presort.png)
+#### After:
+![After](screenshots/custom_postsort.png)
 # Screenshots
 
-![Divine Winrates](screenshot.png)
-_Divine winrate hero grid generated 2019-12-23_
+![Divine Winrates](screenshots/screenshot.png)
+_Divine winrate hero grid generated 2020-01-26_
 # Changelog
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
