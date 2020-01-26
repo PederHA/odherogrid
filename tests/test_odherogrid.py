@@ -163,6 +163,13 @@ def test_get_cfg_path_invalid():
         assert get_hero_grid_config_path("notapath")
 
 
+def test_get_cfg_path_none():
+    """Test with nonexistant path"""
+    with pytest.raises(TypeError) as e:
+        assert get_hero_grid_config_path(None)
+    assert e.exconly() == "TypeError: User cfg directory cannot be a None value!"
+
+
 # enums.py
 def test_brackets_default():
     assert Brackets(Brackets.DEFAULT)
