@@ -96,16 +96,8 @@ def modify_existing_herogrid(heroes: list, options: dict, grid_name: str, bracke
 
 def update_config(grid: dict, config_name: str, path: Path) -> None:
     """Updates hero grid config file in Steam userdata directory."""
-    # Load contents of file if it exists
-    if path.exists():
-        config = load_herogrid_config(path) # Load contents of config file if it exists
-    else:
-        config = None
-    
-    # check config contents     
-    if not config or not config.get("configs"):
-        config = copy.deepcopy(CONFIG_BASE) # make new config
-    
+    config = load_herogrid_config(path)
+
     # Update existing hero grid if one exists
     for idx, c in enumerate(config["configs"]):
         if c["config_name"] == config_name:
@@ -118,8 +110,16 @@ def update_config(grid: dict, config_name: str, path: Path) -> None:
 
 
 def load_herogrid_config(path: Path) -> dict:
+    """Attempts to load hero_grid_config.json. Returns empty config
+    if file is empty or malformed."""
     with open(path, "r") as f:
-        return json.load(f)
+        try:
+            hero_grid_config = json.load(f)
+        except json.JSONDecodeError:
+            click.echo(f"{path} is empty or malformed. A new config will be created.")
+            return copy.deepcopy(CONFIG_BASE)
+        else:
+            return hero_grid_config
 
 
 def save_herogrid_config(path: Path, config: dict) -> None:
