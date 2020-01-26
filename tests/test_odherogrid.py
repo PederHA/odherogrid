@@ -167,7 +167,7 @@ def test_get_cfg_path_none():
     """Test with nonexistant path"""
     with pytest.raises(TypeError) as e:
         assert get_hero_grid_config_path(None)
-    assert e.exconly() == "TypeError: User cfg directory cannot be a None value!"
+    assert e.exconly() == "TypeError: hero grid config path cannot be a None value!"
 
 
 # enums.py

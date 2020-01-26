@@ -39,7 +39,7 @@ def get_hero_grid_config_path(path: str) -> Path:
         cfg_path = Path(path)
     except TypeError as e:
         if e.args and "not NoneType" in e.args[0]: # provide a nicer exception string
-            raise TypeError("User cfg directory cannot be a None value!")
+            raise TypeError("hero grid config path cannot be a None value!")
         else:
             raise
     
@@ -48,6 +48,9 @@ def get_hero_grid_config_path(path: str) -> Path:
         cfg_path = cfg_path / "hero_grid_config.json"
     
     if not cfg_path.exists():
+        # hero_grid_config.json should automatically be created by Dota 2 if it does not exist.
+        # If ODHG can't find the file, the path argument is likely incorrect, hence raising 
+        # this exception.
         raise FileNotFoundError(f"'{cfg_path}' does not exist!")
 
     return cfg_path
