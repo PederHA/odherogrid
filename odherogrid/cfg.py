@@ -51,7 +51,10 @@ def get_hero_grid_config_path(path: str) -> Path:
         # hero_grid_config.json should automatically be created by Dota 2 if it does not exist.
         # If ODHG can't find the file, the path argument is likely incorrect, hence raising 
         # this exception.
-        raise FileNotFoundError(f"'{cfg_path}' does not exist!")
+        raise FileNotFoundError(
+            f"'{cfg_path}' does not exist! "
+            "Verify that the correct file path has been specified."
+        )
 
     return cfg_path
 
