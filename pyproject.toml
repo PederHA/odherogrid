@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "odherogrid"
-version = "0.1.2"
+version = "0.1.3"
 description = "Dota 2 hero grid generator using OpenDotaAPI stats"
 authors = ["PederHA <peder.andresen@gmail.com>"]
 homepage = "https://github.com/PederHA/odherogrid"
