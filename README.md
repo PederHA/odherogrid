@@ -106,10 +106,7 @@ odhg -b 0
 ```
 
 
-#
 ## Grouping
-
-
 #### Create grids for Divine hero winrates, grouped by Hero roles (Carry/Support/Flex):
 ```
 odhg -g 3 -b 7
@@ -121,17 +118,14 @@ odhg -g role -b 7
 ```
 
 
-#
 ## Path
-
-
 #### Specify a specific Steam user CFG directory:
 ```
 odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg
 ```
 
-#
-## Sort custom grids with `--name`
+## Name
+#### Sort custom grids with `--name`
 ```
 odhg --name MyCustomGrid -b 7
 ```

@@ -106,10 +106,7 @@ odhg -b 0
 ```
 
 
-#
 ## Grouping
-
-
 #### Create grids for Divine hero winrates, grouped by Hero roles (Carry/Support/Flex):
 ```
 odhg -g 3 -b 7
@@ -121,17 +118,14 @@ odhg -g role -b 7
 ```
 
 
-#
 ## Path
-
-
 #### Specify a specific Steam user CFG directory:
 ```
 odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg
 ```
 
-#
-## Sort custom grids with `--name`
+## Name
+#### Sort custom grids with `--name`
 ```
 odhg --name MyCustomGrid -b 7
 ```
@@ -147,6 +141,12 @@ _Divine winrate hero grid generated 2020-01-26_
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
+## 0.1.3 (February XXth, 2020)
+### Added
+- Nothing
+
+### Changed
+- Handling of multiple bracket arguments is now performed by `cfg.make_new_hero_grid()` (was `odhg.main()`).
 
 ## 0.1.2 (January 24th, 2020)
 ### Added

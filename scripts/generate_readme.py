@@ -79,10 +79,7 @@ It is recommended to create a config rather than using command-line options.
 {codeblock("odhg -b 0")}
 
 
-#
 ## Grouping
-
-
 #### Create grids for Divine hero winrates, grouped by Hero roles (Carry/Support/Flex):
 {codeblock("odhg -g 3 -b 7")}
 
@@ -90,10 +87,7 @@ It is recommended to create a config rather than using command-line options.
 {codeblock("odhg -g role -b 7")}
 
 
-#
 ## Path
-
-
 #### Specify a specific Steam user CFG directory:
 {codeblock("odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg")}
 
@@ -105,8 +99,8 @@ def name() -> str:
     pre = "screenshots/custom_presort.png"
     post = "screenshots/custom_postsort.png"
 
-    text = f"""#
-## Sort custom grids with `--name`
+    text = f"""## Name
+#### Sort custom grids with `--name`
 {codeblock("odhg --name MyCustomGrid -b 7")}
 #### Before:
 ![Before]({pre})
