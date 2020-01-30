@@ -2,8 +2,8 @@ from pathlib import Path
 
 import click
 
-from .cfg import make_new_herogrid, modify_existing_herogrid, get_hero_grid_config_path
-from .config import load_config, run_first_time_setup
+from .cfg import make_new_herogrids, modify_existing_herogrid, get_hero_grid_config_path
+from .config import load_config, run_first_time_setup, CONFIG_BASE
 from .odapi import fetch_hero_stats
 from .parseargs import parse_arg_brackets, parse_arg_grouping
 from .cli import get_help_string, get_click_params
@@ -61,22 +61,18 @@ def main(**options) -> None:
     
     if options.pop("setup", None):
         options = run_first_time_setup()
-        # Ask if user wants to generate grid?
-
+    
     name = options.pop("name", None)
     
     config = get_config_from_cli_arguments(**options)
-    
+
     # Fetch hero W/L stats from API
     data = fetch_hero_stats()
     
-    # Create grid for each specified bracket
-    for bracket in config["brackets"]:    
-        if name: # TODO: Only supports 1 bracket
-            modify_existing_herogrid(data, config, name, bracket) 
-            break
-        else:
-            make_new_herogrid(data, config, bracket)
+    if name: # Sort custom grid
+        modify_existing_herogrid(data, config, name)
+    else:    # Make new grid
+        make_new_herogrids(data, config)
 
 
 # add parameters defined in cli.py	

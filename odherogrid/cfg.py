@@ -59,28 +59,45 @@ def get_hero_grid_config_path(path: str) -> Path:
     return cfg_path
 
 
-def make_new_herogrid(data: list, options: dict, bracket: int) -> None:
-    config_name = f"{options['config_name']} ({Brackets(bracket).name.capitalize()})"
+def make_new_herogrids(data: list, options: dict) -> None:
+    """Creates a new hero grid based on the parameters passed in.
+    
+    Parameters
+    ----------
+    data : list
+        Hero win/loss data from OpenDota API
+    options : dict
+        CLI/Config options
+    """
+    # Get parameters
     grouping = options["grouping"]
     sorting = options["sort"]
     path = options["path"]
 
-    # Create a new hero grid 
-    grid = create_hero_grid(data, bracket, grouping, sorting)
-    grid["config_name"] = config_name
+    # Load existing config
+    hero_grid_config = load_hero_grid_config(path)
+
+    # Create new hero grids for the specified brackets
+    for bracket in options["brackets"]:
+        grid = create_hero_grid(data, bracket, grouping, sorting)
+        grid["config_name"] = f"{options['config_name']} ({Brackets(bracket).name.capitalize()})"
+        hero_grid_config = update_hero_grid_config(hero_grid_config, grid)
     
-    update_config(grid, config_name, path)
+    save_hero_grid_config(hero_grid_config, path)
 
 
-def modify_existing_herogrid(heroes: list, options: dict, grid_name: str, bracket: int) -> dict:
-    config = load_herogrid_config(options["path"])
+def modify_existing_herogrid(heroes: list, options: dict, grid_name: str) -> dict:
+    # Load existing config
+    config = load_hero_grid_config(options["path"])
     
+    # Look for a hero grid with the specified grid_name
     for idx, grid in enumerate(config["configs"]):
         if grid["config_name"] == grid_name:
-            grid = group_existing(grid, heroes, bracket, options["sort"])
+            grid = group_existing(grid, heroes, options["brackets"][0], options["sort"])
             config["configs"][idx] = grid
             break
     else:
+        # The else-branch is only entered if no matching hero grid could be found
         names = "\n\t".join(sorted([c["config_name"] for c in config["configs"]]))
         if names:
             click.echo(
@@ -90,29 +107,29 @@ def modify_existing_herogrid(heroes: list, options: dict, grid_name: str, bracke
         else:
             click.echo(
                 "No custom hero grids could be found! "
-                "The --name option should only be used sort existing hero grids."
+                "The --name option should only be used to sort existing hero grids."
             )
         raise SystemExit
     
-    save_herogrid_config(options["path"], config)
+    save_hero_grid_config(options["path"], config)
 
 
-def update_config(grid: dict, config_name: str, path: Path) -> None:
-    """Updates hero grid config file in Steam userdata directory."""
-    config = load_herogrid_config(path)
-
+def update_hero_grid_config(hero_grid_config: dict, hero_grid: dict) -> dict:
+    """Updates hero grid configuration with a new hero grid.
+    If a hero grid already exists with the same name, it is overwritten
+    by the new hero grid."""
     # Update existing hero grid if one exists
-    for idx, c in enumerate(config["configs"]):
-        if c["config_name"] == config_name:
-            config["configs"][idx] = grid
+    for idx, c in enumerate(hero_grid_config["configs"]):
+        if c["config_name"] == hero_grid["config_name"]:
+            hero_grid_config["configs"][idx] = hero_grid
             break
     else:
-        config["configs"].append(grid)
+        hero_grid_config["configs"].append(hero_grid)
+    
+    return hero_grid_config
 
-    save_herogrid_config(path, config)
 
-
-def load_herogrid_config(path: Path) -> dict:
+def load_hero_grid_config(path: Path) -> dict:
     """Attempts to load hero_grid_config.json. Returns empty config
     if file is empty or malformed."""
     with open(path, "r") as f:
@@ -125,7 +142,7 @@ def load_herogrid_config(path: Path) -> dict:
             return hero_grid_config
 
 
-def save_herogrid_config(path: Path, config: dict) -> None:
+def save_hero_grid_config(hero_grid_config: dict, path: Path) -> None:
     with open(path, "w") as f:
-        json_data = json.dumps(config, indent="\t")
+        json_data = json.dumps(hero_grid_config, indent="\t")
         f.write(json_data)
