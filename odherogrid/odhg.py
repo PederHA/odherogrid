@@ -15,7 +15,10 @@ def get_config_from_cli_arguments(**options) -> dict:
     Returns config
     """
     
-    if options and all(v for v in options.values()):
+    if options and all(
+        k in CONFIG_BASE and v is not None
+        for k, v in options.items()
+    ):
         config = options
     else: # Load config.yml if not all required CLI arguments are passed in
         # Attempt to load config. If no config exists, runs first-time setup.
