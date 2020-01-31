@@ -1,11 +1,11 @@
 import copy
-from typing import Union
+from typing import Union, List
 
 from .enums import Grouping
 from .resources import HERO_GRID_BASE, CATEGORY_BASE
 
 
-def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) -> list:
+def sort_heroes_by_winrate(heroes: List[dict][dict], bracket: str, descending: bool=True) -> list:
     """Sorts list of heroes by winrate in a specific skill bracket."""
     for hero in heroes:
         if hero["8_pick"] == 0:
@@ -14,7 +14,7 @@ def sort_heroes_by_winrate(heroes: list, bracket: str, descending: bool=True) ->
     return heroes
 
 
-def create_hero_grid(heroes: list, bracket: int, grouping: int, sorting: bool) -> dict:
+def create_hero_grid(heroes: List[dict], bracket: int, grouping: int, sorting: bool) -> dict:
     grouping_funcs = {
         Grouping.MAINSTAT.value: group_by_main_stat,
         Grouping.NONE.value: group_by_all,
@@ -33,7 +33,7 @@ def create_hero_grid(heroes: list, bracket: int, grouping: int, sorting: bool) -
     return hero_grid
 
 
-def group_by_main_stat(heroes: list) -> dict:
+def group_by_main_stat(heroes: List[dict]) -> dict:
     """Creates hero grid, categorized by main stat."""
     CATEGORY_IDX = {
         "str": 0,
@@ -47,7 +47,7 @@ def group_by_main_stat(heroes: list) -> dict:
     return hero_grid
 
 
-def group_by_all(heroes: list) -> dict:
+def group_by_all(heroes: List[dict]) -> dict:
     """Creates hero grid, all heroes together in a single category."""
     category = _get_new_category("Heroes", height=1180.0)
 
@@ -59,7 +59,7 @@ def group_by_all(heroes: list) -> dict:
     return hero_grid
 
 
-def group_by_melee_ranged(heroes: list) -> dict:
+def group_by_melee_ranged(heroes: List[dict]) -> dict:
     """Creates hero grid, categorized by main melee/ranged."""
     melee = _get_new_category("Melee", height=280.0)
     ranged = _get_new_category("Ranged", y_pos=300.0, height=280.0)
@@ -73,7 +73,7 @@ def group_by_melee_ranged(heroes: list) -> dict:
     return hero_grid
 
 
-def group_by_role(heroes: list) -> dict:
+def group_by_role(heroes: List[dict]) -> dict:
     """Creates hero grid, categorized by carry/support/flex."""
     carry = _get_new_category("Carry")
     support = _get_new_category("Support", y_pos=200.0)
@@ -93,7 +93,7 @@ def group_by_role(heroes: list) -> dict:
     return hero_grid
 
 
-def group_existing(config: dict, heroes: list, bracket: int, sort_desc: bool) -> dict:
+def group_existing(config: dict, heroes: List[dict], bracket: int, sort_desc: bool) -> dict:
     """Modifies an existing herogrid."""
     heroes = sort_heroes_by_winrate(heroes, bracket, sort_desc)
     
