@@ -69,6 +69,7 @@ def parse_arg_brackets(brackets: List[Union[str, int]]) -> List[int]:
 
     # Fall back on default value if no valid brackets are provided
     if not valid_brackets:
+        # TODO: raise ValueError?
         valid_brackets = [Brackets.DEFAULT.value]
         click.echo(
             "No valid bracket arguments provided. "
@@ -85,6 +86,7 @@ def parse_arg_grouping(grouping: str) -> int:
     """
     grp = find_argument_in_mapping(grouping, GROUPING)
     if grp is None:
+        # TODO: raise ValueError?
         grp = Grouping.DEFAULT.value
         click.echo(
             "No valid grouping arguments provided. "
