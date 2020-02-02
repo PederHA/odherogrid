@@ -2,9 +2,12 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
-## 0.1.3 (February XXth, 2020)
+## 0.2.0 (February XXth, 2020)
 ### Added
-- Nothing
+- Attempt to adhere to [Semantic Versioning](http://semver.org/)
+- `--quiet` option to suppress stdout. Errors are still displayed.
+- Printing of program steps ("Fetching data", "generating grids", etc.)
+- Printing of ASCII table displaying generated grids upon program completion.
 
 ### Changed
 - Handling of multiple bracket arguments is now performed by `cfg.make_new_hero_grid()` (was `odhg.main()`).
