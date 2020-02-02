@@ -14,7 +14,7 @@ def handle_exception(exception: Exception) -> None:
     IGNORED = [SystemExit]
     if not any(isinstance(exception, e) for e in IGNORED):
         log_file = log_error(exception)
-        print(f"ERROR: {exception.args[0]}")
+        print(f"ERROR: {exception}")
         print(f"Error log saved: {log_file}")    
 
 
@@ -34,15 +34,18 @@ def make_log_file(log_type: str=None) -> Path:
 
 def log_error(exception: Exception) -> Path:
     """
-    Logs exception and writes contents of the 
+    Logs exception. Writes traceback and contents of the 
     interpreter's stack frames to a new log file.
     """
     log_file = make_log_file("error")
     with open(log_file, "w") as f:
-        exc = traceback.format_exception_only(type(exception), exception)
-        if exc:
-            f.write(exc[0])
-        for frame in get_stack_frames():
+        exc = traceback.format_exception(
+            type(exception), exception, tb=exception.__traceback__
+        )
+        for l in exc: # write each line of the traceback
+            f.write(l)
+        f.write("\n\nStack dump:\n\n")
+        for frame in get_stack_frames(): # format as JSON for readability
             stack_locals = json.dumps(
                 dict(frame.f_locals), indent=4, default=str
             )
