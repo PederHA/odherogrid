@@ -5,7 +5,7 @@ from .enums import Grouping
 from .resources import HERO_GRID_BASE, CATEGORY_BASE
 
 
-def sort_heroes_by_winrate(heroes: List[dict][dict], bracket: str, descending: bool=True) -> list:
+def sort_heroes_by_winrate(heroes: List[dict], bracket: str, descending: bool=True) -> list:
     """Sorts list of heroes by winrate in a specific skill bracket."""
     for hero in heroes:
         if hero["8_pick"] == 0:
