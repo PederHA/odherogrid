@@ -85,6 +85,7 @@ def get_click_params() -> List[click.Option]:
             is_flag=p.is_flag,
             type=p.type,
             multiple=p.multiple,
+            callback=p.callback
         )
         for p in PARAMS
         if p.enabled
