@@ -8,7 +8,7 @@ import json
 import random
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import click
 
@@ -59,8 +59,10 @@ def get_hero_grid_config_path(path: str) -> Path:
     return cfg_path
 
 
-def make_new_herogrids(data: list, options: dict) -> None:
-    """Creates a new hero grid based on the parameters passed in.
+def make_new_herogrids(data: List[dict], options: dict) -> List[str]:
+    """Loads contents of hero_grid_config.json, creates new hero grids
+    and saves changes, overwriting existing hero grids with identical
+    names.
     
     Parameters
     ----------
@@ -68,7 +70,15 @@ def make_new_herogrids(data: list, options: dict) -> None:
         Hero win/loss data from OpenDota API
     options : dict
         CLI/Config options
+    
+    Returns
+    -------
+    List[str]
+        List of grid names that were modified.
     """
+    # List of grid names to be returned
+    grids = []
+
     # Get parameters
     grouping = options["grouping"]
     sorting = options["sort"]
@@ -80,21 +90,49 @@ def make_new_herogrids(data: list, options: dict) -> None:
     # Create new hero grids for the specified brackets
     for bracket in options["brackets"]:
         grid = create_hero_grid(data, bracket, grouping, sorting)
-        grid["config_name"] = f"{options['config_name']} ({Brackets(bracket).name.capitalize()})"
+        config_name = f"{options['config_name']} ({Brackets(bracket).name.capitalize()})"
+        grid["config_name"] = config_name
         hero_grid_config = update_hero_grid_config(hero_grid_config, grid)
+        grids.append(config_name) # save list of names
     
     save_hero_grid_config(hero_grid_config, path)
 
+    return grids
 
-def modify_existing_herogrid(heroes: list, options: dict, grid_name: str) -> dict:
+def modify_existing_herogrid(data: List[dict], options: dict, grid_name: str) -> List[str]:
+    """Sort heroes in an existing custom hero grid. 
+    
+    Parameters
+    ----------
+    data : List[dict]
+        Hero win/loss data from OpenDota API
+    options : dict
+        CLI/Config options
+    grid_name : str
+        Name of hero grid to modify
+    
+    Returns
+    -------
+    List[str]
+        List of grid names that were modified.
+    
+    Raises
+    ------
+    SystemExit
+        Program exits if an existing grid with `grid_name` does not exist.
+    """
+    # List of grid names 
+    grids = []
+
     # Load existing config
     config = load_hero_grid_config(options["path"])
     
     # Look for a hero grid with the specified grid_name
     for idx, grid in enumerate(config["configs"]):
         if grid["config_name"] == grid_name:
-            grid = group_existing(grid, heroes, options["brackets"][0], options["sort"])
+            grid = group_existing(grid, data, options["brackets"][0], options["sort"])
             config["configs"][idx] = grid
+            grids.append(grid_name)
             break
     else:
         # The else-branch is only entered if no matching hero grid could be found
@@ -112,6 +150,8 @@ def modify_existing_herogrid(heroes: list, options: dict, grid_name: str) -> dic
         raise SystemExit
     
     save_hero_grid_config(options["path"], config)
+
+    return grids
 
 
 def update_hero_grid_config(hero_grid_config: dict, hero_grid: dict) -> dict:
