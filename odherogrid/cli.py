@@ -1,4 +1,5 @@
 from collections import namedtuple, defaultdict
+from contextlib import contextmanager
 from enum import Enum, EnumMeta
 from typing import NamedTuple, Iterable, Any, Optional, Type, List
 
@@ -100,6 +101,15 @@ def print_version(ctx, param, value) -> None:
 def print_help(ctx, param, value) -> None:
     click.echo(get_help_string())
     ctx.exit()
+
+
+@contextmanager
+def progress(message: str, success: str="✔️", nl: bool=False) -> None:
+    click.echo(message, nl=False)
+    try:
+        yield
+    finally:
+        click.echo(success)
 
 
 # This is the alternative to stacking decorators on odhg.main()
