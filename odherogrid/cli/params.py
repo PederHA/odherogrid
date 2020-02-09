@@ -1,20 +1,16 @@
-from collections import namedtuple, defaultdict
-from contextlib import contextmanager
-from enum import Enum, EnumMeta
-from typing import NamedTuple, Iterable, Any, Optional, Type, List
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any, Iterable, List, Optional, Type
 
 import click
 
-from . import __version__
-from .parseargs import GROUPING, BRACKETS
-from .enums import Brackets, Grouping
-
-
-INDENT_SPACES = 2
+from ..enums import Brackets, Grouping
+from .parse import BRACKETS, GROUPING
 
 
 # since we can't subclass click.Parameter, we have to do this
-class Param(NamedTuple):
+@dataclass
+class Param:
     """Describes an ODHG CLI parameter."""
     # TODO: option_short, option_long ?
 
@@ -32,50 +28,18 @@ class Param(NamedTuple):
     # Help text
     argument_format: str = ""
     description: str = ""
-    arguments: dict = None
+    arguments: Optional[dict] = None
     argument_type: Optional[Enum] = None # this is quite hacky
-    description_post: str = None
+    description_post: str = ""
 
-
-def indent(steps: int) -> str:
-    return " "*INDENT_SPACES * steps
-
-
-def get_help_string() -> str:
-    BASE_INDENT = 1 # steps
-
-    lines = []
-    lines.append("Usage:")
-    lines.append(f"{indent(BASE_INDENT)}odhg [OPTIONS]")
-    lines.append("\nOptions:")
-    for p in PARAMS:
-        if not p.enabled:
-            continue
-        # Add option(s) and argument format. E.g. "[-o, --option] OPTION"
-        lines.append(f"{indent(BASE_INDENT)}[{', '.join(p.options)}] {p.argument_format}")
-
-        # Add description
-        lines.append(indent(BASE_INDENT+1) + p.description)
-
-        # Add valid arguments (if any)
-        if p.arguments:
-            args = defaultdict(list)
-            for arg, value in p.arguments.items():
-                args[value].append(arg)
-            for i, vals in args.items():
-                a = f"<{', '.join(str(v) for v in vals)}>"
-                # Get name associated with Enum value if arg type is Enum
-                if type(p.argument_type) == EnumMeta:
-                    argval = p.argument_type(i).name.capitalize()
-                else:
-                    argval = ""
-                lines.append(indent(BASE_INDENT+2) + a + " "*(40-len(a)) + argval)
-        
-        if p.description_post:
-            lines.append(indent(BASE_INDENT+1) + p.description_post)
-        
-        lines.append("")
-    return "\n".join(lines)
+    def __post_init__(self) -> None:
+        if not self.argument_format:
+            if self.is_flag:
+                self.argument_format = "(flag)"
+            elif type == int:
+                self.argument_format = "NUMBER"
+            elif type == str:
+                self.argument_format = "TEXT"
 
 
 def get_click_params() -> List[click.Option]:  
@@ -91,31 +55,6 @@ def get_click_params() -> List[click.Option]:
         for p in PARAMS
         if p.enabled
     ]
-
-
-def print_version(ctx, param, value) -> None:
-    click.echo(f"Version {__version__}")
-    ctx.exit()
-
-
-def print_help(ctx, param, value) -> None:
-    click.echo(get_help_string())
-    ctx.exit()
-
-
-@contextmanager
-def progress(message: str, 
-             success: str="✔️", 
-             width: int=25, 
-             ljust: bool=True, 
-             nl: bool=False
-            ) -> None:
-    message = message.ljust(width) if ljust else message.rjust(width)
-    click.echo(message, nl=False)
-    try:
-        yield
-    finally:
-        click.echo(success)
 
 
 # This is the alternative to stacking decorators on odhg.main()
@@ -149,13 +88,11 @@ PARAMS = [
         options=["-s", "--sort"],
         is_flag=True,
         default=True,
-        argument_format="(flag)",
         description="Sort heroes by winrate in ascending order. (Default: descending).",
     ),
     Param(
         options=["-S", "--setup"],
         is_flag=True,
-        argument_format="(flag)",
         description= "Runs first-time setup in order to create a persistent config.",
     ),
     Param(
@@ -169,20 +106,17 @@ PARAMS = [
     Param(
         options=["--version"],
         is_flag=True,
-        argument_format="(flag)",
         description= "Show program version.",
         enabled=False
     ),
     Param(
         options=["-h", "--help"],
         is_flag=True,
-        argument_format="(flag)",
         description= "Show this message and exit.",
     ),
     Param(
         options=["--schedule"],
         is_flag=True,
-        argument_format="(flag)",
         description= "Schedule ODHG to run periodically.\n"
                      "(crontab on UNIX-like systems, Task Scheduler on Windows)",
         enabled=False
@@ -192,5 +126,11 @@ PARAMS = [
         is_flag=True,
         argument_format="(flag)",
         description="Suppress all terminal output except errors.", # TODO: fix phrasing
+    ),
+        Param(
+        options=["-N", "--nooverwrite"],
+        is_flag=True,
+        description="Disables overwriting of existing hero grids.",
+        enabled=False
     ),
 ]

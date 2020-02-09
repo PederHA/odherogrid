@@ -1,16 +1,10 @@
-"""
-Functions for parsing command-line arguments.
-
-Not to be confused with the argparse module in the Python standard library.
-You can easily tell the difference, because this module is a piece of shit.
-"""
-
 from enum import IntEnum
-from typing import List, Optional, Union, Dict, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 import click
 
-from .enums import Brackets, Grouping
+from ..enums import Brackets, Grouping
+from ..herogrid import get_hero_grid_config_path
 
 
 def make_mapping(mapping: Dict[Tuple[str], IntEnum]) -> Dict[Union[str, int], IntEnum]:
@@ -99,3 +93,22 @@ def find_argument_in_mapping(argument: Union[str, int], mapping: dict) -> Option
     if isinstance(argument, str) and argument.isdigit():
         argument = int(argument)
     return mapping.get(argument)  # None is default
+
+
+def parse_config(config: dict) -> dict:
+    config["brackets"] = parse_arg_brackets(config["brackets"])
+    config["grouping"] = parse_arg_grouping(config["grouping"])
+    
+    # We can fall back on bracket and grouping defaults
+    # But we can't fall back on a default Steam userdata directory path
+    try:
+        config["path"] = get_hero_grid_config_path(config["path"]) # Steam userdata directory
+    except (TypeError, ValueError) as e:
+        click.echo(e.args[0])
+        click.echo(
+            "Either specify a valid path using the '--path' option, "
+            "or run setup using the '--setup' flag to permanently add "
+            "a valid path to your config."
+        )
+        raise SystemExit
+    return config

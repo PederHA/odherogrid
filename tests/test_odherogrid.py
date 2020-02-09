@@ -1,5 +1,6 @@
 import itertools
 import random
+import shutil
 from copy import deepcopy
 from io import StringIO
 from pathlib import Path
@@ -7,24 +8,32 @@ from typing import List
 
 import pytest
 
+# DELETE
 from odherogrid.categorize import (_get_new_category, create_hero_grid,
                                    group_by_all, group_by_main_stat,
                                    group_by_melee_ranged, group_by_role,
                                    sort_heroes_by_winrate)
-from odherogrid.cfg import (_autodetect_steam_userdata_path,
-                            get_hero_grid_config_path)
-from odherogrid.cli import get_help_string, get_click_params
+##############################
+from odherogrid.cli.help import get_help_string
+from odherogrid.cli.params import get_click_params
+from odherogrid.cli.parse import (parse_arg_brackets,  # TODO: parse_config
+                                  parse_arg_grouping)
 from odherogrid.config import (CONFIG, CONFIG_BASE, _load_config,
                                check_config_integrity, update_config)
 from odherogrid.enums import Brackets, Grouping
 from odherogrid.error import get_stack_frames
+from odherogrid.herogrid import (HeroGrid, HeroGridConfig,
+                                 autodetect_steam_userdata_path,
+                                 get_hero_grid_config_path)
 from odherogrid.odapi import fetch_hero_stats
-from odherogrid.odhg import parse_config, main
-from odherogrid.parseargs import parse_arg_brackets, parse_arg_grouping
+from odherogrid.odhg import main, parse_config
+
 
 stats = None
 N_HEROES = 119
 TEST_CONFIG_PATH = "tests/testconf.yml"
+TEST_HEROGRID_PATH = "tests/hero_grid_config.json"
+HERO_GRID_PATH = "C:/Program Files (x86)/Steam/userdata/19123403/570/remote/cfg/hero_grid_config.json"
 
 
 def _get_hero_stats(sort: bool=False) -> List[dict]:
@@ -41,25 +50,36 @@ def _get_hero_wl(hero: dict, bracket: Brackets) -> float:
 
 
 @pytest.fixture
-def heroes():
+def heroes() -> List[dict]:
     return _get_hero_stats()
 
 
 @pytest.fixture
-def heroes_sorted():
+def heroes_sorted() -> List[dict]:
     return _get_hero_stats(sort=True)
 
 
 @pytest.fixture
-def testconf():
-    path = Path(TEST_CONFIG_PATH)
-    update_config(CONFIG_BASE, filename=path)
-    yield path
-    return path.unlink()
-
+def testconf() -> Path:
+    testconf = Path(TEST_CONFIG_PATH)
+    testgrid = Path(TEST_HEROGRID_PATH)
+    # Copy the base config
+    conf = deepcopy(CONFIG_BASE)
+    # Copy hero grid to temp test directory
+    shutil.copy(HERO_GRID_PATH, testgrid)
+    conf["path"] = str(testgrid)
+    # Save test config
+    update_config(conf, filename=testconf)
+    yield testconf
+    testgrid.unlink()
+    return testconf.unlink()
 
 @pytest.fixture
-def config_empty():
+def testconf_dict(testconf) -> dict:
+    return _load_config(filename=testconf)
+
+@pytest.fixture
+def config_empty() -> dict:
     return deepcopy(CONFIG_BASE)
 
 
@@ -148,7 +168,7 @@ def test_parse_arg_grouping():
 # cfg.py
 def test_get_cfg_path_nopath():
     """Tests userdata directory auto-detection."""
-    assert _autodetect_steam_userdata_path().exists()
+    assert autodetect_steam_userdata_path().exists()
 
 
 @pytest.mark.skip(reason="Need to figure out a way to test this properly.")
@@ -330,3 +350,30 @@ def test_get_stack_frames():
     assert next(get_stack_frames())
     for frame in get_stack_frames():
         assert frame
+
+# herogrid.py
+@pytest.fixture
+def herogridconfig(heroes, testconf_dict) -> HeroGridConfig:
+    return HeroGridConfig(heroes, testconf_dict)
+
+
+def test_herogridconfig_add_grid(herogridconfig):
+    grid = {"config_name": "testgrid", 
+            "categories": [
+            ]
+        }
+    herogridconfig.add_hero_grid(grid)
+
+    # Assert that config has been added
+    assert next( # next just yields the first grid with matching name
+        g for g in herogridconfig.hero_grid_config["configs"] 
+        if grid["config_name"] == g["config_name"]
+    )
+
+def test_herogridconfig_save_grid(herogridconfig: HeroGridConfig):
+    herogridconfig.save_hero_grid_config()
+    herogridconfig.save_hero_grid_config(path=TEST_HEROGRID_PATH)
+
+def _check_herogrid(name: str, grid: dict):
+    # x in herogrid bla bla bla
+    pass

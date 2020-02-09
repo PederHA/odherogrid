@@ -4,12 +4,14 @@ from typing import List
 import click
 from terminaltables import SingleTable
 
-from .cfg import make_new_herogrids, modify_existing_herogrid, get_hero_grid_config_path
-from .config import load_config, run_first_time_setup, CONFIG_BASE
-from .odapi import fetch_hero_stats
-from .parseargs import parse_arg_brackets, parse_arg_grouping
-from .cli import get_help_string, get_click_params
+from .cli.help import get_help_string
+from .cli.params import get_click_params
+from .cli.parse import parse_arg_brackets, parse_arg_grouping, parse_config
+from .cli.utils import progress
+from .config import CONFIG_BASE, load_config, run_first_time_setup
 from .error import handle_exception
+from .herogrid import HeroGridConfig, get_hero_grid_config_path
+from .odapi import fetch_hero_stats
 
 
 def get_config_from_cli_args(**options) -> dict:
@@ -42,32 +44,13 @@ def get_config_from_cli_args(**options) -> dict:
     return config
 
 
-def parse_config(config: dict) -> dict:
-    config["brackets"] = parse_arg_brackets(config["brackets"])
-    config["grouping"] = parse_arg_grouping(config["grouping"])
-    
-    # We can fall back on bracket and grouping defaults
-    # But we can't fall back on a default Steam userdata directory path
-    try:
-        config["path"] = get_hero_grid_config_path(config["path"]) # Steam userdata directory
-    except (TypeError, ValueError) as e:
-        click.echo(e.args[0])
-        click.echo(
-            "Either specify a valid path using the '--path' option, "
-            "or run setup using the '--setup' flag to permanently add "
-            "a valid path to your config."
-        )
-        raise SystemExit
-    return config
-
-
 def print_gridnames(config: dict, grids: List[str]) -> None:
     #g = "\n".join([f"\t'{_g}'" for _g in grids]) # add single quotes + tab
     #table = SingleTable([["Grid Name"], grids])
-    table = SingleTable([[g] for g in grids])
+    table = SingleTable([[g["config_name"]] for g in grids])
     click.echo(f"Successfully created the following grids:\n{table.table}\n")
     click.echo(f"Changes were saved to {config['path']}")
-
+    
 
 @click.command()
 def main(**options) -> None:
@@ -76,7 +59,8 @@ def main(**options) -> None:
         raise SystemExit
     
     if options.pop("setup", None):
-        options = run_first_time_setup()
+        conf = run_first_time_setup()
+        options.update(conf)
 
     if options.pop("quiet"):
         def _ignore(*args, **kwargs):
@@ -88,18 +72,18 @@ def main(**options) -> None:
     config = get_config_from_cli_args(**options)
 
     # Fetch hero W/L stats from API
-    click.echo("Fetching hero data... ", nl=False)
-    data = fetch_hero_stats()
-    click.echo("✓\n")
+    with progress("Fetching hero data... "):
+        hero_stats = fetch_hero_stats()
     
-    click.echo("Creating grids... ", nl=False)
-    if name: # Sort custom grid
-        grids = modify_existing_herogrid(data, config, name)
-    else:    # Make new grid
-        grids = make_new_herogrids(data, config)
-    click.echo("✓\n")
+    with progress("Creating grids... "):
+        h = HeroGridConfig(hero_stats, config)
+        if name: # Sort custom grid
+            h.modify_grid(name)
+        else:    # Make new grid
+            h.create_grids()
 
-    print_gridnames(config, grids)
+
+    print_gridnames(config, h.grids)
 
 
 # add parameters defined in cli.py	
@@ -114,5 +98,4 @@ def _main(**kwargs) -> None:
         handle_exception(e)
 
 if __name__ == "__main__":
-    _main()
-
+    main()

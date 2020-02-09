@@ -40,7 +40,7 @@ def group_by_main_stat(heroes: List[dict]) -> dict:
         "agi": 1,
         "int": 2
     }
-    hero_grid = _get_new_hero_grid_base()
+    hero_grid = get_new_hero_grid_base()
     for hero in heroes:
         idx = CATEGORY_IDX.get(hero["primary_attr"])
         hero_grid["categories"][idx]["hero_ids"].append(hero["id"])
@@ -51,7 +51,7 @@ def group_by_all(heroes: List[dict]) -> dict:
     """Creates hero grid, all heroes together in a single category."""
     category = _get_new_category("Heroes", height=1180.0)
 
-    hero_grid = _get_new_hero_grid_base()
+    hero_grid = get_new_hero_grid_base()
     hero_grid["categories"] = [category] # Override predefined categories
 
     for hero in heroes:
@@ -64,7 +64,7 @@ def group_by_melee_ranged(heroes: List[dict]) -> dict:
     melee = _get_new_category("Melee", height=280.0)
     ranged = _get_new_category("Ranged", y_pos=300.0, height=280.0)
 
-    hero_grid = _get_new_hero_grid_base()
+    hero_grid = get_new_hero_grid_base()
     hero_grid["categories"] = [melee, ranged] # Override predefined categories
 
     for hero in heroes:
@@ -79,7 +79,7 @@ def group_by_role(heroes: List[dict]) -> dict:
     support = _get_new_category("Support", y_pos=200.0)
     flex = _get_new_category("Flexible", y_pos=400.0)
 
-    hero_grid = _get_new_hero_grid_base()
+    hero_grid = get_new_hero_grid_base()
     hero_grid["categories"] = [carry, support, flex] # Override predefined categories
 
     for hero in heroes:
@@ -130,5 +130,5 @@ def _get_new_category(name: str, x_pos: float=0.0, y_pos: float=0.0, width: floa
     return category
 
 
-def _get_new_hero_grid_base() -> dict:
+def get_new_hero_grid_base() -> dict:
     return copy.deepcopy(HERO_GRID_BASE)

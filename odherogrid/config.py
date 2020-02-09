@@ -11,10 +11,10 @@ from typing import List, Union
 import click
 import yaml
 
-from .cfg import _autodetect_steam_userdata_path
-from .cli import progress
+from .cli.parse import parse_arg_brackets
+from .cli.utils import progress
 from .enums import Brackets, Grouping, enum_start_end, enum_string
-from .parseargs import parse_arg_brackets
+from .herogrid import autodetect_steam_userdata_path
 from .resources import DEFAULT_NAME
 
 CONFIG_NAME = "config.yml" # NOTE: Path("config.yml")?
@@ -159,7 +159,7 @@ def setup_hero_grid_config_path(config: dict) -> dict:
     # Get default directory for Steam userdata
     click.echo("Steam Userdata Directory:")
     try:
-        p = _autodetect_steam_userdata_path()
+        p = autodetect_steam_userdata_path()
     except NotImplementedError as e:
         click.echo(e.args[0])
         cfg_path = ask_steam_userdata_path()
