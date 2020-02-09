@@ -12,6 +12,7 @@ import click
 import yaml
 
 from .cfg import _autodetect_steam_userdata_path
+from .cli import progress
 from .enums import Brackets, Grouping, enum_start_end, enum_string
 from .parseargs import parse_arg_brackets
 from .resources import DEFAULT_NAME
@@ -156,7 +157,7 @@ def setup_hero_grid_config_path(config: dict) -> dict:
     """Configure user's Dota userdata cfg directory.
     """
     # Get default directory for Steam userdata
-    click.echo("\nSteam Userdata Directory:")
+    click.echo("Steam Userdata Directory:")
     try:
         p = _autodetect_steam_userdata_path()
     except NotImplementedError as e:
@@ -194,7 +195,7 @@ def setup_bracket(config: dict) -> dict:
 
     # Prompt user to select a default bracket
     available_brackets = enum_string(Brackets)
-    click.echo(f"\nBrackets:\n{available_brackets}")
+    click.echo(f"Brackets:\n{available_brackets}")
 
     brackets = _get_brackets(
         "Specify default skill bracket(s), separated by spaces", 
@@ -226,7 +227,7 @@ def _get_brackets(msg: str, brackets_start: int, brackets_end: int) -> List[int]
 def setup_grouping(config: dict) -> dict:
     # Prompt user to select a default grouping
     available_grouping = enum_string(Grouping)
-    click.echo(f"Brackets:\n{available_grouping}")
+    click.echo(f"Grouping:\n{available_grouping}")
 
     # Determine lowest and highest Grouping enum value
     grouping_start, grouping_end = enum_start_end(Grouping)
@@ -250,7 +251,7 @@ def setup_grouping(config: dict) -> dict:
 def setup_config_name(config: dict) -> dict:
     """Setup for default name of hero grid."""
     click.echo(
-        f"Choose a default hero grid name. (default: {DEFAULT_NAME})"
+        f"Default hero grid name. (default: {DEFAULT_NAME})"
     )
     name = click.prompt(
         f"Name", 
@@ -263,7 +264,7 @@ def setup_config_name(config: dict) -> dict:
 
 
 def setup_winrate_sorting(config: dict) -> dict:
-    click.echo("Do you want to sort heroes by winrates descending or ascending?")
+    click.echo("Winrate sorting")
     click.echo("1. Descending [default]") # TODO: don't harcode "[default]"
     click.echo("2. Ascending")
     
@@ -284,6 +285,11 @@ def run_first_time_setup() -> dict:
             click.echo("Aborting setup.")
             raise SystemExit
     
+    with progress("Creating new config...", success="Config created ✔️",nl=False):
+        return _do_run_first_time_setup()
+
+
+def _do_run_first_time_setup() -> dict:
     config = deepcopy(CONFIG_BASE)
 
     # Setup config parameters
@@ -297,9 +303,10 @@ def run_first_time_setup() -> dict:
     # NOTE: I could have done some bullshit with globals()
     #       and startswith("setup_"), but let's keep it simple
 
-    with click.progressbar(functions) as bar:
+    with click.progressbar(functions, bar_template="[%(bar)s]  %(info)s") as bar:
         click.clear()
         for func in bar:
+            click.echo("\n") # newline after displaying progress bar
             config = func(config)
             click.clear()
 
