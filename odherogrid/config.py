@@ -4,6 +4,7 @@ and updating a persistent user configuration file for ODHeroGrid.
 """
 
 import sys
+from copy import deepcopy
 from pathlib import Path
 from typing import List, Union
 
@@ -283,8 +284,7 @@ def run_first_time_setup() -> dict:
             click.echo("Aborting setup.")
             raise SystemExit
     
-    click.echo("Creating new config...")  
-    config = CONFIG_BASE
+    config = deepcopy(CONFIG_BASE)
 
     # Setup config parameters
     functions = [
