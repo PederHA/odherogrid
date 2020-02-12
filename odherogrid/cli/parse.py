@@ -25,9 +25,9 @@ _brackets = {
     ("a",): Brackets.ARCHON,
     ("l",): Brackets.LEGEND,
     ("n",): Brackets.ANCIENT,
-    ("d", "immortal", "i"): Brackets.DIVINE,
-    ("p", "official", "tournaments"): Brackets.PRO,
-    ("A", "all"): Brackets.ALL,
+    ("d",): Brackets.DIVINE,
+    ("p",): Brackets.PRO,
+    ("A",): Brackets.ALL,
 }
 
 _grouping = {
