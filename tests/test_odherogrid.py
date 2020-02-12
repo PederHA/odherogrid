@@ -49,17 +49,17 @@ def _get_hero_wl(hero: dict, bracket: Brackets) -> float:
     return hero[f"{bracket.value}_win"] / hero[f"{bracket.value}_pick"]
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def heroes() -> List[dict]:
     return _get_hero_stats()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def heroes_sorted() -> List[dict]:
     return _get_hero_stats(sort=True)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def testconf() -> Path:
     testconf = Path(TEST_CONFIG_PATH)
     testgrid = Path(TEST_HEROGRID_PATH)
@@ -74,9 +74,11 @@ def testconf() -> Path:
     testgrid.unlink()
     return testconf.unlink()
 
-@pytest.fixture
+
+@pytest.fixture(scope="module")
 def testconf_dict(testconf) -> dict:
     return _load_config(filename=testconf)
+
 
 @pytest.fixture
 def config_empty() -> dict:
