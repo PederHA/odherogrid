@@ -95,6 +95,11 @@ def config_empty() -> dict:
     return deepcopy(CONFIG_BASE)
 
 
+@pytest.fixture(scope="module")
+def herogridconfig(heroes, testconf_dict) -> HeroGridConfig:
+    return HeroGridConfig(heroes, testconf_dict)
+
+
 # odhg.py
 def test_parse_config():
     """
@@ -177,7 +182,7 @@ def test_parse_arg_grouping():
         assert parse_arg_grouping(g.name.lower()) == g.value
 
 
-# cfg.py
+# herogrid.py
 def test_get_cfg_path_nopath():
     """Tests userdata directory auto-detection."""
     assert autodetect_steam_userdata_path().exists()
@@ -202,6 +207,31 @@ def test_get_cfg_path_none():
     assert e.exconly() == "TypeError: hero grid config path cannot be a None value!"
 
 
+
+
+
+def test_herogridconfig_add_grid(herogridconfig: HeroGridConfig):
+    grid = {"config_name": "testgrid", 
+            "categories": [
+            ]
+        }
+    herogridconfig.add_hero_grid(grid)
+
+    # Assert that config has been added
+    assert next( # next just yields the first grid with matching name
+        g for g in herogridconfig.hero_grid_config["configs"] 
+        if grid["config_name"] == g["config_name"]
+    )
+
+def test_herogridconfig_save_grid(herogridconfig: HeroGridConfig):
+    herogridconfig.save_hero_grid_config()
+    herogridconfig.save_hero_grid_config(path=TEST_HEROGRID_PATH)
+
+def _check_herogrid(name: str, grid: dict):
+    # x in herogrid bla bla bla
+    pass
+
+
 # enums.py
 def test_brackets_default():
     assert Brackets(Brackets.DEFAULT)
@@ -211,15 +241,21 @@ def test_grouping_default():
     assert Grouping(Grouping.DEFAULT)
 
 
-# categorize.py
-def test_create_hero_grid(heroes):
-    """Tests all combinations of Brackets and Grouping."""
+def test_herogridconfig_create_grids(heroes, testconf_dict):
+    conf = testconf_dict
     brackets = [b for b in Brackets if b != 0] # don't include ALL
     for bracket, grouping in itertools.product(brackets, Grouping):
-        assert create_hero_grid(heroes, bracket, grouping, True)
-        # TODO: Verify that winrates are in accordance with hero winrates
-        #       for the specific bracket (?)
-    
+        conf["brackets"] = [bracket]
+        conf["grouping"] = grouping
+        name = f"{bracket}{grouping}"
+        conf["config_name"] = name
+        h = HeroGridConfig(heroes, conf)
+        h.create_grids()
+        assert [
+            c for c in h.hero_grid_config["configs"] 
+            if c["config_name"] == f"{name} ({Brackets(bracket).name.capitalize()})"
+            ][0]
+
 
 def test_sort_heroes_by_winrate(heroes):
     """Tests `categorize.sort_heroes_by_winrate()`"""
@@ -363,29 +399,3 @@ def test_get_stack_frames():
     for frame in get_stack_frames():
         assert frame
 
-# herogrid.py
-@pytest.fixture
-def herogridconfig(heroes, testconf_dict) -> HeroGridConfig:
-    return HeroGridConfig(heroes, testconf_dict)
-
-
-def test_herogridconfig_add_grid(herogridconfig):
-    grid = {"config_name": "testgrid", 
-            "categories": [
-            ]
-        }
-    herogridconfig.add_hero_grid(grid)
-
-    # Assert that config has been added
-    assert next( # next just yields the first grid with matching name
-        g for g in herogridconfig.hero_grid_config["configs"] 
-        if grid["config_name"] == g["config_name"]
-    )
-
-def test_herogridconfig_save_grid(herogridconfig: HeroGridConfig):
-    herogridconfig.save_hero_grid_config()
-    herogridconfig.save_hero_grid_config(path=TEST_HEROGRID_PATH)
-
-def _check_herogrid(name: str, grid: dict):
-    # x in herogrid bla bla bla
-    pass
