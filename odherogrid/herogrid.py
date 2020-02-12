@@ -8,7 +8,7 @@ from typing import List
 import click
 
 from .enums import Brackets, Grouping
-from .resources import (CONFIG_BASE, HERO_GRID_BASE, _get_new_category,
+from .resources import (HERO_GRID_CONFIG_BASE, HERO_GRID_BASE, _get_new_category,
                         get_new_hero_grid_base)
 
 
@@ -23,7 +23,8 @@ class HeroGrid:
         self.grouping = config["grouping"]
         self.sort = config["sort"]
         self.config_name = config["config_name"]
-        self.heroes = self.sort_heroes_by_winrate(heroes)
+        self.heroes = heroes
+        self.sort_heroes_by_winrate()
 
     def _fix_grid(self, config: dict) -> dict:
         """Method called by `__init__()` to verify and fix missing keys and values
@@ -33,16 +34,15 @@ class HeroGrid:
                 config[key] = value # fix missing / NoneType value
         return config
 
-    def sort_heroes_by_winrate(self, heroes: List[dict]) -> list:
-        """Sorts HeroGrid instance's hero list by winrate in a specific skill bracket."""
-        for hero in heroes:
+    def sort_heroes_by_winrate(self) -> list:
+        """Sorts HeroGrid hero list by winrate in a specific skill bracket."""
+        for hero in self.heroes:
             if hero["8_pick"] == 0:
                 hero["8_pick"] = 1
-        heroes.sort(
+        self.heroes.sort(
             key=lambda h: h[f"{self.bracket}_win"] / h[f"{self.bracket}_pick"], 
             reverse=self.sort
         )
-        return heroes
 
     def create(self) -> dict:
         """Creates a new hero grid."""
@@ -231,7 +231,7 @@ class HeroGridConfig:
                 name = f"hero_grid_config_INVALID_{datetime.now().isoformat()}.json"
                 p.rename(p.stem / name)
                 click.echo(f"The existing config was renamed to '{name}'")
-                hero_grid_config = copy.deepcopy(CONFIG_BASE)
+                hero_grid_config = copy.deepcopy(HERO_GRID_CONFIG_BASE)
             finally:
                 return hero_grid_config
 
