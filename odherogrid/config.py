@@ -30,7 +30,7 @@ CONFIG_BASE = {
 }
 
 
-def _load_config(*, filename: Union[str, Path]=None) -> dict:
+def _do_load_config(*, filename: Union[str, Path]=None) -> dict:
     """Loads configuration file and returns it as a dict."""
     path = filename or CONFIG
     with open(path, "r") as f:
@@ -53,7 +53,7 @@ def load_config() -> dict:
     TODO: Should config["steam"]["path"] be a Path object?
     """
     try:
-        config = _load_config()
+        config = _do_load_config()
     except (FileNotFoundError, ValueError):
         if click.confirm(
             "Could not find ODHG config! Do you want to run first time setup?"
@@ -79,9 +79,11 @@ def update_config(config: dict, *, filename: Union[str, Path]=None) -> None:
 
 def check_config_integrity(config: dict, *, filename: Union[str, Path]=None) -> dict:
     # Remove unknown keys
+    c = deepcopy(config)
     for key in config:
         if key not in CONFIG_BASE:
-            config.pop(key)
+            c.pop(key)
+    config = c
 
     # Check for missing keys
     missing_keys = [(k, v) for (k, v) in CONFIG_BASE.items() if k not in config]
