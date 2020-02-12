@@ -44,15 +44,8 @@ HERO_GRID_BASE = {
 }
 
 
-HERO_GRID_CONFIG_BASE = {
-    "version": 3,
-    "configs": [
-        deepcopy(HERO_GRID_BASE)
-    ],
-}
-
 # Represents default hero_grid_config.json
-CONFIG_BASE = {
+HERO_GRID_CONFIG_BASE = {
     "version": 3,
     "configs": [],
 }
