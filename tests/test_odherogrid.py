@@ -1,12 +1,14 @@
 import itertools
 import random
 import shutil
+import sys
 from copy import deepcopy
 from io import StringIO
 from pathlib import Path
 from typing import List
 
 import pytest
+
 
 # DELETE
 from odherogrid.categorize import (_get_new_category, create_hero_grid,
@@ -33,7 +35,15 @@ stats = None
 N_HEROES = 119
 TEST_CONFIG_PATH = "tests/testconf.yml"
 TEST_HEROGRID_PATH = "tests/hero_grid_config.json"
-HERO_GRID_PATH = "C:/Program Files (x86)/Steam/userdata/19123403/570/remote/cfg/hero_grid_config.json"
+
+# Ideally, this is a temporary workaround
+# Replace with own hero_grid_config.json path if testing
+if sys.platform == "win32":
+    HERO_GRID_PATH = "C:/Program Files (x86)/Steam/userdata/19123403/570/remote/cfg/hero_grid_config.json"
+elif sys.platform == "darwin":
+    HERO_GRID_PATH = "/Users/Peder-MAC/Library/Application Support/Steam/userdata/19123403/570/remote/cfg/hero_grid_config.json"
+elif sys.platform == "linux":
+    raise NotImplementedError("Testing not yet implemented for Linux platforms")
 
 
 def _get_hero_stats(sort: bool=False) -> List[dict]:
