@@ -154,11 +154,6 @@ def test_parse_arg_brackets_enum():
 @pytest.mark.parametrize(
     "test_input,expected",
     [
-        ##
-        # list(set([1,6,7,8])) == [8, 1, 6, 7] on my computer, so to ensure
-        # testing against correct expected values, all expected values are
-        # converted to set then list.
-        ##
         # Mix of ints, single chars and strings
         ([1, 6, "d", "pro"], list(set([1, 6, 7, 8]))),
         # 0 as arg
@@ -168,7 +163,7 @@ def test_parse_arg_brackets_enum():
         # Duplicate arguments
         ([7, "d", "divine"], [7]),
         ([7, 7, 7], [7]),
-        ]
+    ]
 )
 def test_parse_arg_brackets_mixed(test_input, expected):
     """Tests different arguments and argument types."""
