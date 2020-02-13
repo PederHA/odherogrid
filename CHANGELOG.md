@@ -10,7 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Printing of ASCII table displaying generated grids upon program completion.
 
 ### Changed
-- Handling of multiple bracket arguments is now performed by `cfg.make_new_hero_grid()` (was `odhg.main()`).
+- Parameter `--grouping` renamed to `--layout`.
+- Layout `none` renamed to `single`
+- Large parts of the program have been rewritten, but user experience should be identical.
+- Logo has received a small facelift.
 
 ## 0.1.2 (January 24th, 2020)
 ### Added

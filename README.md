@@ -30,10 +30,10 @@ Options:
 
   [-l, --layout] LAYOUT (default: 1)
     Which Hero Grid layout to use.
-      <1, mainstat, m, stat, stats>           Mainstat
-      <2, attack, a, melee, range>            Attack
+      <1, mainstat, m>                        Mainstat
+      <2, attack, a>                          Attack
       <3, role, r>                            Role
-      <0, none, n, all, everything>           None
+      <0, single, s>                          Single
 
   [-p, --path] PATH
     Specify absolute path of Dota 2 userdata/cfg directory.
