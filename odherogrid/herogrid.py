@@ -48,7 +48,7 @@ class HeroGrid:
         """Creates a new hero grid."""
         layout_methods = {
             Layout.MAINSTAT.value: self._get_grid_main_stat,
-            Layout.NONE.value: self._get_grid_all,
+            Layout.SINGLE.value: self._get_grid_single,
             Layout.ATTACK.value: self._get_grid_attack,
             Layout.ROLE.value: self._get_grid_role
         }
@@ -87,7 +87,7 @@ class HeroGrid:
             hero_grid["categories"][idx]["hero_ids"].append(hero["id"])
         return hero_grid
 
-    def _get_grid_all(self) -> dict:
+    def _get_grid_single(self) -> dict:
         """Creates hero grid, all heroes together in a single category."""
         category = _get_new_category("Heroes", height=1180.0)
 

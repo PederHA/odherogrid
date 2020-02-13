@@ -13,7 +13,7 @@ def test_layout_default():
 
 @pytest.mark.parametrize("enum,expected_start,expected_end",
     [(Bracket, Bracket.ALL.value, Bracket.PRO.value),
-     (Layout, Layout.NONE.value, Layout.ROLE.value)])
+     (Layout, Layout.SINGLE.value, Layout.ROLE.value)])
 def test_enum_start_end(enum, expected_start, expected_end):
     start, end = enum_start_end(enum)
     assert start == expected_start

@@ -18,7 +18,7 @@ class Bracket(IntEnum):
 
 
 class Layout(IntEnum):
-    NONE = 0
+    SINGLE = 0
     MAINSTAT = 1
     ATTACK = 2
     ROLE = 3

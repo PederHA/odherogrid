@@ -147,9 +147,9 @@ def test_herogrid__get_grid_role(heroes, herogrid: HeroGrid):
                         assert category["category_name"] in hero["roles"]
 
 
-def test_herogrid__get_grid_all(heroes, N_HEROES, herogrid: HeroGrid):
-    """Tests `HeroGrid._get_grid_all()`"""
-    grid = herogrid._get_grid_all()
+def test_herogrid__get_grid_single(heroes, N_HEROES, herogrid: HeroGrid):
+    """Tests `HeroGrid._get_grid_single()`"""
+    grid = herogrid._get_grid_single()
     
     # Test that there is only 1 category
     assert len(grid["categories"]) == 1

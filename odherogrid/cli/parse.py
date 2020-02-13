@@ -10,31 +10,31 @@ from ..herogrid import get_hero_grid_config_path
 def make_mapping(mapping: Dict[Tuple[str], IntEnum]) -> Dict[Union[str, int], IntEnum]:
     """Make a new mapping with multiple keys for identical enums."""
     new = {}
-    for keys, enum in mapping.items():
+    for key, enum in mapping.items():
         new[enum.value] = enum.value         # add Enum value as key
         new[enum.name.lower()] = enum.value  # add Enum name as key
-        for key in keys:
-            new[key] = enum.value            # add existing keys from mapping
+        new[key] = enum.value                # add existing key from mapping
     return new
 
 
 _brackets = {
-    ("h",): Bracket.HERALD,
-    ("g",): Bracket.GUARDIAN,
-    ("c",): Bracket.CRUSADER,
-    ("a",): Bracket.ARCHON,
-    ("l",): Bracket.LEGEND,
-    ("n",): Bracket.ANCIENT,
-    ("d",): Bracket.DIVINE,
-    ("p",): Bracket.PRO,
-    ("A",): Bracket.ALL,
+    "h": Bracket.HERALD,
+    "g": Bracket.GUARDIAN,
+    "c": Bracket.CRUSADER,
+    "a": Bracket.ARCHON,
+    "l": Bracket.LEGEND,
+    "n": Bracket.ANCIENT,
+    "d": Bracket.DIVINE,
+    "p": Bracket.PRO,
+    "A": Bracket.ALL,
 }
 
+
 _layout = {
-    ("m", "stat", "mainstat", "stats"): Layout.MAINSTAT,
-    ("a", "melee", "range", "attack"): Layout.ATTACK,
-    ("r",): Layout.ROLE,
-    ("n", "all", "everything"): Layout.NONE,
+    "m": Layout.MAINSTAT,
+    "a": Layout.ATTACK,
+    "r": Layout.ROLE,
+    "s": Layout.SINGLE,
 }
 
 
