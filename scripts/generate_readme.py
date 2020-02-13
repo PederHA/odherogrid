@@ -1,9 +1,20 @@
 from datetime import datetime
 from pathlib import Path
+from functools import wraps
+from typing import Callable
 
 from odherogrid.cli import get_help_string
 
 from resources import ODHG_ROOT
+
+
+
+def imagefunc(f) -> Callable[..., str]:
+    f.has_img = True
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        return f(*args, **kwargs)
+    return wrapper
 
 
 def codeblock(text: str, lang: str="") -> str:
@@ -12,10 +23,10 @@ def codeblock(text: str, lang: str="") -> str:
 ```"""
     return block
 
-
-def intro() -> str:
-    text = """# ODHeroGrid
-![logo](logo.png)
+@imagefunc
+def intro(img: bool=True) -> str:
+    text = f"""# ODHeroGrid
+{'![logo](logo.png)' if img else ''}
 
 Small script that generates a custom Dota 2 Hero Grid layout of heroes sorted 
 by winrate in public or professional games, using stats from OpenDota.
@@ -77,11 +88,11 @@ Command-line options can be supplied to override config settings.
 
 
 ## Layout
-#### Create grids for Divine hero winrates, grouped by Hero roles (Carry/Support/Flex):
-{codeblock("odhg -l 3 -b 7")}
+#### Use role layout (Carry/Support/Flex). 
+{codeblock("odhg --layout role")}
 
-#### Name of layout can also be used:
-{codeblock("odhg -l role -b 7")}
+#### Single category layout
+{codeblock("odhg --layout single")}
 
 
 ## Path
@@ -92,7 +103,11 @@ Command-line options can be supplied to override config settings.
     return text
 
 
-def name() -> str:
+@imagefunc
+def name(img: bool=True) -> str:
+    if not img:
+        return ""
+
     pre = "screenshots/custom_presort.png"
     post = "screenshots/custom_postsort.png"
 
@@ -107,7 +122,11 @@ def name() -> str:
     return text
 
 
-def screenshots() -> str:
+@imagefunc
+def screenshots(img: bool=True) -> str:
+    if not img:
+        return ""
+
     fname = "screenshots/screenshot.png"
 
     img = Path(fname)
@@ -121,7 +140,25 @@ _Divine winrate hero grid generated {timestamp}_
     return text
 
 
-if __name__ == "__main__":
+def get_readme_string(noimg: bool=False) -> str:
+    s = []
+    for f in sections:
+        if noimg and hasattr(f, "has_img"):
+            r = f(img=False)
+        else:
+            r = f()
+        s.append(r)
+    return "\n".join(s)
+
+
+sections = [intro, installation, usage, examples, name, screenshots]
+
+
+def makereadme() -> None:
     with open(ODHG_ROOT/"README.md", "w") as f:
-        for func in [intro, installation, usage, examples, name, screenshots]:
-            f.write(func())
+        f.write(get_readme_string())
+
+
+if __name__ == "__main__":
+    makereadme()
+

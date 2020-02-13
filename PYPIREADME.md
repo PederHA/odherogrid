@@ -1,13 +1,15 @@
 # ODHeroGrid
-![logo](logo.png)
+
 
 Small script that generates a custom Dota 2 Hero Grid layout of heroes sorted 
 by winrate in public or professional games, using stats from OpenDota.
+
 
 # Installation
 ```
 pip install odherogrid
 ```
+
 
 # Usage
 ```
@@ -62,6 +64,7 @@ odhg
 Prompts to create config file in `~/.odhg/` the first time the program runs.
 
 This is the recommended way to run ODHG.
+
 # Command-line options
 Command-line options can be supplied to override config settings.
 
@@ -107,14 +110,14 @@ odhg -b 0
 
 
 ## Layout
-#### Create grids for Divine hero winrates, grouped by Hero roles (Carry/Support/Flex):
+#### Use role layout (Carry/Support/Flex). 
 ```
-odhg -l 3 -b 7
+odhg --layout role
 ```
 
-#### Name of layout can also be used:
+#### Single category layout
 ```
-odhg -l role -b 7
+odhg --layout single
 ```
 
 
@@ -124,19 +127,8 @@ odhg -l role -b 7
 odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg
 ```
 
-## Name
-#### Sort custom grids with `--name`
-```
-odhg --name MyCustomGrid -b 7
-```
-#### Before:
-![Before](screenshots/custom_presort.png)
-#### After:
-![After](screenshots/custom_postsort.png)
-# Screenshots
 
-![Divine Winrates](screenshots/screenshot.png)
-_Divine winrate hero grid generated 2020-02-11_
+
 # Changelog
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
