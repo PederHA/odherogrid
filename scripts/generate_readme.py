@@ -35,22 +35,19 @@ def installation() -> str:
 def usage() -> str:
     text = f"""# Usage
 {codeblock(get_help_string())}
+## Using standard configuration 
+{codeblock("odhg")}
+Prompts to create config file in `~/.odhg/` the first time the program runs.
 
+This is the recommended way to run ODHG.
 """
     return text
 
 def examples() -> str:
-    text = f"""# Examples
+    text = f"""# Command-line options
+Command-line options can be supplied to override config settings.
 
 
-#### Use options stored in config. (Runs first-time setup if no config exists)
-{codeblock("odhg")}
-The config file will be stored as `~/.odhg/config.yml`
-
-It is recommended to create a config rather than using command-line options.
-
-
-#
 ## Bracket
 
 
