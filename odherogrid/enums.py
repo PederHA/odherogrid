@@ -2,7 +2,7 @@ from enum import IntEnum
 from typing import Tuple
 
 
-class Brackets(IntEnum):
+class Bracket(IntEnum):
     ALL = 0
     HERALD = 1
     GUARDIAN = 2
@@ -17,13 +17,13 @@ class Brackets(IntEnum):
     DEFAULT = DIVINE
 
 
-class Grouping(IntEnum):
+class Layout(IntEnum):
     NONE = 0
     MAINSTAT = 1
     ATTACK = 2
     ROLE = 3
 
-    # default grouping (Standard Dota 2 hero grid [str, int, agi])
+    # default layout (Standard Dota 2 hero grid [str, int, agi])
     DEFAULT = MAINSTAT
 
 

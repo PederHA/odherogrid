@@ -1,7 +1,7 @@
 import copy
 from typing import Union, List
 
-from .enums import Grouping
+from .enums import Layout
 from .resources import HERO_GRID_BASE, CATEGORY_BASE
 
 
@@ -14,19 +14,19 @@ def sort_heroes_by_winrate(heroes: List[dict], bracket: str, descending: bool=Tr
     return heroes
 
 
-def create_hero_grid(heroes: List[dict], bracket: int, grouping: int, sorting: bool) -> dict:
-    grouping_funcs = {
-        Grouping.MAINSTAT.value: group_by_main_stat,
-        Grouping.NONE.value: group_by_all,
-        Grouping.ATTACK.value: group_by_melee_ranged,
-        Grouping.ROLE.value: group_by_role
+def create_hero_grid(heroes: List[dict], bracket: int, layout: int, sorting: bool) -> dict:
+    layout_funcs = {
+        Layout.MAINSTAT.value: group_by_main_stat,
+        Layout.NONE.value: group_by_all,
+        Layout.ATTACK.value: group_by_melee_ranged,
+        Layout.ROLE.value: group_by_role
     }
     # Sort heroes by winrate in the specified bracket
     heroes = sort_heroes_by_winrate(heroes, bracket, sorting)       
     
-    grp_func = grouping_funcs.get(grouping)
+    grp_func = layout_funcs.get(layout)
     if not grp_func:
-        raise ValueError(f"No such grouping: '{grouping}'")
+        raise ValueError(f"No such layout: '{layout}'")
     
     hero_grid = grp_func(heroes)
     

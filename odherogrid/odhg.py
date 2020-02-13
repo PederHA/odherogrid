@@ -6,7 +6,7 @@ from terminaltables import SingleTable
 
 from .cli.help import get_help_string
 from .cli.params import get_click_params
-from .cli.parse import parse_arg_brackets, parse_arg_grouping, parse_config
+from .cli.parse import parse_arg_brackets, parse_arg_layout, parse_config
 from .cli.utils import progress
 from .config import CONFIG_BASE, load_config, run_first_time_setup
 from .error import handle_exception

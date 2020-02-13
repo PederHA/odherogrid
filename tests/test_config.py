@@ -39,7 +39,7 @@ def test_check_config_integrity_userdefined(monkeypatch, config_empty, testconf)
     answers = {
         "brackets": "7",
         "config_name": "test",
-        "grouping": "1",
+        "layout": "1",
         "path": "1",
         "sort": "1"
     }

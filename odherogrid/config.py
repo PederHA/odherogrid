@@ -13,7 +13,7 @@ import yaml
 
 from .cli.parse import parse_arg_brackets
 from .cli.utils import progress
-from .enums import Brackets, Grouping, enum_start_end, enum_string
+from .enums import Bracket, Layout, enum_start_end, enum_string
 from .herogrid import autodetect_steam_userdata_path
 from .resources import DEFAULT_NAME
 
@@ -23,8 +23,8 @@ CONFIG = CONFIG_DIR / CONFIG_NAME
 
 CONFIG_BASE = {
     "path": None,
-    "brackets": [Brackets.DEFAULT.value],
-    "grouping": Grouping.DEFAULT.value,
+    "brackets": [Bracket.DEFAULT.value],
+    "layout": Layout.DEFAULT.value,
     "config_name": DEFAULT_NAME,
     "sort": True,
 }
@@ -98,7 +98,7 @@ def _fix_missing_keys(config: dict, missing_keys: list) -> dict:
     CONFIG_FUNCS = {
         "path": setup_hero_grid_config_path,
         "brackets": setup_bracket,
-        "grouping": setup_grouping,
+        "layout": setup_layout,
         "config_name": setup_config_name,
         "sort": setup_winrate_sorting
     }
@@ -193,11 +193,11 @@ def setup_hero_grid_config_path(config: dict) -> dict:
 
 def setup_bracket(config: dict) -> dict:
     # Determine lowest and highest Bracket enum value
-    brackets_start, brackets_end = enum_start_end(Brackets)
+    brackets_start, brackets_end = enum_start_end(Bracket)
 
     # Prompt user to select a default bracket
-    available_brackets = enum_string(Brackets)
-    click.echo(f"Brackets:\n{available_brackets}")
+    available_brackets = enum_string(Bracket)
+    click.echo(f"Bracket:\n{available_brackets}")
 
     brackets = _get_brackets(
         "Specify default skill bracket(s), separated by spaces", 
@@ -220,32 +220,32 @@ def _get_brackets(msg: str, brackets_start: int, brackets_end: int) -> List[int]
     b = click.prompt(
         f"{msg} ({brackets_start}-{brackets_end})",
         type=str,
-        default=str(Brackets.DEFAULT.value),
+        default=str(Bracket.DEFAULT.value),
         show_default=False
     )
     return parse_arg_brackets(b.split(" "))
 
 
-def setup_grouping(config: dict) -> dict:
-    # Prompt user to select a default grouping
-    available_grouping = enum_string(Grouping)
-    click.echo(f"Grouping:\n{available_grouping}")
+def setup_layout(config: dict) -> dict:
+    # Prompt user to select a default layout
+    available_layout = enum_string(Layout)
+    click.echo(f"Layout:\n{available_layout}")
 
-    # Determine lowest and highest Grouping enum value
-    grouping_start, grouping_end = enum_start_end(Grouping)
-    g_range = list(range(grouping_start, grouping_end+1))
+    # Determine lowest and highest Layout enum value
+    layout_start, layout_end = enum_start_end(Layout)
+    g_range = list(range(layout_start, layout_end+1))
     
     get_grp = lambda m: click.prompt(
-        f"{m} ({grouping_start}-{grouping_end})",
+        f"{m} ({layout_start}-{layout_end})",
         type=int,
-        default=Grouping.DEFAULT.value,
+        default=Layout.DEFAULT.value,
         show_default=False
     )  
-    grouping = get_grp("Select default hero grouping") 
-    while grouping not in g_range:
-        grouping = get_grp("Invalid grouping. Try again")
+    layout = get_grp("Select default hero layout") 
+    while layout not in g_range:
+        layout = get_grp("Invalid layout. Try again")
     
-    config["grouping"] = grouping
+    config["layout"] = layout
 
     return config
 
@@ -298,7 +298,7 @@ def _do_run_first_time_setup() -> dict:
     functions = [
         setup_hero_grid_config_path,
         setup_bracket,
-        setup_grouping,
+        setup_layout,
         setup_winrate_sorting,
         setup_config_name
     ]

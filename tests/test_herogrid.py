@@ -2,31 +2,31 @@ import itertools
 
 import pytest
 
-from odherogrid.enums import Brackets, Grouping
+from odherogrid.enums import Bracket, Layout
 from odherogrid.herogrid import (HeroGrid, HeroGridConfig,
                                  autodetect_steam_userdata_path,
                                  get_hero_grid_config_path)
 
 
-def _get_hero_wl(hero: dict, bracket: Brackets) -> float:
+def _get_hero_wl(hero: dict, bracket: Bracket) -> float:
     return hero[f"{bracket.value}_win"] / hero[f"{bracket.value}_pick"]
 
 
 def test_herogridconfig_create_grids(heroes, testconf_dict):
     """Tests `HeroGridConfig.create_grids()` with all combinations
-     of brackets and grouping."""
+     of brackets and layout."""
     conf = testconf_dict
-    brackets = [b for b in Brackets if b != 0] # don't include ALL
-    for bracket, grouping in itertools.product(brackets, Grouping):
+    brackets = [b for b in Bracket if b != 0] # don't include ALL
+    for bracket, layout in itertools.product(brackets, Layout):
         conf["brackets"] = [bracket]
-        conf["grouping"] = grouping
-        name = f"{bracket}{grouping}"
+        conf["layout"] = layout
+        name = f"{bracket}{layout}"
         conf["config_name"] = name
         h = HeroGridConfig(heroes, conf)
         h.create_grids()
         assert next(
             c for c in h.hero_grid_config["configs"] 
-            if c["config_name"] == f"{name} ({Brackets(bracket).name.capitalize()})"
+            if c["config_name"] == f"{name} ({Bracket(bracket).name.capitalize()})"
         )
 
 
@@ -57,7 +57,7 @@ def _check_herogrid(name: str, grid: dict):
 def test_sort_heroes_by_winrate(heroes, testconf_dict):
     """Tests `HeroGrid.sort_heroes_by_winrate()`"""
     config = testconf_dict
-    for bracket in [b for b in Brackets if b != Brackets.ALL]:
+    for bracket in [b for b in Bracket if b != Bracket.ALL]:
         h = HeroGrid(heroes, bracket, config)
         h.sort_heroes_by_winrate()
         for idx, hero in enumerate(h.heroes):

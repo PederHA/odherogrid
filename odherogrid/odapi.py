@@ -1,6 +1,6 @@
 import requests
 
-from .enums import Brackets
+from .enums import Bracket
 
 def fetch_hero_stats() -> list:
     """Retrieves hero win/loss statistics from OpenDotaAPI."""
@@ -9,5 +9,5 @@ def fetch_hero_stats() -> list:
     # Rename pro_<stat> to 8_<stat>, so it's easier to work with our enum
     for hero in heroes:
         for stat in ["win", "pick", "ban"]:
-            hero[f"{Brackets.PRO.value}_{stat}"] = hero.pop(f"pro_{stat}")
+            hero[f"{Bracket.PRO.value}_{stat}"] = hero.pop(f"pro_{stat}")
     return heroes

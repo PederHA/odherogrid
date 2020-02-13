@@ -4,8 +4,8 @@ from typing import Any, Iterable, List, Optional, Type
 
 import click
 
-from ..enums import Brackets, Grouping
-from .parse import BRACKETS, GROUPING
+from ..enums import Bracket, Layout
+from .parse import BRACKETS, LAYOUTS
 
 
 # since we can't subclass click.Parameter, we have to do this
@@ -64,19 +64,19 @@ PARAMS = [
     Param(
         options=["-b", "--brackets"],
         multiple=True,
-        argument_format=f"BRACKET (default: {Brackets.DEFAULT})",
+        argument_format=f"BRACKET (default: {Bracket.DEFAULT})",
         description="Which skill bracket to get winrates from.", 
         arguments=BRACKETS,
-        argument_type=Brackets,
+        argument_type=Bracket,
         description_post="Hero grids for multiple brackets can be generated "
                          "by specifying the -b option several times."
     ),
     Param(
-        options=["-g", "--grouping"],
-        argument_format=f"GROUPING (default: {Grouping.DEFAULT})",
-        description="How heroes should be grouped in the grid",
-        arguments=GROUPING,
-        argument_type=Grouping
+        options=["-l", "--layout"],
+        argument_format=f"LAYOUT (default: {Layout.DEFAULT})",
+        description="Which Hero Grid layout to use.",
+        arguments=LAYOUTS,
+        argument_type=Layout
     ),
     Param(
         options=["-p", "--path"],

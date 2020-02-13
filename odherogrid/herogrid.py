@@ -7,7 +7,7 @@ from typing import List
 
 import click
 
-from .enums import Brackets, Grouping
+from .enums import Bracket, Layout
 from .resources import (HERO_GRID_CONFIG_BASE, HERO_GRID_BASE, _get_new_category,
                         get_new_hero_grid_base)
 
@@ -20,7 +20,7 @@ class HeroGrid:
                  grid: dict = None
                 ):
         self.bracket = bracket
-        self.grouping = config["grouping"]
+        self.layout = config["layout"]
         self.sort = config["sort"]
         self.config_name = config["config_name"]
         self.heroes = heroes
@@ -46,20 +46,20 @@ class HeroGrid:
 
     def create(self) -> dict:
         """Creates a new hero grid."""
-        grouping_methods = {
-            Grouping.MAINSTAT.value: self._get_grid_main_stat,
-            Grouping.NONE.value: self._get_grid_all,
-            Grouping.ATTACK.value: self._get_grid_attack,
-            Grouping.ROLE.value: self._get_grid_role
+        layout_methods = {
+            Layout.MAINSTAT.value: self._get_grid_main_stat,
+            Layout.NONE.value: self._get_grid_all,
+            Layout.ATTACK.value: self._get_grid_attack,
+            Layout.ROLE.value: self._get_grid_role
         }
       
-        meth = grouping_methods.get(self.grouping)
+        meth = layout_methods.get(self.layout)
         if not meth:
-            raise ValueError(f"No such grouping: '{self.grouping}'")
+            raise ValueError(f"No such layout: '{self.layout}'")
         
         hero_grid = meth()
         hero_grid["config_name"] = (f"{self.config_name} "
-                                    f"({Brackets(self.bracket).name.capitalize()})")
+                                    f"({Bracket(self.bracket).name.capitalize()})")
         
         return hero_grid
         
@@ -140,7 +140,7 @@ class HeroGridConfig:
 
         # NOTE: Do we need these?
         self.brackets = config["brackets"]
-        self.grouping = config["grouping"]
+        self.layout = config["layout"]
         self.path = config["path"]
         self.sort = config["sort"]
         self.config_name = config["config_name"]

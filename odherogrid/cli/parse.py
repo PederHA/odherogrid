@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import click
 
-from ..enums import Brackets, Grouping
+from ..enums import Bracket, Layout
 from ..herogrid import get_hero_grid_config_path
 
 
@@ -19,26 +19,26 @@ def make_mapping(mapping: Dict[Tuple[str], IntEnum]) -> Dict[Union[str, int], In
 
 
 _brackets = {
-    ("h",): Brackets.HERALD,
-    ("g",): Brackets.GUARDIAN,
-    ("c",): Brackets.CRUSADER,
-    ("a",): Brackets.ARCHON,
-    ("l",): Brackets.LEGEND,
-    ("n",): Brackets.ANCIENT,
-    ("d",): Brackets.DIVINE,
-    ("p",): Brackets.PRO,
-    ("A",): Brackets.ALL,
+    ("h",): Bracket.HERALD,
+    ("g",): Bracket.GUARDIAN,
+    ("c",): Bracket.CRUSADER,
+    ("a",): Bracket.ARCHON,
+    ("l",): Bracket.LEGEND,
+    ("n",): Bracket.ANCIENT,
+    ("d",): Bracket.DIVINE,
+    ("p",): Bracket.PRO,
+    ("A",): Bracket.ALL,
 }
 
-_grouping = {
-    ("m", "stat", "mainstat", "stats"): Grouping.MAINSTAT,
-    ("a", "melee", "range", "attack"): Grouping.ATTACK,
-    ("r",): Grouping.ROLE,
-    ("n", "all", "everything"): Grouping.NONE,
+_layout = {
+    ("m", "stat", "mainstat", "stats"): Layout.MAINSTAT,
+    ("a", "melee", "range", "attack"): Layout.ATTACK,
+    ("r",): Layout.ROLE,
+    ("n", "all", "everything"): Layout.NONE,
 }
 
 
-GROUPING = make_mapping(_grouping)
+LAYOUTS = make_mapping(_layout)
 BRACKETS = make_mapping(_brackets)
 
 
@@ -49,10 +49,10 @@ def parse_arg_brackets(brackets: List[Union[str, int]]) -> List[int]:
     """
     # FIXME: this is a mess now
 
-    # Check is Brackets.ALL is given as an argument
-    if any(x in brackets for x in [str(Brackets.ALL.value), Brackets.ALL.value]):
+    # Check is Bracket.ALL is given as an argument
+    if any(x in brackets for x in [str(Bracket.ALL.value), Bracket.ALL.value]):
         # Create list with all brackets
-        valid_brackets = [b.value for b in Brackets if b.value != Brackets.ALL.value]
+        valid_brackets = [b.value for b in Bracket if b.value != Bracket.ALL.value]
     else:
         # Parse arguments & make list of valid bracket arguments
         valid_brackets = list(
@@ -64,27 +64,27 @@ def parse_arg_brackets(brackets: List[Union[str, int]]) -> List[int]:
     # Fall back on default value if no valid brackets are provided
     if not valid_brackets:
         # TODO: raise ValueError?
-        valid_brackets = [Brackets.DEFAULT.value]
+        valid_brackets = [Bracket.DEFAULT.value]
         click.echo(
             "No valid bracket arguments provided. "
-            f"Using default bracket: {Brackets.DEFAULT.name.capitalize()}"
+            f"Using default bracket: {Bracket.DEFAULT.name.capitalize()}"
         )
 
     return list(set(valid_brackets))
 
 
-def parse_arg_grouping(grouping: str) -> int:
-    """Parses grouping (`-g` `--group`) argument.
+def parse_arg_layout(layout: str) -> int:
+    """Parses layout (`-g` `--group`) argument.
     
     Returns integer
     """
-    grp = find_argument_in_mapping(grouping, GROUPING)
+    grp = find_argument_in_mapping(layout, LAYOUTS)
     if grp is None:
         # TODO: raise ValueError?
-        grp = Grouping.DEFAULT.value
+        grp = Layout.DEFAULT.value
         click.echo(
-            "No valid grouping arguments provided. "
-            f"Using default bracket: {Grouping.DEFAULT.name.capitalize()}"
+            "No valid layout arguments provided. "
+            f"Using default bracket: {Layout.DEFAULT.name.capitalize()}"
         )
     return grp
 
@@ -97,9 +97,9 @@ def find_argument_in_mapping(argument: Union[str, int], mapping: dict) -> Option
 
 def parse_config(config: dict) -> dict:
     config["brackets"] = parse_arg_brackets(config["brackets"])
-    config["grouping"] = parse_arg_grouping(config["grouping"])
+    config["layout"] = parse_arg_layout(config["layout"])
     
-    # We can fall back on bracket and grouping defaults
+    # We can fall back on bracket and layout defaults
     # But we can't fall back on a default Steam userdata directory path
     try:
         config["path"] = get_hero_grid_config_path(config["path"]) # Steam userdata directory

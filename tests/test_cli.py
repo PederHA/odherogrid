@@ -1,14 +1,14 @@
 import pytest
 
-from odherogrid.cli.parse import parse_arg_brackets, parse_arg_grouping, parse_config
+from odherogrid.cli.parse import parse_arg_brackets, parse_arg_layout, parse_config
 from odherogrid.cli.help import get_help_string
 from odherogrid.cli.params import get_click_params
-from odherogrid.enums import Brackets, Grouping
+from odherogrid.enums import Bracket, Layout
 from odherogrid.odhg import main
 
 def test_parse_arg_brackets_enum():
     """Tests every Enum Bracket value against `odhg.parse_brackets()`"""
-    for b in [b for b in Brackets if b != Brackets.ALL]:
+    for b in [b for b in Bracket if b != Bracket.ALL]:
         assert parse_arg_brackets([str(b.value)]) == [b.value]
         assert parse_arg_brackets([b.value]) == [b.value]
 
@@ -32,11 +32,11 @@ def test_parse_arg_brackets_mixed(test_input, expected):
     assert parse_arg_brackets(test_input) == expected
 
 
-def test_parse_arg_grouping():
-    """Tests every Grouping value against `odhg.parse_brackets()`"""
-    for g in Grouping:
-        assert parse_arg_grouping(str(g.value)) == g.value
-        assert parse_arg_grouping(g.name.lower()) == g.value
+def test_parse_arg_layout():
+    """Tests every Layout value against `odhg.parse_brackets()`"""
+    for g in Layout:
+        assert parse_arg_layout(str(g.value)) == g.value
+        assert parse_arg_layout(g.name.lower()) == g.value
 
 
 def test_parse_config(testconf_dict):

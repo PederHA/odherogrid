@@ -79,12 +79,12 @@ It is recommended to create a config rather than using command-line options.
 {codeblock("odhg -b 0")}
 
 
-## Grouping
+## Layout
 #### Create grids for Divine hero winrates, grouped by Hero roles (Carry/Support/Flex):
-{codeblock("odhg -g 3 -b 7")}
+{codeblock("odhg -l 3 -b 7")}
 
-#### Name of grouping method can also be used:
-{codeblock("odhg -g role -b 7")}
+#### Name of layout can also be used:
+{codeblock("odhg -l role -b 7")}
 
 
 ## Path
