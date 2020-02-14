@@ -1,10 +1,11 @@
 from collections import defaultdict
-from enum import EnumMeta
+from enum import Enum
 
 import click
 
 from .. import __version__
 from .params import PARAMS
+
 
 INDENT_SPACES = 2
 
@@ -37,7 +38,7 @@ def get_help_string() -> str:
             for i, vals in args.items():
                 a = f"<{', '.join(str(v) for v in vals)}>"
                 # Get name associated with Enum value if arg type is Enum
-                if type(p.argument_type) == EnumMeta:
+                if issubclass(p.argument_type, Enum):
                     argval = p.argument_type(i).name.capitalize()
                 else:
                     argval = ""
