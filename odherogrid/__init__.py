@@ -6,3 +6,8 @@ from .enums import *
 from .odapi import *
 from .odhg import *
 from .resources import *
+
+
+CONFIG_NAME = "config.yml" # NOTE: Path("config.yml")?
+CONFIG_DIR = Path().home() / ".odhg"
+CONFIG = CONFIG_DIR / CONFIG_NAME 

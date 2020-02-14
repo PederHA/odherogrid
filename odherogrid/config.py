@@ -16,10 +16,8 @@ from .cli.utils import progress
 from .enums import Bracket, Layout, enum_start_end, enum_string
 from .herogrid import autodetect_steam_userdata_path
 from .resources import DEFAULT_NAME
+from . import CONFIG
 
-CONFIG_NAME = "config.yml" # NOTE: Path("config.yml")?
-CONFIG_DIR = Path().home() / ".odhg"
-CONFIG = CONFIG_DIR / CONFIG_NAME 
 
 CONFIG_BASE = {
     "path": None,
@@ -162,7 +160,7 @@ def setup_hero_grid_config_path(config: dict) -> dict:
     # Get default directory for Steam userdata
     click.echo("Steam Userdata Directory:")
     try:
-        p = autodetect_steam_userdata_path()
+        p = detect_userdata_path()
     except NotImplementedError as e:
         click.echo(e.args[0])
         cfg_path = ask_steam_userdata_path()
