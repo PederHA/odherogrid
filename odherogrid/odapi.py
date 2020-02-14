@@ -1,10 +1,10 @@
-import requests
+import httpx
 
 from .enums import Bracket
 
 def fetch_hero_stats() -> list:
     """Retrieves hero win/loss statistics from OpenDotaAPI."""
-    r = requests.get("https://api.opendota.com/api/heroStats")
+    r = httpx.get("https://api.opendota.com/api/heroStats")
     heroes = r.json()
     # Rename pro_<stat> to 8_<stat>, so it's easier to work with our enum
     for hero in heroes:
