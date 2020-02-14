@@ -25,6 +25,7 @@ class HeroGrid:
         self.config_name = config["config_name"]
         self.heroes = heroes
         self.sort_heroes_by_winrate()
+        # TODO: add _fix_grid tests before using it
 
     def _fix_grid(self, config: dict) -> dict:
         """Method called by `__init__()` to verify and fix missing keys and values
@@ -79,8 +80,8 @@ class HeroGrid:
         return grid
 
     def _get_grid_main_stat(self) -> dict:
-        """Creates hero grid, categorized by main stat."""
-        CATEGORY_IDX = {"str": 0, "agi": 1, "int": 2} # FIXME: hardcoded values
+        """Creates a hero grid with a mainstat layout (Dota 2 default)."""
+        CATEGORY_IDX = {"str": 0, "agi": 1, "int": 2}
         hero_grid = get_new_hero_grid_base()
         for hero in self.heroes: # adds heroes to categories, sorted by winrate
             idx = CATEGORY_IDX.get(hero["primary_attr"])
@@ -88,7 +89,7 @@ class HeroGrid:
         return hero_grid
 
     def _get_grid_single(self) -> dict:
-        """Creates hero grid, all heroes together in a single category."""
+        """Creates a hero grid with a single category layout."""
         category = _get_new_category("Heroes", height=1180.0)
 
         hero_grid = get_new_hero_grid_base()
@@ -99,7 +100,7 @@ class HeroGrid:
         return hero_grid
 
     def _get_grid_attack(self) -> dict:
-        """Creates hero grid, categorized by main melee/ranged."""
+        """Creates a hero grid with a melee/range attack type layout."""
         melee = _get_new_category("Melee", height=280.0)
         ranged = _get_new_category("Ranged", y_pos=300.0, height=280.0)
 
@@ -112,7 +113,7 @@ class HeroGrid:
         return hero_grid
 
     def _get_grid_role(self) -> dict:
-        """Creates hero grid, categorized by carry/support/flex."""
+        """Creates a hero grid with a hero role layout (Carry/Support/Flex)."""
         carry = _get_new_category("Carry")
         support = _get_new_category("Support", y_pos=200.0)
         flex = _get_new_category("Flexible", y_pos=400.0)
