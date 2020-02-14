@@ -13,7 +13,7 @@ LOGS_DIR: Path = CONFIG_DIR / "logs"
 def handle_exception(exception: Exception) -> None:
     IGNORED = [SystemExit]
     if not any(isinstance(exception, e) for e in IGNORED):
-        log_file = log_error(exception)
+        log_file = log(exception)
         print(f"ERROR: {exception}")
         print(f"Error log saved: {log_file}")    
 
@@ -32,7 +32,7 @@ def make_log_file(log_type: str=None) -> Path:
     return log_file
 
 
-def log_error(exception: Exception) -> Path:
+def log(exception: Exception) -> Path:
     """
     Logs exception. Writes traceback and contents of the 
     interpreter's stack frames to a new log file.
@@ -71,4 +71,3 @@ def get_n_stack_frames(limit: int) -> FrameType:
         if not frame:
             return StopIteration
         yield frame
-
