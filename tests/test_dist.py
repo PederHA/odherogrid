@@ -11,4 +11,4 @@ with open(ODHG_ROOT/"pyproject.toml") as f:
 
 
 def test_version():
-    assert __version__ == pyproject["tool"]["poetry"]["version"] == "0.2.0"
+    assert __version__ == pyproject["tool"]["poetry"]["version"] == "0.3.0"
