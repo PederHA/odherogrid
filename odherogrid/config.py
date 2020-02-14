@@ -107,12 +107,13 @@ def _fix_missing_keys(config: dict, missing_keys: list) -> dict:
     click.echo(f"'config.yml' is missing the following keys: {missing}")
 
     # Replace missing keys in user's config
+    # TODO: Improve prompt. 
+    #       Reinforce that choosing "no" replaces with default val
     for (key, value) in missing_keys:
-        func = CONFIG_FUNCS.get(key)
-
         if click.confirm(
             f"Do you want add a value for the missing key '{key}'?"
         ):
+            func = CONFIG_FUNCS.get(key)
             if not func:
                 raise KeyError(
                     f"No function exists to fill config entry '{key}'! "
