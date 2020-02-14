@@ -141,4 +141,4 @@ odhg --name MyCustomGrid -b 7
 # Screenshots
 
 ![Divine Winrates](screenshots/screenshot.png)
-_Divine winrate hero grid generated 2020-02-11_
+_Divine winrate hero grid generated 2020-01-26_
