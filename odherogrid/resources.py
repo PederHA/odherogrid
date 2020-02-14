@@ -74,4 +74,8 @@ def get_new_hero_grid_base() -> dict:
 
 
 def get_new_hero_grid_config() -> dict:
-    return deepcopy(CONFIG_BASE)
+    """
+    Returns a dict with contents equivalent to an empty
+    hero_grid_config.json
+    """
+    return deepcopy(HERO_GRID_CONFIG_BASE)
