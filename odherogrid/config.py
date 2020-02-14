@@ -15,8 +15,7 @@ from .cli.parse import parse_arg_brackets
 from .cli.utils import progress
 from .enums import Bracket, Layout, enum_start_end, enum_string
 from .herogrid import detect_userdata_path
-from .resources import DEFAULT_NAME
-from . import CONFIG
+from .settings import DEFAULT_GRID_NAME, CONFIG
 from .error import handle_exception
 
 
@@ -24,7 +23,7 @@ CONFIG_BASE = {
     "path": None,
     "brackets": [Bracket.DEFAULT.value],
     "layout": Layout.DEFAULT.value,
-    "config_name": DEFAULT_NAME,
+    "config_name": DEFAULT_GRID_NAME,
     "sort": True,
 }
 
@@ -265,11 +264,11 @@ def setup_layout(config: dict) -> dict:
 def setup_config_name(config: dict) -> dict:
     """Setup for default name of hero grid."""
     click.echo(
-        f"Default hero grid name. (default: {DEFAULT_NAME})"
+        f"Default hero grid name. (default: {DEFAULT_GRID_NAME})"
     )
     name = click.prompt(
         f"Name", 
-        default=DEFAULT_NAME,
+        default=DEFAULT_GRID_NAME,
         show_default=False
     )
     if name:

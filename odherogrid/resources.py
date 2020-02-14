@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-DEFAULT_NAME = "OpenDota Hero Winrates"
+from .settings import DEFAULT_GRID_NAME
 
 
 CATEGORY_BASE = {
@@ -14,7 +14,7 @@ CATEGORY_BASE = {
 
 
 HERO_GRID_BASE = {
-    "config_name": DEFAULT_NAME,
+    "config_name": DEFAULT_GRID_NAME,
     "categories": [
         {
             "category_name": "Strength",

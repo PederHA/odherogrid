@@ -5,7 +5,7 @@ from pathlib import Path
 from types import FrameType
 import traceback
 
-from . import CONFIG_DIR
+from .settings import CONFIG_DIR
 
 LOGS_DIR: Path = CONFIG_DIR / "logs" 
 
