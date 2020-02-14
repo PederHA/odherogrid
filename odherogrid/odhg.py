@@ -45,10 +45,9 @@ def get_config_from_cli_args(**options) -> dict:
 
 
 def print_gridnames(config: dict, grids: List[str]) -> None:
-    #g = "\n".join([f"\t'{_g}'" for _g in grids]) # add single quotes + tab
-    #table = SingleTable([["Grid Name"], grids])
-    table = SingleTable([[g["config_name"]] for g in grids])
-    click.echo(f"Successfully created the following grids:\n{table.table}\n")
+    heading = [["Grids Created:"]]
+    table = SingleTable(heading + [[g["config_name"]] for g in grids])
+    click.echo(table.table)
     click.echo(f"Changes were saved to {config['path']}")
     
 
