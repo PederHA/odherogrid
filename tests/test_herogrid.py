@@ -4,7 +4,7 @@ import pytest
 
 from odherogrid.enums import Bracket, Layout
 from odherogrid.herogrid import (HeroGrid, HeroGridConfig,
-                                 autodetect_steam_userdata_path,
+                                 detect_userdata_path,
                                  get_hero_grid_config_path)
 
 
@@ -70,7 +70,7 @@ def test_sort_heroes_by_winrate(heroes, testconf_dict):
 
 def test_get_cfg_path_nopath():
     """Tests userdata directory auto-detection."""
-    assert autodetect_steam_userdata_path().exists()
+    assert detect_userdata_path().exists()
 
 
 

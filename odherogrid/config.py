@@ -14,7 +14,7 @@ import yaml
 from .cli.parse import parse_arg_brackets
 from .cli.utils import progress
 from .enums import Bracket, Layout, enum_start_end, enum_string
-from .herogrid import autodetect_steam_userdata_path
+from .herogrid import detect_userdata_path
 from .resources import DEFAULT_NAME
 from . import CONFIG
 

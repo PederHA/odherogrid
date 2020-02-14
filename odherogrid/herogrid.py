@@ -268,7 +268,7 @@ def get_hero_grid_config_path(path: str) -> Path:
     return cfg_path
 
 
-def autodetect_steam_userdata_path() -> Path:  
+def detect_userdata_path() -> Path:  
     if sys.platform == "win32":
         p = Path("C:/Program Files (x86)")
     elif sys.platform == "darwin":
