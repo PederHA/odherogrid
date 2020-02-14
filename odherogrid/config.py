@@ -17,6 +17,7 @@ from .enums import Bracket, Layout, enum_start_end, enum_string
 from .herogrid import detect_userdata_path
 from .resources import DEFAULT_NAME
 from . import CONFIG
+from .error import handle_exception
 
 
 CONFIG_BASE = {
@@ -66,18 +67,30 @@ def load_config() -> dict:
     return config
 
 
+def create_config(config: dict, *, filename: Union[str, Path]=None) -> None:
+    """Creates a config file and its parent directories (if needed)"""
+    path = Path((filename or CONFIG))
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.touch()
+    except Exception as e:  # We are mainly concerned with OSError and its
+        handle_exception(e) # subclasses, but we might as well log all errors here.
+        
+
+
 def update_config(config: dict, *, filename: Union[str, Path]=None) -> None:
-    """Saves config as a YAML file."""
+    """Saves config as a YAML-formatted file."""
     path = Path((filename or CONFIG)) # make sure we have a path object
     if not path.exists():
-        path.parent.mkdir(parents=True, exist_ok=True)
+        create_config(config, filename=filename)
     with open(path, "w") as f:
         f.write(yaml.dump(config, default_flow_style=False))    
 
 
 def check_config_integrity(config: dict, *, filename: Union[str, Path]=None) -> dict:
+    """Removes unknown keys and inserts missing keys."""
     # Remove unknown keys
-    c = deepcopy(config)
+    c = deepcopy(config) # config copy so we can modify while iterating
     for key in config:
         if key not in CONFIG_BASE:
             c.pop(key)
@@ -87,7 +100,7 @@ def check_config_integrity(config: dict, *, filename: Union[str, Path]=None) -> 
     missing_keys = [(k, v) for (k, v) in CONFIG_BASE.items() if k not in config]
     if missing_keys:
         _fix_missing_keys(config, missing_keys)
-        update_config(config, filename=filename) # save modified config
+        update_config(config, filename=filename)
     
     return config
 
@@ -310,7 +323,7 @@ def _do_run_first_time_setup() -> dict:
             click.echo("\n") # newline after displaying progress bar
             config = func(config)
             click.clear()
-
+    
     update_config(config)
 
     return config
