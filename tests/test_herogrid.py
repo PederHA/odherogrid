@@ -30,6 +30,21 @@ def test_herogridconfig_create_grids(heroes, testconf_dict):
         )
 
 
+def test_herogridconfig_create_grids_multiple(heroes, testconf_dict):
+    """Tests `HeroGridConfig.create_grids()` with multiple brackets."""
+    conf = testconf_dict
+    conf["brackets"] = [b for b in Bracket if b != 0]
+    name = "testgrid"
+    conf["config_name"] = name
+    h = HeroGridConfig(heroes, conf)
+    h.create_grids()
+    for bracket in conf["brackets"]:
+        assert next(
+            c for c in h.hero_grid_config["configs"] 
+            if c["config_name"] == f"{name} ({Bracket(bracket).name.capitalize()})"
+        )
+
+
 def test_herogridconfig_add_grid(herogridconfig: HeroGridConfig):
     grid = {"config_name": "testgrid", 
             "categories": [
