@@ -41,7 +41,7 @@ def test_check_config_integrity_userdefined(monkeypatch, config_empty, testconf)
         "config_name": "test",
         "layout": "1",
         "path": "1",
-        "sort": "1"
+        "ascending": "1"
     }
     conf = config_empty
     for key in list(conf.keys()): # capture keys before modifying

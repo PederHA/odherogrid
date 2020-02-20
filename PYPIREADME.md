@@ -41,10 +41,10 @@ Options:
     Specify absolute path of Dota 2 userdata/cfg directory.
     (It's usually better to run --setup to configure this path.)
 
-  [-s, --sort] (flag)
+  [-a, --ascending] (flag)
     Sort heroes by winrate in ascending order. (Default: descending).
 
-  [-S, --setup] (flag)
+  [-s, --setup] (flag)
     Runs first-time setup in order to create a persistent config.
 
   [-n, --name] NAME
@@ -132,6 +132,14 @@ odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg
 # Changelog
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+
+## 0.3.0 (March XXth, 2020)
+### Added
+
+
+### Changed
+- Parameter `--sort` renamed to `--ascending`.
+
 
 ## 0.2.0 (February 14th, 2020)
 ### Added

@@ -85,13 +85,13 @@ PARAMS = [
         description_post="(It's usually better to run --setup to configure this path.)",
     ),
     Param(
-        options=["-s", "--sort"],
+        options=["-a", "--ascending"],
         is_flag=True,
         default=True,
         description="Sort heroes by winrate in ascending order. (Default: descending).",
     ),
     Param(
-        options=["-S", "--setup"],
+        options=["-s", "--setup"],
         is_flag=True,
         description= "Runs first-time setup in order to create a persistent config.",
     ),

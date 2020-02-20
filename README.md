@@ -41,10 +41,10 @@ Options:
     Specify absolute path of Dota 2 userdata/cfg directory.
     (It's usually better to run --setup to configure this path.)
 
-  [-s, --sort] (flag)
+  [-a, --ascending] (flag)
     Sort heroes by winrate in ascending order. (Default: descending).
 
-  [-S, --setup] (flag)
+  [-s, --setup] (flag)
     Runs first-time setup in order to create a persistent config.
 
   [-n, --name] NAME

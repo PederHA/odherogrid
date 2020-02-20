@@ -21,7 +21,7 @@ class HeroGrid:
                 ):
         self.bracket = bracket
         self.layout = config["layout"]
-        self.sort = config["sort"]
+        self.ascending = config["ascending"]
         self.config_name = config["config_name"]
         self.heroes = heroes
         self.sort_heroes_by_winrate()
@@ -42,7 +42,7 @@ class HeroGrid:
                 hero["8_pick"] = 1
         self.heroes.sort(
             key=lambda h: h[f"{self.bracket}_win"] / h[f"{self.bracket}_pick"], 
-            reverse=self.sort
+            reverse=self.ascending
         )
 
     def create(self) -> dict:
@@ -143,7 +143,7 @@ class HeroGridConfig:
         self.brackets = config["brackets"]
         self.layout = config["layout"]
         self.path = config["path"]
-        self.sort = config["sort"]
+        self.ascending = config["ascending"]
         self.config_name = config["config_name"]
 
         self.hero_grid_config = self.load_hero_grid_config()
@@ -268,6 +268,7 @@ def get_hero_grid_config_path(path: str) -> Path:
     return cfg_path
 
 
+# NOTE: should this function reside in config.py instead?
 def detect_userdata_path() -> Path:  
     if sys.platform == "win32":
         p = Path("C:/Program Files (x86)")

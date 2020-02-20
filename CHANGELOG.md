@@ -2,6 +2,14 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
+## 0.3.0 (March XXth, 2020)
+### Added
+
+
+### Changed
+- Parameter `--sort` renamed to `--ascending`.
+
+
 ## 0.2.0 (February 14th, 2020)
 ### Added
 - Attempt to adhere to [Semantic Versioning](http://semver.org/)
