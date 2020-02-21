@@ -42,7 +42,7 @@ class HeroGrid:
                 hero["8_pick"] = 1
         self.heroes.sort(
             key=lambda h: h[f"{self.bracket}_win"] / h[f"{self.bracket}_pick"], 
-            reverse=self.ascending
+            reverse=not self.ascending
         )
 
     def create(self) -> dict:
