@@ -1,16 +1,14 @@
-from pathlib import Path
 from typing import List
 
 import click
 from terminaltables import SingleTable
 
-from .cli.help import get_help_string
-from .cli.params import get_click_params
-from .cli.parse import parse_arg_brackets, parse_arg_layout, parse_config
+from .cli.params import get_click_params, help, quiet, setup
+from .cli.parse import parse_config
 from .cli.utils import progress
-from .config import CONFIG_BASE, load_config, run_first_time_setup
+from .config import CONFIG_BASE, load_config
 from .error import handle_exception
-from .herogrid import HeroGridConfig, get_hero_grid_config_path
+from .herogrid import HeroGridConfig
 from .odapi import fetch_hero_stats
 
 
@@ -54,17 +52,13 @@ def print_gridnames(config: dict, grids: List[str]) -> None:
 @click.command()
 def main(**options) -> None:
     if options.pop("help", None):
-        click.echo(get_help_string())
-        raise SystemExit
+        help()
     
     if options.pop("setup", None):
-        conf = run_first_time_setup()
-        options.update(conf)
-
+        options = setup(options)
+    
     if options.pop("quiet"):
-        def _ignore(*args, **kwargs):
-            pass
-        click.echo = _ignore
+        quiet()
 
     name = options.pop("name", None) # Sorting of custom grids (--name)
 
@@ -81,7 +75,6 @@ def main(**options) -> None:
         else:    # Make new grid
             h.create_grids()
 
-
     print_gridnames(config, h.grids)
 
 
@@ -96,5 +89,6 @@ def _main(**kwargs) -> None:
     except Exception as e:
         handle_exception(e)
 
+
 if __name__ == "__main__":
-    main()
+    _main()

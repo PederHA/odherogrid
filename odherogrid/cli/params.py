@@ -1,10 +1,14 @@
+import functools
+import os
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Iterable, List, Optional, Type
 
 import click
 
+from ..config import run_first_time_setup
 from ..enums import Bracket, Layout
+from .help import get_help_string
 from .parse import BRACKETS, LAYOUTS
 
 
@@ -55,6 +59,23 @@ def get_click_params() -> List[click.Option]:
         for p in PARAMS
         if p.enabled
     ]
+
+
+def quiet() -> None:
+    """Patches click.echo to send standard output to /dev/null."""
+    devnull = open(os.devnull, "w", encoding="utf-8")
+    click.echo = functools.partial(click.echo, file=devnull)
+
+
+def setup(options: dict) -> dict:
+    conf = run_first_time_setup()
+    options.update(conf)
+    return options
+
+
+def help() -> None:
+    click.echo(get_help_string())
+    raise SystemExit    
 
 
 # This is the alternative to stacking decorators on odhg.main()
