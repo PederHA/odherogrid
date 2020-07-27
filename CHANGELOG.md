@@ -2,6 +2,15 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
+## 0.3.0 (July xxth, 2020)
+### Added
+- Immortal bracket support (`-b [8, "i", "immortal"]`)
+
+### Changed
+- Renamed `--sort` parameter to `--ascending`
+
+
+
 ## 0.2.0 (February 14th, 2020)
 ### Added
 - Attempt to adhere to [Semantic Versioning](http://semver.org/)

@@ -37,7 +37,7 @@ by winrate in public or professional games, using stats from OpenDota.
 
 def installation() -> str:
     text = f"""# Installation
-{codeblock('pip install odherogrid')}
+{codeblock("pip install odherogrid")}
 
 """
     return text
@@ -47,7 +47,7 @@ def usage() -> str:
     text = f"""# Usage
 {codeblock(get_help_string())}
 ## Using standard configuration 
-{codeblock("odhg")}
+{codeblock("$ odhg")}
 Prompts to create config file in `~/.odhg/` the first time the program runs.
 
 This is the recommended way to run ODHG.
@@ -63,41 +63,41 @@ Command-line options can be supplied to override config settings.
 
 
 #### Create grid for Herald hero winrates:
-{codeblock("odhg --brackets 1")}
+{codeblock("$ odhg --brackets 1")}
 
 
 #### Bracket names can also be used:
-{codeblock("odhg --brackets herald")}
+{codeblock("$ odhg --brackets herald")}
 
 
 #### Shorter:
-{codeblock("odhg -b h")}
+{codeblock("$ odhg -b h")}
 
 
 #
 #### Create grids for Herald, Divine & Pro winrates:
-{codeblock("odhg -b 1 -b 7 -b 8")}
+{codeblock("$ odhg -b 1 -b 7 -b 8")}
 
 #### Alternatively:
-{codeblock("odhg -b h -b d -b p")}
+{codeblock("$ odhg -b h -b d -b p")}
 
 
 #
 #### Create grids for all brackets:
-{codeblock("odhg -b 0")}
+{codeblock("$ odhg -b 0")}
 
 
 ## Layout
 #### Use role layout (Carry/Support/Flex). 
-{codeblock("odhg --layout role")}
+{codeblock("$ odhg --layout role")}
 
 #### Single category layout
-{codeblock("odhg --layout single")}
+{codeblock("$ odhg --layout single")}
 
 
 ## Path
 #### Specify a specific Steam user CFG directory:
-{codeblock("odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg")}
+{codeblock("$ odhg --path /home/bob/Steam/userdata/420666/570/remote/cfg")}
 
 """
     return text
@@ -113,7 +113,7 @@ def name(img: bool=True) -> str:
 
     text = f"""## Name
 #### Sort custom grids with `--name`
-{codeblock("odhg --name MyCustomGrid -b 7")}
+{codeblock("$ odhg --name MyCustomGrid -b 7")}
 #### Before:
 ![Before]({pre})
 #### After:
