@@ -11,7 +11,8 @@ class Bracket(IntEnum):
     LEGEND = 5
     ANCIENT = 6
     DIVINE = 7
-    PRO = 8
+    IMMORTAL = 8
+    PRO = 9
     
     # default bracket
     DEFAULT = DIVINE

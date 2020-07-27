@@ -17,13 +17,16 @@ def test_parse_arg_brackets_enum():
     "test_input,expected",
     [
         # Mix of ints, single chars and strings
-        ([1, 6, "d", "pro"], list(set([1, 6, 7, 8]))),
+        ([1, 6, "d", "pro"], list(set([1, 6, 7, 9]))),
         # 0 as arg
-        ([0], list(set([1, 2, 3, 4, 5, 6, 7, 8]))),
-        (["0"], list(set([1, 2, 3, 4, 5, 6, 7, 8]))),
-        ([0, 1, 2, 3, 7], list(set([1, 2, 3, 4, 5, 6, 7, 8]))),
+        ([0], list(set([1, 2, 3, 4, 5, 6, 7, 8, 9]))),
+        (["0"], list(set([1, 2, 3, 4, 5, 6, 7, 8, 9]))),
+        ([0, 1, 2, 3, 7], list(set([1, 2, 3, 4, 5, 6, 7, 8, 9]))),
         # Duplicate arguments
         ([7, "d", "divine"], [7]),
+        ([8, "i", "immortal"], [8]),
+        (["immortal"], [8]),
+        (["i"], [8]),
         ([7, 7, 7], [7]),
     ]
 )

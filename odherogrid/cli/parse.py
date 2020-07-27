@@ -25,6 +25,7 @@ _brackets = {
     "l": Bracket.LEGEND,
     "n": Bracket.ANCIENT,
     "d": Bracket.DIVINE,
+    "i": Bracket.IMMORTAL,
     "p": Bracket.PRO,
     "A": Bracket.ALL,
 }
