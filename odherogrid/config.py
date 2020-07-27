@@ -24,7 +24,7 @@ CONFIG_BASE = {
     "brackets": [Bracket.DEFAULT.value],
     "layout": Layout.DEFAULT.value,
     "config_name": DEFAULT_GRID_NAME,
-    "sort": True,
+    "ascending": False,
 }
 
 
@@ -110,7 +110,7 @@ def _fix_missing_keys(config: dict, missing_keys: list) -> dict:
         "brackets": setup_bracket,
         "layout": setup_layout,
         "config_name": setup_config_name,
-        "sort": setup_winrate_sorting
+        "ascending": setup_winrate_sorting
     }
 
     missing = ", ".join([key for (key, value) in missing_keys])
@@ -284,7 +284,7 @@ def setup_winrate_sorting(config: dict) -> dict:
     choice = 0
     while choice not in [1, 2]:
         choice = click.prompt("Choice (1-2)", type=int, default=1, show_default=False)
-    config["sort"] = (choice == 1)
+    config["ascending"] = (choice == 1)
 
     return config
 

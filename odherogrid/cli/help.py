@@ -4,7 +4,6 @@ from enum import Enum
 import click
 
 from .. import __version__
-from .params import PARAMS
 
 
 INDENT_SPACES = 2
@@ -15,6 +14,8 @@ def indent(steps: int) -> str:
 
 
 def get_help_string() -> str:
+    from .params import PARAMS # resolve circular import
+
     BASE_INDENT = 1 # steps
 
     lines = []

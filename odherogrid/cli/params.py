@@ -1,10 +1,14 @@
+import functools
+import os
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Iterable, List, Optional, Type
 
 import click
 
+from ..config import run_first_time_setup
 from ..enums import Bracket, Layout
+from .help import get_help_string
 from .parse import BRACKETS, LAYOUTS
 
 
@@ -57,6 +61,23 @@ def get_click_params() -> List[click.Option]:
     ]
 
 
+def quiet() -> None:
+    """Patches click.echo to send standard output to /dev/null."""
+    devnull = open(os.devnull, "w", encoding="utf-8")
+    click.echo = functools.partial(click.echo, file=devnull)
+
+
+def setup(options: dict) -> dict:
+    conf = run_first_time_setup()
+    options.update(conf)
+    return options
+
+
+def help() -> None:
+    click.echo(get_help_string())
+    raise SystemExit    
+
+
 # This is the alternative to stacking decorators on odhg.main()
 # and it also makes it easier to gather documentation and behavior 
 # of command parameters in one place
@@ -85,13 +106,13 @@ PARAMS = [
         description_post="(It's usually better to run --setup to configure this path.)",
     ),
     Param(
-        options=["-s", "--sort"],
+        options=["-a", "--ascending"],
         is_flag=True,
         default=True,
         description="Sort heroes by winrate in ascending order. (Default: descending).",
     ),
     Param(
-        options=["-S", "--setup"],
+        options=["-s", "--setup"],
         is_flag=True,
         description= "Runs first-time setup in order to create a persistent config.",
     ),

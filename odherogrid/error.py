@@ -1,21 +1,34 @@
 import inspect
 import json
+import sys
+import traceback
 from datetime import datetime
 from pathlib import Path
 from types import FrameType
-import traceback
+
+import click
 
 from .settings import CONFIG_DIR
 
 LOGS_DIR: Path = CONFIG_DIR / "logs" 
 
 
+def eprint(*args, **kwargs) -> None:
+    """Click.echo to stderr."""
+    # Due to some /dev/null file param patching when program is invoked with
+    # the --quiet parameter, file=sys.stderr has to be specified rather than
+    # err=True
+    click.echo(*args, file=sys.stderr, **kwargs)
+
+
 def handle_exception(exception: Exception) -> None:
     IGNORED = [SystemExit]
     if not any(isinstance(exception, e) for e in IGNORED):
         log_file = log(exception)
-        print(f"ERROR: {exception}")
-        print(f"Error log saved: {log_file}")    
+        click.echo(f"ERROR: {exception}", file=sys.stderr)
+        click.echo(f"Error log saved: {log_file}", file=sys.stderr)
+        #eprint(f"ERROR: {exception}")
+        #eprint(f"Error log saved: {log_file}")    
 
 
 def make_log_file(log_type: str=None) -> Path:

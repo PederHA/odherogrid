@@ -2,6 +2,7 @@ import httpx
 
 from .enums import Bracket
 
+
 def fetch_hero_stats() -> list:
     """Retrieves hero win/loss statistics from OpenDotaAPI."""
     r = httpx.get("https://api.opendota.com/api/heroStats")
