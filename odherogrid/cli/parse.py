@@ -7,7 +7,7 @@ from ..enums import Bracket, Layout
 from ..herogrid import get_hero_grid_config_path
 
 
-def make_mapping(mapping: Dict[Tuple[str], IntEnum]) -> Dict[Union[str, int], IntEnum]:
+def make_mapping(mapping: Dict[str, IntEnum]) -> Dict[Union[str, int], IntEnum]:
     """Make a new mapping with multiple keys for identical enums."""
     new = {}
     for key, enum in mapping.items():
@@ -39,8 +39,8 @@ _layout = {
 }
 
 
-LAYOUTS = make_mapping(_layout)
-BRACKETS = make_mapping(_brackets)
+LAYOUTS: Dict[Union[str, int], int] = make_mapping(_layout)
+BRACKETS: Dict[Union[str, int], int] = make_mapping(_brackets)
 
 
 def parse_arg_brackets(brackets: List[Union[str, int]]) -> List[int]:
