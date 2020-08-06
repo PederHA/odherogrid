@@ -15,6 +15,6 @@ def test__get_new_category():
         
         # Test random combination (and number) of keywords
         random.shuffle(kwargs)
-        kw = kwargs[0:random.randint(1, len(kwargs))]
+        kw = kwargs[0:random.randint(0, len(kwargs))]
         params = {k: arg() for k in kw}
         assert _get_new_category("test", **params)
