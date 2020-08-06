@@ -1,11 +1,12 @@
 import itertools
+import sys
 
 import pytest
 
 from odherogrid.enums import Bracket, Layout
 from odherogrid.herogrid import (HeroGrid, HeroGridConfig,
                                  detect_userdata_path,
-                                 get_hero_grid_config_path)
+                                 get_hero_grid_config_path, _get_steam_path_windows)
 
 
 def _get_hero_wl(hero: dict, bracket: Bracket) -> float:
@@ -171,3 +172,15 @@ def test_herogrid__get_grid_single(heroes, N_HEROES, herogrid: HeroGrid):
 
     # Test that all heroes are in the same category
     assert len(grid["categories"][0]["hero_ids"]) == N_HEROES
+
+
+def test_detect_userdata_path():
+    p = detect_userdata_path()
+    assert (p.exists())
+
+
+def test__get_steam_path_windows():
+    if sys.platform != "win32":
+        return
+    p = _get_steam_path_windows()
+    assert(p.exists())

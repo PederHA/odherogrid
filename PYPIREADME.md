@@ -139,7 +139,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Immortal bracket support (`-b [8, "i", "immortal"]`)
 
 ### Changed
-- Renamed `--sort` parameter to `--ascending`
+- Parameter `--sort` renamed to `--ascending`
+- Improved Steam directory detection for Windows users
 
 
 

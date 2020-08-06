@@ -274,16 +274,33 @@ def get_hero_grid_config_path(path: str) -> Path:
 # NOTE: should this function reside in config.py instead?
 def detect_userdata_path() -> Path:  
     if sys.platform == "win32":
-        p = Path("C:/Program Files (x86)")
+        p = _get_steam_path_windows()
     elif sys.platform == "darwin":
-        p = Path.home() / "Library/Application Support"
+        # NYI: Mac OS steam path detection
+        p = Path.home() / "Library/Application Support/Steam"
     elif sys.platform == "linux":
-        p = Path.home()
+        # NYI: Mac OS steam path detection
+        p = Path.home() / "Steam"
     else:
         raise NotImplementedError("Userdata directory auto-detection is not supported for your OS!")  
     
-    p = p / "Steam/userdata"
+    p = p / "userdata"
     if not p.exists():
         raise FileNotFoundError("Unable to automatically detect userdata directory!")
 
     return p
+
+def _get_steam_path_windows() -> Path:
+    """Raises FileNotFoundError if registry key cannot be found."""
+    import winreg
+    key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Valve\Steam", 0, winreg.KEY_READ)
+    try:
+        value, _ = winreg.QueryValueEx(key, "InstallPath")
+    except FileNotFoundError:
+        value = "C:\\Program Files (x86)\\Steam"
+        print(
+            "Unable to locate steam folder automatically. "
+            f"Defaulting to {value}"
+        )
+    return Path(value)
+
