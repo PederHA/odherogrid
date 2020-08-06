@@ -3,7 +3,7 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 import click
 
@@ -65,15 +65,19 @@ class HeroGrid:
         return hero_grid
         
     def modify(self, grid: dict) -> dict:
-        """Modifies an existing custom hero grid."""
-        # NOTE: this is terribly inefficient
+        """Modifies an existing hero grid."""
+        hero_idx: Dict[int, int] = {
+            hero["id"]: idx for idx, hero in enumerate(self.heroes)
+        }
         for category in grid["categories"]:
             heroes_cat = []
             for hero_id in category["hero_ids"]:
-                for idx, hero in enumerate(self.heroes):
-                    if hero_id == hero["id"]:
-                        heroes_cat.append((hero["id"], idx)) # tuple of hero_id & index
-                        break
+                idx = hero_idx.get(hero_id)
+                if idx is None:
+                    # TODO: handle error
+                    print(f"Unable to find index for hero with ID {hero_id}")
+                    continue
+                heroes_cat.append((hero_id, idx)) # tuple of hero_id & index
             heroes_cat.sort(key=lambda l: l[1]) # sort by index (which corresponds to winrate)
             category["hero_ids"] = [h[0] for h in heroes_cat]
         
@@ -169,7 +173,6 @@ class HeroGridConfig:
         self.add_hero_grid(grid)
         self.save_hero_grid_config()
 
-    
     def _get_grid(self, name: str) -> dict:
         """Attempts to find a grid by the given name. TODO: Expand description"""
         try:
