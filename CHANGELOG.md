@@ -2,12 +2,13 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
-## 0.3.0 (July xxth, 2020)
+## 0.3.0 (August 13th, 2020)
 ### Added
-- Immortal bracket support (`-b [8, "i", "immortal"]`)
+- Immortal bracket support (`-b <8, i, immortal>`)
 
 ### Changed
 - Parameter `--sort` renamed to `--ascending`
+- Accepted Pro bracket arguments changed to `<9, pro, p>`
 - Improved Steam directory detection for Windows users
 
 
