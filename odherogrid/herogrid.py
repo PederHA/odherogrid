@@ -291,15 +291,14 @@ def detect_userdata_path() -> Path:
 
     return p
 
-def _get_steam_path_windows() -> Path:
-    """Raises FileNotFoundError if registry key cannot be found."""
+def _get_steam_path_windows(default: str="C:\\Program Files (x86)\\Steam") -> Path:
     import winreg
     key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Valve\Steam", 0, winreg.KEY_READ)
     try:
         value, _ = winreg.QueryValueEx(key, "InstallPath")
     except FileNotFoundError:
-        value = "C:\\Program Files (x86)\\Steam"
-        print(
+        value = default
+        click.echo(
             "Unable to locate steam folder automatically. "
             f"Defaulting to {value}"
         )
