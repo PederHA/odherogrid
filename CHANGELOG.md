@@ -2,6 +2,11 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
+## 0.3.1 (August 17th, 2020)
+### Changed
+- The application now automatically generates a new `hero_grid_config.json` if an existing one cannot be found.
+
+
 ## 0.3.0 (August 13th, 2020)
 ### Added
 - Immortal bracket support (`-b <8, i, immortal>`)
@@ -10,8 +15,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Parameter `--sort` renamed to `--ascending`
 - Accepted Pro bracket arguments changed to `<9, pro, p>`
 - Improved Steam directory detection for Windows users
-
-
 
 ## 0.2.0 (February 14th, 2020)
 ### Added
