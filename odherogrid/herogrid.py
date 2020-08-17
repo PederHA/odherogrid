@@ -260,15 +260,16 @@ def get_hero_grid_config_path(path: str) -> Path:
         cfg_path = cfg_path / "hero_grid_config.json"
     
     if not cfg_path.exists():
-        # hero_grid_config.json should automatically be created by Dota 2 if it does not exist.
-        # If ODHG can't find the file, the path argument is likely incorrect, hence raising 
-        # this exception.
-        raise FileNotFoundError(
-            f"'{cfg_path}' does not exist! "
-            "Verify that the correct file path has been specified."
-        )
+        # Create new empty hero_grid_config.json
+        _new_hero_grid_config(cfg_path)
 
     return cfg_path
+
+
+def _new_hero_grid_config(path: Path) -> None:
+    config = json.dumps(HERO_GRID_CONFIG_BASE)
+    with open(path, "w", encoding="utf-8") as f:  
+        f.write(config)
 
 
 # NOTE: should this function reside in config.py instead?
